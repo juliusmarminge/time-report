@@ -1,6 +1,7 @@
+import { cache } from "react";
 import { redirect } from "next/navigation";
 import { HamburgerMenuIcon } from "@radix-ui/react-icons";
-import { format, parseISO } from "date-fns";
+import { format, parseISO, startOfMonth } from "date-fns";
 import { add, dinero, multiply, toDecimal } from "dinero.js";
 
 import type { Client, Timeslot } from "~/db/getters";
@@ -22,27 +23,15 @@ import { TimeslotCard } from "./timeslot-card";
 
 export const runtime = "edge";
 
-export default async function IndexPage(props: {
-  searchParams: { date?: string };
-}) {
-  const user = await currentUser();
-  if (!user) redirect("/login");
+const getMonthMetadata = cache(async (slots: Timeslot[]) => {
+  const billedClients = new Set(slots.map((slot) => slot.clientId)).size;
 
-  const date = props.searchParams.date
-    ? parseISO(`${props.searchParams.date}T00:00:00.000Z`)
-    : undefined;
-
-  const clients = await getClients();
-  const timeslots = await getTimeslots(date ?? new Date(), { mode: "month" });
-
-  const billedClients = new Set(timeslots.map((slot) => slot.clientId)).size;
-
-  const totalHours = timeslots.reduce((acc, slot) => {
+  const totalHours = slots.reduce((acc, slot) => {
     return acc + Number(slot.duration);
   }, 0);
 
   const convert = await createConverter();
-  const totalRevenue = timeslots.reduce(
+  const totalRevenue = slots.reduce(
     (acc, slot) => {
       const dineroObject = dinero({
         amount: slot.chargeRate,
@@ -62,7 +51,30 @@ export default async function IndexPage(props: {
     dinero({ amount: 0, currency: currencies.USD }),
   );
 
-  console.log("timeslots", timeslots);
+  return {
+    billedClients,
+    totalHours,
+    totalRevenue,
+  };
+});
+
+export default async function IndexPage(props: {
+  searchParams: { date?: string };
+}) {
+  const user = await currentUser();
+  if (!user) redirect("/login");
+
+  const date = props.searchParams.date
+    ? parseISO(`${props.searchParams.date}T00:00:00.000Z`)
+    : undefined;
+
+  const clients = await getClients();
+  const timeslots = await getTimeslots(date ? startOfMonth(date) : new Date(), {
+    mode: "month",
+  });
+
+  const { billedClients, totalHours, totalRevenue } =
+    await getMonthMetadata(timeslots);
 
   const slotsByDate = timeslots.reduce<Record<string, Timeslot[]>>(
     (acc, slot) => {

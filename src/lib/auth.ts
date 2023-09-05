@@ -1,6 +1,5 @@
 import { redirect } from "next/navigation";
 import Github from "@auth/core/providers/github";
-import type { Session } from "@auth/core/types";
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import NextAuth from "next-auth";
 
@@ -47,5 +46,5 @@ export async function currentUser(opts?: { redirect?: boolean }) {
     if (opts?.redirect) redirect("/login");
     return null;
   }
-  return session.user as Session["user"];
+  return session.user;
 }
