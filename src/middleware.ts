@@ -23,7 +23,7 @@ export default auth((req) => {
 
   if (!auth.user) {
     // Protected path and user is not signed in, redirect to signin
-    url.pathname = "/signin";
+    url.pathname = "/login";
     return NextResponse.redirect(url);
   }
 

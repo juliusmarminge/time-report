@@ -1,8 +1,8 @@
 "use client";
 
 import { ChevronRightIcon, ExitIcon } from "@radix-ui/react-icons";
+import { signOut } from "next-auth/react";
 
-import { CSRF_experimental } from "~/lib/auth";
 import type { Session } from "~/lib/auth";
 import { cn } from "~/lib/cn";
 import { Avatar, AvatarFallback, AvatarImage } from "~/ui/avatar";
@@ -56,12 +56,13 @@ export function SettingsMenu(props: {
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem asChild className="cursor-pointer">
-            <form action="/api/auth/signout" method="post">
-              <ExitIcon className="mr-2 h-4 w-4" />
-              Sign out
-              <CSRF_experimental />
-            </form>
+          <DropdownMenuItem
+            className="cursor-pointer"
+            onClick={() => signOut()}
+          >
+            <ExitIcon className="mr-2 h-4 w-4" />
+            Sign out
+            {/* <CSRF_experimental /> */}
           </DropdownMenuItem>
         </DropdownMenuGroup>
       </DropdownMenuContent>

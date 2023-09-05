@@ -36,6 +36,9 @@ export const {
       },
     }),
   },
+  pages: {
+    signIn: "/login",
+  },
 });
 
 export async function currentUser(opts?: { redirect?: boolean }) {
