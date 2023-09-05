@@ -1,9 +1,11 @@
+import { redirect } from "next/navigation";
 import { HamburgerMenuIcon } from "@radix-ui/react-icons";
 import { format, parseISO } from "date-fns";
 import { add, dinero, multiply, toDecimal } from "dinero.js";
 
 import type { Client, Timeslot } from "~/db/getters";
 import { getClients, getTimeslots } from "~/db/getters";
+import { currentUser } from "~/lib/auth";
 import { createConverter, currencies, formatMoney } from "~/lib/currencies";
 import { Button } from "~/ui/button";
 import {
@@ -23,6 +25,9 @@ export const runtime = "edge";
 export default async function IndexPage(props: {
   searchParams: { date?: string };
 }) {
+  const user = await currentUser();
+  if (!user) redirect("/login");
+
   const date = props.searchParams.date
     ? parseISO(props.searchParams.date ?? "")
     : undefined;
@@ -43,7 +48,7 @@ export default async function IndexPage(props: {
         amount: slot.chargeRate,
         currency: currencies[slot.currency],
       });
-      const inUSD = convert(dineroObject, "SEK");
+      const inUSD = convert(dineroObject, "USD");
 
       console.log({
         dineroObject: dineroObject.toJSON(),
@@ -54,7 +59,7 @@ export default async function IndexPage(props: {
 
       return add(acc, multiply(inUSD, Number(slot.duration)));
     },
-    dinero({ amount: 0, currency: currencies.SEK }),
+    dinero({ amount: 0, currency: currencies.USD }),
   );
 
   const slotsByDate = timeslots.reduce<Record<string, Timeslot[]>>(
@@ -181,7 +186,7 @@ async function SidePanel(props: {
         amount: slot.chargeRate,
         currency: currencies[slot.currency],
       });
-      const inUSD = convert(dineroObject, "SEK");
+      const inUSD = convert(dineroObject, "USD");
 
       console.log({
         dineroObject: dineroObject.toJSON(),
@@ -192,7 +197,7 @@ async function SidePanel(props: {
 
       return add(acc, multiply(inUSD, Number(slot.duration)));
     },
-    dinero({ amount: 0, currency: currencies.SEK }),
+    dinero({ amount: 0, currency: currencies.USD }),
   );
 
   return (
