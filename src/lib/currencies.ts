@@ -31,7 +31,7 @@ export const createConverter = cache(async () => {
   //     )
   //   ).json()) as { base: string; rates: Record<string, number> }
   // ).rates;
-  await new Promise((resolve) => resolve(undefined));
+  await Promise.resolve();
   const ratesWithEurAsBase: Record<string, number> = {
     EUR: 1,
     USD: 1.18,
