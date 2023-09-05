@@ -190,29 +190,7 @@ async function SidePanel(props: {
     );
   }
 
-  const totalHours = props.timeslots.reduce((acc, slot) => {
-    return acc + Number(slot.duration);
-  }, 0);
-  const convert = await createConverter();
-  const totalRevenue = props.timeslots.reduce(
-    (acc, slot) => {
-      const dineroObject = dinero({
-        amount: slot.chargeRate,
-        currency: currencies[slot.currency],
-      });
-      const inUSD = convert(dineroObject, "USD");
-
-      console.log({
-        dineroObject: dineroObject.toJSON(),
-        dineroObjectAmount: toDecimal(dineroObject, formatMoney),
-        inUSD: inUSD.toJSON(),
-        inUSDAmount: toDecimal(inUSD, formatMoney),
-      });
-
-      return add(acc, multiply(inUSD, Number(slot.duration)));
-    },
-    dinero({ amount: 0, currency: currencies.USD }),
-  );
+  const { totalRevenue, totalHours } = await getMonthMetadata(props.timeslots);
 
   return (
     <Card>
