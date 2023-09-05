@@ -3,7 +3,7 @@ import Link from "next/link";
 import { currentUser } from "~/lib/auth";
 import { cn } from "~/lib/cn";
 import { Button } from "~/ui/button";
-import { SettingsMenu } from "./settings-menu";
+import { SettingsMenu } from "../components/settings-menu";
 
 function NavButton(props: { href: string; children: React.ReactNode }) {
   return (

@@ -12,6 +12,9 @@ import {
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "~/ui/dropdown-menu";
 
@@ -49,10 +52,27 @@ export function SettingsMenu(props: {
       </DropdownMenuTrigger>
       <DropdownMenuContent side="top" align="start" className="w-64">
         <DropdownMenuGroup>
-          <DropdownMenuItem className="cursor-pointer">
-            <span className="mr-2 text-lg">$</span>
-            <span>Settings</span>
-          </DropdownMenuItem>
+          <DropdownMenuSub>
+            <DropdownMenuSubTrigger>
+              <span className="mr-2 text-lg">$</span>
+              <span>Currency</span>
+            </DropdownMenuSubTrigger>
+            <DropdownMenuSubContent>
+              <DropdownMenuItem className="cursor-pointer">
+                USD
+                <span className="ml-auto font-bold">⋅</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem className="cursor-pointer">
+                EUR
+              </DropdownMenuItem>
+              <DropdownMenuItem className="cursor-pointer">
+                GBP
+              </DropdownMenuItem>
+              <DropdownMenuItem className="cursor-pointer">
+                SEK
+              </DropdownMenuItem>
+            </DropdownMenuSubContent>
+          </DropdownMenuSub>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
