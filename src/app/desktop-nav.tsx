@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { currentUser } from "~/lib/auth";
 import { cn } from "~/lib/cn";
 import { Button } from "~/ui/button";
 import { SettingsMenu } from "./settings-menu";
@@ -16,7 +17,9 @@ function NavButton(props: { href: string; children: React.ReactNode }) {
   );
 }
 
-export function DesktopSidebar(props: { className?: string }) {
+export async function DesktopSidebar(props: { className?: string }) {
+  const user = await currentUser();
+
   return (
     <aside
       className={cn(
@@ -75,7 +78,7 @@ export function DesktopSidebar(props: { className?: string }) {
         </NavButton>
       </div>
 
-      <SettingsMenu className="mx-4 mt-auto" />
+      <SettingsMenu className="mx-4 mt-auto" user={user} />
     </aside>
   );
 }

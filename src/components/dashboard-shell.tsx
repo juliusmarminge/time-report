@@ -4,7 +4,7 @@ import { cn } from "~/lib/cn";
 
 export function DashboardShell(props: {
   title: React.ReactNode;
-  description: React.ReactNode;
+  description?: React.ReactNode;
   headerActions?: React.ReactNode | React.ReactNode[];
   children: React.ReactNode;
   className?: string;
@@ -25,7 +25,7 @@ export function DashboardShell(props: {
               {props.description}
             </h2>
           ) : (
-            props.description
+            props.description ?? null
           )}
         </div>
         {Array.isArray(props.headerActions) ? (
