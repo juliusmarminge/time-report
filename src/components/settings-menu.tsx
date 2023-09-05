@@ -29,10 +29,12 @@ export function SettingsMenu(props: {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button
-          className={cn("justify-start gap-2", props.className)}
-          variant="secondary"
+          className={cn(
+            "justify-start gap-2 bg-popover py-6 text-popover-foreground hover:bg-popover/40",
+            props.className,
+          )}
         >
-          <Avatar className="h-8 w-8">
+          <Avatar className="h-8 w-8 rounded-sm">
             {user?.image && (
               <AvatarImage
                 src={user.image}
