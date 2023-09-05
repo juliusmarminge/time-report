@@ -77,6 +77,9 @@
   "pnpm": {
     "overrides": {
       "@auth/core": "0.13.0"
+    },
+    "patchedDependencies": {
+      "next@13.4.20-canary.16": "patches/next@13.4.20-canary.16.patch"
     }
   }
 }

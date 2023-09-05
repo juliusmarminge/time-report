@@ -1,3 +1,4 @@
+import type { AdapterAccount } from "@auth/core/adapters";
 import { relations, sql } from "drizzle-orm";
 import {
   bigint,
@@ -11,7 +12,6 @@ import {
   timestamp,
   varchar,
 } from "drizzle-orm/mysql-core";
-import type { Account } from "next-auth";
 
 import type { CurrencyCode } from "~/lib/currencies";
 
@@ -60,7 +60,9 @@ export const accounts = table(
   "account",
   {
     userId: varchar("userId", { length: 255 }).notNull(),
-    type: varchar("type", { length: 255 }).$type<Account["type"]>().notNull(),
+    type: varchar("type", { length: 255 })
+      .$type<AdapterAccount["type"]>()
+      .notNull(),
     provider: varchar("provider", { length: 255 }).notNull(),
     providerAccountId: varchar("providerAccountId", { length: 255 }).notNull(),
     refresh_token: varchar("refresh_token", { length: 255 }),
