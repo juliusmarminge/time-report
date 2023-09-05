@@ -72,10 +72,8 @@ export const users = table("user", {
   image: varchar("image", { length: 255 }),
 });
 
-// I don't need relational queries for now, and I don't quite understand how to
-// make drizzle studio work with them, so I'm leaving this commented out for now.
 export const usersRelations = relations(users, ({ many }) => ({
-  accounts: many(accounts, { relationName: "user" }),
+  accounts: many(accounts),
 }));
 
 export const accounts = table(
