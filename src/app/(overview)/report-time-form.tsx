@@ -114,8 +114,10 @@ export function ReportTimeForm(props: {
           name="chargeRate"
           render={({ field }) => (
             <FormItem className="flex">
-              <FormLabel>Currency</FormLabel>
-              <FormDescription>The currency of the client.</FormDescription>
+              <FormLabel>Charge rate</FormLabel>
+              <FormDescription>
+                Your hourly charge for this session.
+              </FormDescription>
               <div className="flex gap-1">
                 <FormField
                   control={form.control}
