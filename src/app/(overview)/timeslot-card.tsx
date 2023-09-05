@@ -91,6 +91,8 @@ function EditingTimeslotCard(props: {
   );
 
   const [updating, setUpdating] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+
   const updateSlot = useCallback(async () => {
     setUpdating(true);
     await updateTimeslot(props.slot.id, {
@@ -168,9 +170,16 @@ function EditingTimeslotCard(props: {
                 <AlertDialogCancel>Cancel</AlertDialogCancel>
                 <AlertDialogAction
                   asChild
-                  onClick={() => deleteTimeslot(props.slot.id)}
+                  onClick={async () => {
+                    setDeleting(true);
+                    await deleteTimeslot(props.slot.id);
+                    setDeleting(false);
+                  }}
                 >
-                  <Button variant="destructive">Yes, Delete</Button>
+                  <Button variant="destructive">
+                    {deleting && <LoadingDots className="mr-2 h-4 w-4" />}
+                    Yes, Delete
+                  </Button>
                 </AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogHeader>
