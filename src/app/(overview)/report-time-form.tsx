@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useSearchParams } from "next/navigation";
+import { parseISO } from "date-fns";
 
 import type { Client } from "~/db/getters";
 import { currencies } from "~/lib/currencies";
@@ -40,10 +41,11 @@ export function ReportTimeForm(props: {
   afterSubmit?: () => void;
 }) {
   const params = useSearchParams();
+  const date = params.get("date");
   const form = useForm({
     schema: reportTimeSchema,
     defaultValues: {
-      date: params.get("date") ?? undefined,
+      date: date ? parseISO(`${date}T00:00:00.000Z`) : undefined,
       clientId: props.clients[0].id,
       currency: props.clients[0].curr,
       chargeRate: props.clients[0].defaultCharge / 100,

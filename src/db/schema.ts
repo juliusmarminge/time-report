@@ -2,6 +2,7 @@ import type { AdapterAccount } from "@auth/core/adapters";
 import { relations, sql } from "drizzle-orm";
 import {
   bigint,
+  date,
   decimal,
   index,
   int,
@@ -43,7 +44,7 @@ export const timeslot = table(
     id: serial("id").primaryKey(),
     clientId: bigint("client_id", { mode: "number" }).notNull(),
     tenantId: varchar("tenant_id", { length: 255 }).notNull(),
-    date: timestamp("date", { fsp: 3 }).notNull(),
+    date: date("date").notNull(),
     duration: decimal("duration", { scale: 2, precision: 4 }).notNull(),
     description: text("description"),
     chargeRate: int("charge_rate").notNull(),

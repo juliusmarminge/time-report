@@ -29,7 +29,7 @@ export default async function IndexPage(props: {
   if (!user) redirect("/login");
 
   const date = props.searchParams.date
-    ? parseISO(props.searchParams.date ?? "")
+    ? parseISO(`${props.searchParams.date}T00:00:00.000Z`)
     : undefined;
 
   const clients = await getClients();
@@ -50,17 +50,19 @@ export default async function IndexPage(props: {
       });
       const inUSD = convert(dineroObject, "USD");
 
-      console.log({
-        dineroObject: dineroObject.toJSON(),
-        dineroObjectAmount: toDecimal(dineroObject, formatMoney),
-        inUSD: inUSD.toJSON(),
-        inUSDAmount: toDecimal(inUSD, formatMoney),
-      });
+      // console.log({
+      //   dineroObject: dineroObject.toJSON(),
+      //   dineroObjectAmount: toDecimal(dineroObject, formatMoney),
+      //   inUSD: inUSD.toJSON(),
+      //   inUSDAmount: toDecimal(inUSD, formatMoney),
+      // });
 
       return add(acc, multiply(inUSD, Number(slot.duration)));
     },
     dinero({ amount: 0, currency: currencies.USD }),
   );
+
+  console.log("timeslots", timeslots);
 
   const slotsByDate = timeslots.reduce<Record<string, Timeslot[]>>(
     (acc, slot) => {
