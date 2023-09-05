@@ -20,7 +20,9 @@ export function ClientCard(props: { client: Client }) {
     <Card>
       <div className="flex items-start justify-between p-6">
         <CardHeader className="p-0">
-          <Image src={client.image} alt="" />
+          <div className="relative h-16 w-16">
+            <Image src={client.image} alt="" fill />
+          </div>
           <h2 className="text-xl font-bold">{client.name}</h2>
         </CardHeader>
         <Button

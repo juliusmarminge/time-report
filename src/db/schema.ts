@@ -1,5 +1,5 @@
 import type { AdapterAccount } from "@auth/core/adapters";
-import { relations, sql } from "drizzle-orm";
+import { sql } from "drizzle-orm";
 import {
   bigint,
   decimal,
@@ -28,18 +28,27 @@ export const client = table("client", {
   ),
 });
 
-export const timeslot = table("timeslot", {
-  id: serial("id").primaryKey(),
-  clientId: bigint("client_id", { mode: "number" }).notNull(),
-  date: timestamp("date", { fsp: 3 }).notNull(),
-  duration: decimal("duration", { scale: 2, precision: 4 }).notNull(),
-  description: text("description"),
-  chargeRate: int("charge_rate").notNull(),
-  currency: varchar("currency", { length: 3 }).$type<CurrencyCode>().notNull(),
-  createdAt: timestamp("created_at", { fsp: 3 }).default(
-    sql`CURRENT_TIMESTAMP(3)`,
-  ),
-});
+export const timeslot = table(
+  "timeslot",
+  {
+    id: serial("id").primaryKey(),
+    clientId: bigint("client_id", { mode: "number" }).notNull(),
+    date: timestamp("date", { fsp: 3 }).notNull(),
+    duration: decimal("duration", { scale: 2, precision: 4 }).notNull(),
+    description: text("description"),
+    chargeRate: int("charge_rate").notNull(),
+    currency: varchar("currency", { length: 3 })
+      .$type<CurrencyCode>()
+      .notNull(),
+    createdAt: timestamp("created_at", { fsp: 3 }).default(
+      sql`CURRENT_TIMESTAMP(3)`,
+    ),
+  },
+  (timeslot) => ({
+    date: index("date_idx").on(timeslot.date),
+    clientIdIdx: index("clientId_idx").on(timeslot.clientId),
+  }),
+);
 
 export const users = table("user", {
   id: varchar("id", { length: 255 }).notNull().primaryKey(),
@@ -52,9 +61,11 @@ export const users = table("user", {
   image: varchar("image", { length: 255 }),
 });
 
-export const usersRelations = relations(users, ({ many }) => ({
-  accounts: many(accounts),
-}));
+// I don't need relational queries for now, and I don't quite understand how to
+// make drizzle studio work with them, so I'm leaving this commented out for now.
+// export const usersRelations = relations(users, ({ many }) => ({
+//   accounts: many(accounts),
+// }));
 
 export const accounts = table(
   "account",
@@ -79,9 +90,9 @@ export const accounts = table(
   }),
 );
 
-export const accountsRelations = relations(accounts, ({ one }) => ({
-  user: one(users, { fields: [accounts.userId], references: [users.id] }),
-}));
+// export const accountsRelations = relations(accounts, ({ one }) => ({
+//   user: one(users, { fields: [accounts.userId], references: [users.id] }),
+// }));
 
 export const sessions = table(
   "session",
@@ -97,9 +108,9 @@ export const sessions = table(
   }),
 );
 
-export const sessionsRelations = relations(sessions, ({ one }) => ({
-  user: one(users),
-}));
+// export const sessionsRelations = relations(sessions, ({ one }) => ({
+//   user: one(users),
+// }));
 
 export const verificationTokens = table(
   "verificationToken",
