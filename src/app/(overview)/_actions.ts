@@ -7,11 +7,15 @@ import type { Input } from "valibot";
 
 import { db } from "~/db";
 import { timeslot } from "~/db/schema";
+import { currentUser } from "~/lib/auth";
 import type { CurrencyCode } from "~/lib/currencies";
 import { currencies } from "~/lib/currencies";
 import { reportTimeSchema, updateSchema } from "./_validators";
 
 export async function reportTime(props: Input<typeof reportTimeSchema>) {
+  const user = await currentUser();
+  if (!user) return;
+
   const input = await parseAsync(reportTimeSchema, props);
 
   const currency = input.currency
@@ -29,6 +33,7 @@ export async function reportTime(props: Input<typeof reportTimeSchema>) {
     currency: input.currency as CurrencyCode,
     description: input.description,
     clientId: input.clientId,
+    tenantId: user.id,
   });
 
   revalidateTag("/");

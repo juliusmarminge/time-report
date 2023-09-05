@@ -7,11 +7,15 @@ import { parseAsync } from "valibot";
 
 import { db } from "~/db";
 import { client } from "~/db/schema";
+import { currentUser } from "~/lib/auth";
 import type { CurrencyCode } from "../../lib/currencies";
 import { currencies } from "../../lib/currencies";
 import { createClientSchema } from "./_validators";
 
 export async function createClient(props: Input<typeof createClientSchema>) {
+  const user = await currentUser();
+  if (!user) return;
+
   const input = await parseAsync(createClientSchema, props);
 
   const currency = input.currency
@@ -25,6 +29,7 @@ export async function createClient(props: Input<typeof createClientSchema>) {
     currency: input.currency as CurrencyCode,
     defaultCharge: normalizedAmount,
     image: input.image,
+    tenantId: user.id,
   });
 
   revalidateTag("/");

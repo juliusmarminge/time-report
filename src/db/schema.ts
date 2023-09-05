@@ -17,22 +17,32 @@ import type { CurrencyCode } from "~/lib/currencies";
 
 export const table = mysqlTableCreator((name) => `timeit_${name}`);
 
-export const client = table("client", {
-  id: serial("id").primaryKey(),
-  name: varchar("name", { length: 255 }).notNull(),
-  image: varchar("image", { length: 255 }).notNull(),
-  defaultCharge: int("default_charge").notNull(),
-  currency: varchar("currency", { length: 3 }).$type<CurrencyCode>().notNull(),
-  createdAt: timestamp("created_at", { fsp: 3 }).default(
-    sql`CURRENT_TIMESTAMP(3)`,
-  ),
-});
+export const client = table(
+  "client",
+  {
+    id: serial("id").primaryKey(),
+    tenantId: varchar("tenant_id", { length: 255 }).notNull(),
+    name: varchar("name", { length: 255 }).notNull(),
+    image: varchar("image", { length: 255 }).notNull(),
+    defaultCharge: int("default_charge").notNull(),
+    currency: varchar("currency", { length: 3 })
+      .$type<CurrencyCode>()
+      .notNull(),
+    createdAt: timestamp("created_at", { fsp: 3 }).default(
+      sql`CURRENT_TIMESTAMP(3)`,
+    ),
+  },
+  (client) => ({
+    tenantIdIdx: index("tenantId_idx").on(client.tenantId),
+  }),
+);
 
 export const timeslot = table(
   "timeslot",
   {
     id: serial("id").primaryKey(),
     clientId: bigint("client_id", { mode: "number" }).notNull(),
+    tenantId: varchar("tenant_id", { length: 255 }).notNull(),
     date: timestamp("date", { fsp: 3 }).notNull(),
     duration: decimal("duration", { scale: 2, precision: 4 }).notNull(),
     description: text("description"),
@@ -47,6 +57,7 @@ export const timeslot = table(
   (timeslot) => ({
     date: index("date_idx").on(timeslot.date),
     clientIdIdx: index("clientId_idx").on(timeslot.clientId),
+    tenantIdIdx: index("tenantId_idx").on(timeslot.tenantId),
   }),
 );
 
