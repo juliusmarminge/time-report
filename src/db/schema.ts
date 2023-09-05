@@ -1,5 +1,5 @@
 import type { AdapterAccount } from "@auth/core/adapters";
-import { sql } from "drizzle-orm";
+import { relations, sql } from "drizzle-orm";
 import {
   bigint,
   decimal,
@@ -74,9 +74,9 @@ export const users = table("user", {
 
 // I don't need relational queries for now, and I don't quite understand how to
 // make drizzle studio work with them, so I'm leaving this commented out for now.
-// export const usersRelations = relations(users, ({ many }) => ({
-//   accounts: many(accounts),
-// }));
+export const usersRelations = relations(users, ({ many }) => ({
+  accounts: many(accounts, { relationName: "user" }),
+}));
 
 export const accounts = table(
   "account",
@@ -101,9 +101,9 @@ export const accounts = table(
   }),
 );
 
-// export const accountsRelations = relations(accounts, ({ one }) => ({
-//   user: one(users, { fields: [accounts.userId], references: [users.id] }),
-// }));
+export const accountsRelations = relations(accounts, ({ one }) => ({
+  user: one(users, { fields: [accounts.userId], references: [users.id] }),
+}));
 
 export const sessions = table(
   "session",
@@ -119,9 +119,9 @@ export const sessions = table(
   }),
 );
 
-// export const sessionsRelations = relations(sessions, ({ one }) => ({
-//   user: one(users),
-// }));
+export const sessionsRelations = relations(sessions, ({ one }) => ({
+  user: one(users, { fields: [sessions.userId], references: [users.id] }),
+}));
 
 export const verificationTokens = table(
   "verificationToken",
