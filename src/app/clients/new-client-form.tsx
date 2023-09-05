@@ -70,8 +70,6 @@ export function NewClientForm(props: { afterSubmit?: () => void }) {
     maxFiles: 1,
   });
 
-  console.log(form.watch());
-
   return (
     <Form {...form}>
       <form
