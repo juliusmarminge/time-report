@@ -6,6 +6,7 @@ import { signOut } from "next-auth/react";
 import type { Session } from "~/lib/auth";
 import { cn } from "~/lib/cn";
 import { Avatar, AvatarFallback, AvatarImage } from "~/ui/avatar";
+import { Button } from "~/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -26,13 +27,11 @@ export function SettingsMenu(props: {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger
-        className={cn(
-          "flex items-center justify-between gap-2 px-6 py-3 hover:cursor-pointer hover:bg-accent-foreground hover:text-accent",
-          props.className,
-        )}
-      >
-        <div className="flex items-center gap-2">
+      <DropdownMenuTrigger asChild>
+        <Button
+          className={cn("justify-start gap-2", props.className)}
+          variant="secondary"
+        >
           <Avatar className="h-8 w-8">
             {user?.image && (
               <AvatarImage
@@ -47,10 +46,10 @@ export function SettingsMenu(props: {
           <span className="text-sm font-semibold">
             {user?.name ?? "Sign in to get started"}
           </span>
-        </div>
-        <ChevronRightIcon className="h-4 w-4" />
+          <ChevronRightIcon className="ml-auto h-4 w-4" />
+        </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent side="top" align="start" className="w-64">
+      <DropdownMenuContent side="top" align="start" className="w-40">
         <DropdownMenuGroup>
           <DropdownMenuSub>
             <DropdownMenuSubTrigger>
