@@ -1,5 +1,6 @@
+import { redirect } from "next/navigation";
 import Github from "@auth/core/providers/github";
-import type { DefaultSession } from "@auth/core/types";
+import type { Session } from "@auth/core/types";
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import NextAuth from "next-auth";
 
@@ -11,7 +12,7 @@ export type { Session } from "@auth/core/types";
 export const providers = [{ name: "github", handler: Github }] as const;
 export type OAuthProviders = (typeof providers)[number]["name"];
 
-declare module "next-auth" {
+declare module "@auth/core/types" {
   interface Session {
     user: {
       id: string;
@@ -37,8 +38,11 @@ export const {
   },
 });
 
-export async function currentUser() {
+export async function currentUser(opts?: { redirect?: boolean }) {
   const session = await auth();
-  if (!session?.user) return null;
-  return session.user;
+  if (!session?.user) {
+    if (opts?.redirect) redirect("/login");
+    return null;
+  }
+  return session.user as Session["user"];
 }

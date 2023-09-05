@@ -17,7 +17,7 @@ import {
 
 export function SettingsMenu(props: {
   className?: string;
-  user: NonNullable<Session["user"]>;
+  user: Session["user"] | null;
 }) {
   const { user } = props;
 
@@ -31,7 +31,7 @@ export function SettingsMenu(props: {
       >
         <div className="flex items-center gap-2">
           <Avatar className="h-8 w-8">
-            {user.image && (
+            {user?.image && (
               <AvatarImage
                 src={user.image}
                 alt={user.name ?? "Profile picture"}
@@ -41,7 +41,9 @@ export function SettingsMenu(props: {
               {(user?.name ?? "U").slice(0, 2).toUpperCase()}
             </AvatarFallback>
           </Avatar>
-          <span className="text-sm font-semibold">{user.name}</span>
+          <span className="text-sm font-semibold">
+            {user?.name ?? "Sign in to get started"}
+          </span>
         </div>
         <ChevronRightIcon className="h-4 w-4" />
       </DropdownMenuTrigger>

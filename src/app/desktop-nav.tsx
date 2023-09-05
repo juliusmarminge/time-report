@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { redirect } from "next/navigation";
 
 import { currentUser } from "~/lib/auth";
 import { cn } from "~/lib/cn";
@@ -20,7 +19,6 @@ function NavButton(props: { href: string; children: React.ReactNode }) {
 
 export async function DesktopSidebar(props: { className?: string }) {
   const user = await currentUser();
-  if (!user) redirect("/login");
 
   return (
     <aside
