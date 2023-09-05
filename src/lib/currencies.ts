@@ -31,6 +31,7 @@ export const createConverter = cache(async () => {
   //     )
   //   ).json()) as { base: string; rates: Record<string, number> }
   // ).rates;
+  await new Promise((resolve) => resolve(undefined));
   const ratesWithEurAsBase: Record<string, number> = {
     EUR: 1,
     USD: 1.18,
@@ -50,8 +51,6 @@ export const createConverter = cache(async () => {
         scale: 3,
       },
     };
-
-    console.log("rates", rates);
 
     return convert(dineroObject, currencies[newCurrency], rates);
   };
