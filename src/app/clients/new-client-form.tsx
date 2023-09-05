@@ -5,6 +5,7 @@ import { PlusIcon } from "@radix-ui/react-icons";
 import type { FileWithPath } from "@uploadthing/react-dropzone";
 import { useDropzone } from "@uploadthing/react-dropzone";
 
+import { LoadingDots } from "~/components/loading-dots";
 import { currencies } from "~/lib/currencies";
 import { useUploadThing } from "~/lib/uploadthing";
 import { Button } from "~/ui/button";
@@ -19,6 +20,7 @@ import {
   useForm,
 } from "~/ui/form";
 import { Input } from "~/ui/input";
+import { ScrollArea } from "~/ui/scroll-area";
 import {
   Select,
   SelectContent,
@@ -117,39 +119,7 @@ export function NewClientForm(props: { afterSubmit?: () => void }) {
                   </span>
                 )}
                 {isUploading && (
-                  <svg
-                    className="absolute bottom-2 right-2 h-6 w-6 fill-current"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <title>loading</title>
-                    <circle cx="4" cy="12" r="3">
-                      <animate
-                        id="a"
-                        begin="0;b.end-0.25s"
-                        attributeName="r"
-                        dur="0.75s"
-                        values="3;.2;3"
-                      />
-                    </circle>
-                    <circle cx="12" cy="12" r="3">
-                      <animate
-                        begin="a.end-0.6s"
-                        attributeName="r"
-                        dur="0.75s"
-                        values="3;.2;3"
-                      />
-                    </circle>
-                    <circle cx="20" cy="12" r="3">
-                      <animate
-                        id="b"
-                        begin="a.end-0.45s"
-                        attributeName="r"
-                        dur="0.75s"
-                        values="3;.2;3"
-                      />
-                    </circle>
-                  </svg>
+                  <LoadingDots className="absolute bottom-2 right-2" />
                 )}
               </div>
               <FormMessage />
@@ -178,11 +148,13 @@ export function NewClientForm(props: { afterSubmit?: () => void }) {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {Object.entries(currencies).map(([code, value]) => (
-                          <SelectItem key={code} value={code}>
-                            {value.code}
-                          </SelectItem>
-                        ))}
+                        <ScrollArea className="h-64">
+                          {Object.entries(currencies).map(([code, value]) => (
+                            <SelectItem key={code} value={code}>
+                              {value.code}
+                            </SelectItem>
+                          ))}
+                        </ScrollArea>
                       </SelectContent>
                     </Select>
                   )}
@@ -201,7 +173,7 @@ export function NewClientForm(props: { afterSubmit?: () => void }) {
         />
 
         <Button type="submit" className="w-full" disabled={isUploading}>
-          Create
+          {isUploading ? "Waiting for upload to finish" : "Create"}
         </Button>
       </form>
     </Form>

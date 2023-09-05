@@ -18,6 +18,7 @@ import {
   useForm,
 } from "~/ui/form";
 import { Input } from "~/ui/input";
+import { ScrollArea } from "~/ui/scroll-area";
 import {
   Select,
   SelectContent,
@@ -127,11 +128,13 @@ export function ReportTimeForm(props: {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {Object.entries(currencies).map(([code, value]) => (
-                          <SelectItem key={code} value={code}>
-                            {value.code}
-                          </SelectItem>
-                        ))}
+                        <ScrollArea className="h-64">
+                          {Object.entries(currencies).map(([code, value]) => (
+                            <SelectItem key={code} value={code}>
+                              {value.code}
+                            </SelectItem>
+                          ))}
+                        </ScrollArea>
                       </SelectContent>
                     </Select>
                   )}
