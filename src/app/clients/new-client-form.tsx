@@ -171,6 +171,7 @@ export function NewClientForm(props: { afterSubmit?: () => void }) {
         />
 
         <Button type="submit" className="w-full" disabled={isUploading}>
+          {form.formState.isSubmitting && <LoadingDots className="mr-2" />}
           {isUploading ? "Waiting for upload to finish" : "Create"}
         </Button>
       </form>
