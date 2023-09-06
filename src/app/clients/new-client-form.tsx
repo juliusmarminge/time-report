@@ -189,7 +189,7 @@ export function NewClientSheet() {
           <PlusIcon className="h-5 w-5" />
         </Button>
       </SheetTrigger>
-      <SheetContent>
+      <SheetContent side="rightOnDesktop">
         <SheetHeader>
           <SheetTitle>Create a new client</SheetTitle>
         </SheetHeader>

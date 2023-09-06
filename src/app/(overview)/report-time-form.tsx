@@ -232,7 +232,7 @@ export function ReportTimeSheet(props: { clients: Client[] }) {
             </Button>
           </SheetTrigger>
         )}
-        <SheetContent>
+        <SheetContent side="rightOnDesktop">
           <SheetHeader>
             <SheetTitle>Report time</SheetTitle>
           </SheetHeader>
