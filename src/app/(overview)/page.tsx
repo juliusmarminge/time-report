@@ -68,10 +68,15 @@ export default async function IndexPage(props: {
     ? parseISO(`${props.searchParams.date}T00:00:00.000Z`)
     : undefined;
 
+  console.time("getClients");
   const clients = await getClients();
+  console.timeEnd("getClients");
+
+  console.time("getTimeslots");
   const timeslots = await getTimeslots(date ? startOfMonth(date) : new Date(), {
     mode: "month",
   });
+  console.timeEnd("getTimeslots");
 
   const { billedClients, totalHours, totalRevenue } =
     await getMonthMetadata(timeslots);

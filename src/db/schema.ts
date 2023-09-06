@@ -24,14 +24,14 @@ export const client = table(
     id: serial("id").primaryKey(),
     tenantId: varchar("tenant_id", { length: 255 }).notNull(),
     name: varchar("name", { length: 255 }).notNull(),
-    image: varchar("image", { length: 255 }).notNull(),
+    image: varchar("image", { length: 255 }),
     defaultCharge: int("default_charge").notNull(),
     currency: varchar("currency", { length: 3 })
       .$type<CurrencyCode>()
       .notNull(),
-    createdAt: timestamp("created_at", { fsp: 3 }).default(
-      sql`CURRENT_TIMESTAMP(3)`,
-    ),
+    createdAt: timestamp("created_at", { fsp: 3 })
+      .default(sql`CURRENT_TIMESTAMP(3)`)
+      .notNull(),
   },
   (client) => ({
     tenantIdIdx: index("tenantId_idx").on(client.tenantId),

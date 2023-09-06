@@ -17,6 +17,7 @@ export const getClients = cache(async () => {
       image: client.image,
       defaultCharge: client.defaultCharge,
       curr: client.currency,
+      createdAt: client.createdAt,
     })
     .from(client)
     .where(eq(client.tenantId, user.id));
