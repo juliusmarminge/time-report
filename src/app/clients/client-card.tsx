@@ -77,7 +77,7 @@ export function ClientCard(props: { client: Client }) {
           <Pencil1Icon className="h-4 w-4" />
         </Button>
       </div>
-      <CardContent className="p-6">
+      <CardContent className="p-6 pt-0">
         {client.curr && client.defaultCharge && (
           <p className="text-base text-muted-foreground">
             {`Default charge: `}
