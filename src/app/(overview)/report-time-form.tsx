@@ -2,10 +2,22 @@
 
 import { useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { parseISO } from "date-fns";
+import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
+import { isFuture, parseISO } from "date-fns";
 
 import type { Client } from "~/db/getters";
 import { currencies } from "~/lib/currencies";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "~/ui/alert-dialog";
 import { Button } from "~/ui/button";
 import {
   Form,
@@ -39,14 +51,13 @@ import { reportTimeSchema } from "./_validators";
 
 export function ReportTimeForm(props: {
   clients: Client[];
+  date?: Date;
   afterSubmit?: () => void;
 }) {
-  const params = useSearchParams();
-  const date = params.get("date");
   const form = useForm({
     schema: reportTimeSchema,
     defaultValues: {
-      date: date ? parseISO(`${date}T00:00:00.000Z`) : undefined,
+      date: props.date,
       clientId: props.clients[0].id,
       currency: props.clients[0].curr,
       chargeRate: props.clients[0].defaultCharge / 100,
@@ -195,27 +206,64 @@ export function ReportTimeForm(props: {
 }
 
 export function ReportTimeSheet(props: { clients: Client[] }) {
+  const params = useSearchParams();
+  const dateStr = params.get("date");
+  const date = dateStr ? parseISO(`${dateStr}T00:00:00.000Z`) : undefined;
+
   const [open, setOpen] = useState(false);
+
   return (
-    <Sheet open={open} onOpenChange={setOpen}>
-      <SheetTrigger asChild disabled={props.clients.length === 0}>
-        <Button>
-          {props.clients.length > 0
-            ? "Report time"
-            : "Create a client to report time"}
-        </Button>
-      </SheetTrigger>
-      <SheetContent>
-        <SheetHeader>
-          <SheetTitle>Report time</SheetTitle>
-        </SheetHeader>
-        <div className="py-4">
-          <ReportTimeForm
-            clients={props.clients}
-            afterSubmit={() => setOpen(false)}
-          />
-        </div>
-      </SheetContent>
-    </Sheet>
+    <AlertDialog>
+      <Sheet open={open} onOpenChange={setOpen}>
+        {date && isFuture(date) ? (
+          <AlertDialogTrigger asChild>
+            <Button>
+              {props.clients.length > 0
+                ? "Report time"
+                : "Create a client to report time"}
+            </Button>
+          </AlertDialogTrigger>
+        ) : (
+          <SheetTrigger asChild disabled={props.clients.length === 0}>
+            <Button>
+              {props.clients.length > 0
+                ? "Report time"
+                : "Create a client to report time"}
+            </Button>
+          </SheetTrigger>
+        )}
+        <SheetContent>
+          <SheetHeader>
+            <SheetTitle>Report time</SheetTitle>
+          </SheetHeader>
+          <div className="py-4">
+            <ReportTimeForm
+              clients={props.clients}
+              date={date}
+              afterSubmit={() => setOpen(false)}
+            />
+          </div>
+        </SheetContent>
+      </Sheet>
+
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle className="flex items-center gap-2">
+            <ExclamationTriangleIcon className="h-4 w-4" />
+            Warning
+          </AlertDialogTitle>
+          <AlertDialogDescription>
+            {`You're about to report time for a future date `}
+            <b>({dateStr})</b>.{` Are you sure you want to continue?`}
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>No, cancel</AlertDialogCancel>
+          <AlertDialogAction onClick={() => setOpen(true)}>
+            Yes, continue
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 }
