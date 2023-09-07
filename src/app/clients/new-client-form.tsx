@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { PlusIcon } from "@radix-ui/react-icons";
+import { Cross1Icon, PlusIcon } from "@radix-ui/react-icons";
 import type { FileWithPath } from "@uploadthing/react-dropzone";
 import { useDropzone } from "@uploadthing/react-dropzone";
 
@@ -37,7 +37,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "~/ui/sheet";
-import { createClient } from "./_actions";
+import { createClient, deleteImageFromUT } from "./_actions";
 import { createClientSchema } from "./_validators";
 
 export function NewClientForm(props: { afterSubmit?: () => void }) {
@@ -134,7 +134,25 @@ export function NewClientForm(props: { afterSubmit?: () => void }) {
               >
                 <input {...getInputProps()} />
                 {imageDataUrl ? (
-                  <img src={imageDataUrl} className="aspect-auto h-32" />
+                  <>
+                    <Button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        void deleteImageFromUT(form.getValues("image"));
+                        setImageDataUrl(null);
+                        form.setValue("image", undefined);
+                      }}
+                      size="icon"
+                      className={cn(
+                        "absolute right-2 top-2",
+                        isUploading && "hidden",
+                      )}
+                      variant="destructive"
+                    >
+                      <Cross1Icon className="h-2 w-2" />
+                    </Button>
+                    <img src={imageDataUrl} className="aspect-auto h-32" />
+                  </>
                 ) : (
                   <span className="flex h-32 items-center justify-center text-sm text-muted-foreground">
                     Drop or paste an image here, or click to select.

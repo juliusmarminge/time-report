@@ -2,6 +2,7 @@
 
 import { revalidateTag } from "next/cache";
 import { eq } from "drizzle-orm";
+import { utapi } from "uploadthing/server";
 import type { Input } from "valibot";
 import { parseAsync } from "valibot";
 
@@ -63,7 +64,23 @@ export async function updateClient(
 }
 
 export async function deleteClient(props: { id: number }) {
+  const [clientImage] = await db
+    .select({ image: client.image })
+    .from(client)
+    .where(eq(client.id, props.id));
   await db.delete(client).where(eq(client.id, props.id));
 
+  const imageKey = clientImage.image?.split("/f/")[1];
+  if (imageKey) {
+    await utapi.deleteFiles([imageKey]);
+  }
+
   revalidateTag("/");
+}
+
+export async function deleteImageFromUT(imageUrl: string | undefined) {
+  const imageKey = imageUrl?.split("/f/")[1];
+  if (imageKey) {
+    await utapi.deleteFiles([imageKey]);
+  }
 }
