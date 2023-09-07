@@ -40,13 +40,6 @@ import { createClient } from "./_actions";
 import { createClientSchema } from "./_validators";
 
 export function NewClientForm(props: { afterSubmit?: () => void }) {
-  console.log({
-    VC_ENV: process.env.VERCEL_ENV,
-    PUBLIC_VC_ENV: process.env.NEXT_PUBLIC_VERCEL_ENV,
-    VC_URL: process.env.VERCEL_URL,
-    PUBLIC_VC_URL: process.env.NEXT_PUBLIC_VERCEL_URL,
-  });
-
   const form = useForm({
     schema: createClientSchema,
     defaultValues: {
