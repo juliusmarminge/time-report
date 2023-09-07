@@ -29,7 +29,7 @@ export function Calendar(props: {
         } else {
           url.searchParams.delete("date");
         }
-        router.push(url.href);
+        router.push(url.href, { scroll: false });
       }}
       components={{
         Day: (props) => {
