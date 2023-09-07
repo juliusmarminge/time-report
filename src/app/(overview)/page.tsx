@@ -104,10 +104,10 @@ export default async function IndexPage(props: {
         <Button size="icon" variant="outline">
           <HamburgerMenuIcon className="h-5 w-5" />
         </Button>,
-        <Button>Close month</Button>,
+        <Button className="hidden sm:inline-flex">Close month</Button>,
       ]}
     >
-      <section className="flex gap-4 overflow-x-scroll sm:grid md:grid-cols-2 lg:grid-cols-4">
+      <section className="flex gap-4 overflow-x-scroll md:grid md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
@@ -144,7 +144,9 @@ export default async function IndexPage(props: {
           <CardContent>
             <div className="text-2xl font-bold">
               {billedClients}
-              <span className="ml-1 text-lg">billed this month</span>
+              <span className="ml-1 text-lg">
+                billed <span className="hidden sm:inline">this month</span>
+              </span>
             </div>
             <p className="text-xs text-muted-foreground">
               out of {clients.length} total clients

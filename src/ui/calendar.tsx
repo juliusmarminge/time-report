@@ -20,7 +20,7 @@ function Calendar({
       ISOWeek
       captionLayout="dropdown-buttons"
       showOutsideDays={showOutsideDays}
-      className={cn("p-3", className)}
+      className={cn("sm:p-3", className)}
       classNames={{
         months: "flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0",
         month: "space-y-4 w-full",
@@ -37,7 +37,6 @@ function Calendar({
         head_row: "flex",
         head_cell:
           "text-muted-foreground rounded-md flex-1 font-normal text-[0.8rem] text-left px-4",
-        // tbody: "overflow-y-scroll",
         row: "flex w-full mt-2",
         cell: cn(
           "relative flex-1 p-0 text-sm focus-within:relative focus-within:z-20 [&:has([aria-selected])]:bg-accent",
