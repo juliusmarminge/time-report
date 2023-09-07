@@ -147,11 +147,17 @@ function EditingTimeslotCard(props: {
             </div>
           </Label>
         </CardHeader>
-        <Button variant="ghost" size="icon" type="submit" className="ml-auto">
+        <Button
+          variant="ghost"
+          size="icon"
+          type="submit"
+          className="ml-auto"
+          onClick={updateSlot}
+        >
           {updating ? (
             <LoadingDots className="h-4 w-4" />
           ) : (
-            <CheckIcon className="h-4 w-4" onClick={updateSlot} />
+            <CheckIcon className="h-4 w-4" />
           )}
         </Button>
         <AlertDialog>
