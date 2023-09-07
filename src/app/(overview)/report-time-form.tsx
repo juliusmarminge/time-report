@@ -7,6 +7,7 @@ import { isFuture, parseISO } from "date-fns";
 
 import type { Client } from "~/db/getters";
 import { currencies } from "~/lib/currencies";
+import { useMobile } from "~/lib/use-mobile";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -206,6 +207,8 @@ export function ReportTimeForm(props: {
 }
 
 export function ReportTimeSheet(props: { clients: Client[] }) {
+  const isMobile = useMobile();
+
   const params = useSearchParams();
   const dateStr = params.get("date");
   const date = dateStr ? parseISO(`${dateStr}T00:00:00.000Z`) : undefined;
@@ -232,7 +235,7 @@ export function ReportTimeSheet(props: { clients: Client[] }) {
             </Button>
           </SheetTrigger>
         )}
-        <SheetContent side="rightOnDesktop">
+        <SheetContent side={isMobile ? "bottom" : "right"}>
           <SheetHeader>
             <SheetTitle>Report time</SheetTitle>
           </SheetHeader>

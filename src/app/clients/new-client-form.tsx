@@ -8,6 +8,7 @@ import { useDropzone } from "@uploadthing/react-dropzone";
 import { LoadingDots } from "~/components/loading-dots";
 import { currencies } from "~/lib/currencies";
 import { useUploadThing } from "~/lib/uploadthing";
+import { useMobile } from "~/lib/use-mobile";
 import { Button } from "~/ui/button";
 import {
   Form,
@@ -181,6 +182,7 @@ export function NewClientForm(props: { afterSubmit?: () => void }) {
 
 export function NewClientSheet() {
   const [open, setOpen] = useState(false);
+  const isMobile = useMobile();
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -189,7 +191,7 @@ export function NewClientSheet() {
           <PlusIcon className="h-5 w-5" />
         </Button>
       </SheetTrigger>
-      <SheetContent side="rightOnDesktop">
+      <SheetContent side={isMobile ? "bottom" : "right"}>
         <SheetHeader>
           <SheetTitle>Create a new client</SheetTitle>
         </SheetHeader>
