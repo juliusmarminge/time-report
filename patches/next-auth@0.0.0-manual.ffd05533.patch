@@ -1,0 +1,23 @@
+diff --git a/lib/index.js b/lib/index.js
+index 5a75f390e1ed59db192587176cf6fabd229cdf84..d123a9aea1b4d861ae78a23951e1feecf831c57c 100644
+--- a/lib/index.js
++++ b/lib/index.js
+@@ -9,17 +9,7 @@ async function getSession(headers, config) {
+         headers: { cookie: headers.get("cookie") ?? "" },
+     });
+     config.useSecureCookies ?? (config.useSecureCookies = origin.protocol === "https:");
+-    return Auth(request, {
+-        ...config,
+-        callbacks: {
+-            ...config.callbacks,
+-            // Since we are server-side, we don't need to filter out the session data
+-            // See https://nextjs.authjs.dev/v5#authenticating-server-side
+-            session({ session, user, token }) {
+-                return { ...session, user: user ?? token };
+-            },
+-        },
+-    });
++    return Auth(request, config);
+ }
+ function isReqWrapper(arg) {
+     return typeof arg === "function";

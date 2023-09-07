@@ -1,10 +1,11 @@
 "use client";
 
 import { ChevronRightIcon, ExitIcon } from "@radix-ui/react-icons";
+import type { Session } from "next-auth";
 import { signOut } from "next-auth/react";
 
-import type { Session } from "~/lib/auth";
 import { cn } from "~/lib/cn";
+import { setDefaultCurrency } from "~/lib/user-actions";
 import { Avatar, AvatarFallback, AvatarImage } from "~/ui/avatar";
 import { Button } from "~/ui/button";
 import {
@@ -59,19 +60,25 @@ export function SettingsMenu(props: {
               <span>Currency</span>
             </DropdownMenuSubTrigger>
             <DropdownMenuSubContent>
-              <DropdownMenuItem className="cursor-pointer">
-                USD
-                <span className="ml-auto font-bold">⋅</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem className="cursor-pointer">
-                EUR
-              </DropdownMenuItem>
-              <DropdownMenuItem className="cursor-pointer">
-                GBP
-              </DropdownMenuItem>
-              <DropdownMenuItem className="cursor-pointer">
-                SEK
-              </DropdownMenuItem>
+              {(["USD", "EUR", "GBP", "SEK"] as const).map((currency) => (
+                <DropdownMenuItem
+                  key={currency}
+                  className="cursor-pointer"
+                  onClick={async () => {
+                    await setDefaultCurrency(currency);
+                  }}
+                >
+                  {currency}
+                  <span
+                    className={cn(
+                      "ml-auto font-bold opacity-0",
+                      user?.defaultCurrency === currency && "opacity-100",
+                    )}
+                  >
+                    ⋅
+                  </span>
+                </DropdownMenuItem>
+              ))}
             </DropdownMenuSubContent>
           </DropdownMenuSub>
         </DropdownMenuGroup>

@@ -71,6 +71,9 @@ export const users = table("user", {
     fsp: 3,
   }).default(sql`CURRENT_TIMESTAMP(3)`),
   image: varchar("image", { length: 255 }),
+  defaultCurrency: varchar("currency", { length: 3 })
+    .$type<CurrencyCode>()
+    .default("USD"),
 });
 
 export const usersRelations = relations(users, ({ many }) => ({

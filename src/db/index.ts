@@ -4,7 +4,7 @@ import { drizzle } from "drizzle-orm/planetscale-serverless";
 
 import * as schema from "./schema";
 
-class MyLogger implements Logger {
+class _MyLogger implements Logger {
   logQuery(query: string, params: unknown[]): void {
     console.log("[DRIZZLE]", { query, params });
   }
@@ -16,6 +16,6 @@ export const db = drizzle(
   }).connection(),
   {
     schema,
-    logger: new MyLogger(),
+    // logger: new _MyLogger(),
   },
 );

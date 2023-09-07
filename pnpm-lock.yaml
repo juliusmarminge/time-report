@@ -8,6 +8,12 @@ overrides:
   '@auth/core': 0.13.0
 
 patchedDependencies:
+  '@auth/core@0.13.0':
+    hash: xlhhr6abzcjl62zfmq2vgusw7i
+    path: patches/@auth__core@0.13.0.patch
+  next-auth@0.0.0-manual.ffd05533:
+    hash: b6wlhusw33vehysbuyinffvx7i
+    path: patches/next-auth@0.0.0-manual.ffd05533.patch
   next@13.4.20-canary.16:
     hash: rw3y3iksha6gzwdsglwgfnhyqi
     path: patches/next@13.4.20-canary.16.patch
@@ -15,7 +21,7 @@ patchedDependencies:
 dependencies:
   '@auth/core':
     specifier: 0.13.0
-    version: 0.13.0
+    version: 0.13.0(patch_hash=xlhhr6abzcjl62zfmq2vgusw7i)
   '@auth/drizzle-adapter':
     specifier: ^0.3.2
     version: 0.3.2
@@ -87,7 +93,7 @@ dependencies:
     version: 13.4.20-canary.16(patch_hash=rw3y3iksha6gzwdsglwgfnhyqi)(@babel/core@7.22.10)(react-dom@18.2.0)(react@18.2.0)
   next-auth:
     specifier: 0.0.0-manual.ffd05533
-    version: 0.0.0-manual.ffd05533(next@13.4.20-canary.16)(react@18.2.0)
+    version: 0.0.0-manual.ffd05533(patch_hash=b6wlhusw33vehysbuyinffvx7i)(next@13.4.20-canary.16)(react@18.2.0)
   next-themes:
     specifier: ^0.2.1
     version: 0.2.1(next@13.4.20-canary.16)(react-dom@18.2.0)(react@18.2.0)
@@ -202,7 +208,7 @@ packages:
       '@jridgewell/gen-mapping': 0.3.3
       '@jridgewell/trace-mapping': 0.3.19
 
-  /@auth/core@0.13.0:
+  /@auth/core@0.13.0(patch_hash=xlhhr6abzcjl62zfmq2vgusw7i):
     resolution: {integrity: sha512-StjrzUenaKfMr68kmvhiqfY0xvxRvg8wllmem9JAULpPAAAt3uwRUDXICWOP/PfWB4OZ2wQT7rgfm0n42b+Mjg==}
     peerDependencies:
       nodemailer: ^6.8.0
@@ -217,11 +223,12 @@ packages:
       preact: 10.11.3
       preact-render-to-string: 5.2.3(preact@10.11.3)
     dev: false
+    patched: true
 
   /@auth/drizzle-adapter@0.3.2:
     resolution: {integrity: sha512-fHfzwaTomm/RKgFKBO5AJ8JTfR44rX1KX2ASaKRk+4jvVhDh9FCir5BV1Fv68b5ay7XBo9DtcNSQuZp4hbpLYw==}
     dependencies:
-      '@auth/core': 0.13.0
+      '@auth/core': 0.13.0(patch_hash=xlhhr6abzcjl62zfmq2vgusw7i)
     transitivePeerDependencies:
       - nodemailer
     dev: false
@@ -3688,7 +3695,7 @@ packages:
     resolution: {integrity: sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==}
     dev: true
 
-  /next-auth@0.0.0-manual.ffd05533(next@13.4.20-canary.16)(react@18.2.0):
+  /next-auth@0.0.0-manual.ffd05533(patch_hash=b6wlhusw33vehysbuyinffvx7i)(next@13.4.20-canary.16)(react@18.2.0):
     resolution: {integrity: sha512-oTdpOP93rzABms/Qgp3z0udQG3tCZ3JxOCnwU04xLgX/xnC8+HuDHct7IcEpz+zxhZp6jxN0tdVkMCs5kubUfw==}
     peerDependencies:
       next: ^13.4.13
@@ -3698,10 +3705,11 @@ packages:
       nodemailer:
         optional: true
     dependencies:
-      '@auth/core': 0.13.0
+      '@auth/core': 0.13.0(patch_hash=xlhhr6abzcjl62zfmq2vgusw7i)
       next: 13.4.20-canary.16(patch_hash=rw3y3iksha6gzwdsglwgfnhyqi)(@babel/core@7.22.10)(react-dom@18.2.0)(react@18.2.0)
       react: 18.2.0
     dev: false
+    patched: true
 
   /next-themes@0.2.1(next@13.4.20-canary.16)(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-B+AKNfYNIzh0vqQQKqQItTS8evEouKD7H5Hj3kmuPERwddR2TxvDSFZuTj6T7Jfn1oyeUyJMydPl1Bkxkh0W7A==}
