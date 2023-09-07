@@ -91,6 +91,13 @@ export function NewClientForm(props: { afterSubmit?: () => void }) {
     };
   }, [onDrop]);
 
+  async function handleImageDelete(e: React.MouseEvent<HTMLButtonElement>) {
+    e.stopPropagation();
+    await deleteImageFromUT(form.getValues("image"));
+    setImageDataUrl(null);
+    form.setValue("image", undefined);
+  }
+
   return (
     <Form {...form}>
       <form
@@ -136,12 +143,7 @@ export function NewClientForm(props: { afterSubmit?: () => void }) {
                 {imageDataUrl ? (
                   <>
                     <Button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        void deleteImageFromUT(form.getValues("image"));
-                        setImageDataUrl(null);
-                        form.setValue("image", undefined);
-                      }}
+                      onClick={handleImageDelete}
                       size="icon"
                       className={cn(
                         "absolute right-2 top-2",
