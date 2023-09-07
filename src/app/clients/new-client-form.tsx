@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { PlusIcon } from "@radix-ui/react-icons";
 import type { FileWithPath } from "@uploadthing/react-dropzone";
 import { useDropzone } from "@uploadthing/react-dropzone";
@@ -72,6 +72,25 @@ export function NewClientForm(props: { afterSubmit?: () => void }) {
     maxFiles: 1,
   });
 
+  useEffect(() => {
+    const handlePaste = (event: ClipboardEvent) => {
+      if ((event.target as HTMLElement).tagName === "INPUT") {
+        // Don't override the default paste behavior in inputs
+        return;
+      }
+      const file = event.clipboardData?.items[0];
+      if (file?.type.startsWith("image/")) {
+        const asFile = file.getAsFile();
+        asFile && onDrop([asFile]);
+      }
+    };
+
+    window.addEventListener("paste", handlePaste);
+    return () => {
+      window.removeEventListener("paste", handlePaste);
+    };
+  }, [onDrop]);
+
   return (
     <Form {...form}>
       <form
@@ -87,7 +106,7 @@ export function NewClientForm(props: { afterSubmit?: () => void }) {
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Name</FormLabel>
+              <FormLabel>Name *</FormLabel>
               <FormDescription>The name of the client.</FormDescription>
               <FormControl>
                 <Input {...field} />
@@ -118,7 +137,7 @@ export function NewClientForm(props: { afterSubmit?: () => void }) {
                   <img src={imageDataUrl} className="aspect-auto h-32" />
                 ) : (
                   <span className="flex h-32 items-center justify-center text-sm text-muted-foreground">
-                    Drop an image here, or click to select
+                    Drop or paste an image here, or click to select.
                   </span>
                 )}
                 {isUploading && (
@@ -195,7 +214,10 @@ export function NewClientSheet() {
           <PlusIcon className="h-5 w-5" />
         </Button>
       </SheetTrigger>
-      <SheetContent side={isMobile ? "bottom" : "right"}>
+      <SheetContent
+        side={isMobile ? "bottom" : "right"}
+        onOpenAutoFocus={(e) => e.preventDefault()}
+      >
         <SheetHeader>
           <SheetTitle>Create a new client</SheetTitle>
         </SheetHeader>
