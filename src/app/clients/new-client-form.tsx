@@ -79,7 +79,7 @@ export function NewClientForm(props: { afterSubmit?: () => void }) {
         return;
       }
       const file = event.clipboardData?.items[0];
-      if (file?.type.startsWith("image/")) {
+      if (file?.type?.startsWith("image/")) {
         const asFile = file.getAsFile();
         asFile && onDrop([asFile]);
       }
