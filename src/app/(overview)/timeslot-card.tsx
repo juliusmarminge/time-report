@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import { CheckIcon, Pencil1Icon, TrashIcon } from "@radix-ui/react-icons";
 import type { Dinero } from "dinero.js";
 import { dinero, toDecimal } from "dinero.js";
@@ -93,7 +93,7 @@ function EditingTimeslotCard(props: {
   const [updating, setUpdating] = useState(false);
   const [deleting, setDeleting] = useState(false);
 
-  const updateSlot = useCallback(async () => {
+  const updateSlot = async () => {
     setUpdating(true);
     await updateTimeslot(props.slot.id, {
       duration: editingDuration,
@@ -102,7 +102,7 @@ function EditingTimeslotCard(props: {
     });
     setUpdating(false);
     props.setIsEditing(false);
-  }, [editingChargeRate, editingCurrency, editingDuration, props.slot]);
+  };
 
   return (
     <Card>

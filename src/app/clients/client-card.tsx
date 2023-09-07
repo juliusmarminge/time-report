@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import { CheckIcon, Pencil1Icon, TrashIcon } from "@radix-ui/react-icons";
 import { format } from "date-fns";
 import type { Dinero } from "dinero.js";
@@ -103,7 +103,7 @@ function EditingClientCard(props: {
   );
   const [editingCurrency, setEditingCurrency] = useState<string>(client.curr);
 
-  const updateClientInfo = useCallback(async () => {
+  const updateClientInfo = async () => {
     setUpdating(true);
     await updateClient(props.client.id, {
       name: editingName,
@@ -112,7 +112,7 @@ function EditingClientCard(props: {
     });
     setUpdating(false);
     props.setIsEditing(false);
-  }, [editingName, editingChargeRate, editingCurrency, props.client]);
+  };
 
   return (
     <Card>
