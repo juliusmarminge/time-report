@@ -6,6 +6,7 @@ import type { FileWithPath } from "@uploadthing/react-dropzone";
 import { useDropzone } from "@uploadthing/react-dropzone";
 
 import { LoadingDots } from "~/components/loading-dots";
+import { cn } from "~/lib/cn";
 import { currencies } from "~/lib/currencies";
 import { useUploadThing } from "~/lib/uploadthing";
 import { useMobile } from "~/lib/use-mobile";
@@ -65,7 +66,7 @@ export function NewClientForm(props: { afterSubmit?: () => void }) {
     reader.readAsDataURL(files[0]);
   }, []);
 
-  const { getRootProps, getInputProps } = useDropzone({
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     accept: { "image/*": [] },
     maxFiles: 1,
@@ -107,7 +108,10 @@ export function NewClientForm(props: { afterSubmit?: () => void }) {
               </FormDescription>
               <div
                 {...getRootProps()}
-                className="relative flex items-center justify-center border border-dashed"
+                className={cn(
+                  "relative flex items-center justify-center border border-dashed",
+                  isDragActive && "border-primary",
+                )}
               >
                 <input {...getInputProps()} />
                 {imageDataUrl ? (
