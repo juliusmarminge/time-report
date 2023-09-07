@@ -73,7 +73,8 @@ export const users = table("user", {
   image: varchar("image", { length: 255 }),
   defaultCurrency: varchar("currency", { length: 3 })
     .$type<CurrencyCode>()
-    .default("USD"),
+    .default("USD")
+    .notNull(),
 });
 
 export const usersRelations = relations(users, ({ many }) => ({

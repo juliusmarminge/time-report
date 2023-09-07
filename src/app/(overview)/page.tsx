@@ -7,6 +7,7 @@ import { add, dinero, multiply, toDecimal } from "dinero.js";
 import type { Client, Timeslot } from "~/db/getters";
 import { getClients, getTimeslots } from "~/db/getters";
 import { currentUser } from "~/lib/auth";
+import type { CurrencyCode } from "~/lib/currencies";
 import { createConverter, currencies, formatMoney } from "~/lib/currencies";
 import { Button } from "~/ui/button";
 import {
@@ -23,40 +24,42 @@ import { TimeslotCard } from "./timeslot-card";
 
 export const runtime = "edge";
 
-const getMonthMetadata = cache(async (slots: Timeslot[]) => {
-  const billedClients = new Set(slots.map((slot) => slot.clientId)).size;
+const getMonthMetadata = cache(
+  async (slots: Timeslot[], currency: CurrencyCode) => {
+    const billedClients = new Set(slots.map((slot) => slot.clientId)).size;
 
-  const totalHours = slots.reduce((acc, slot) => {
-    return acc + Number(slot.duration);
-  }, 0);
+    const totalHours = slots.reduce((acc, slot) => {
+      return acc + Number(slot.duration);
+    }, 0);
 
-  const convert = await createConverter();
-  const totalRevenue = slots.reduce(
-    (acc, slot) => {
-      const dineroObject = dinero({
-        amount: slot.chargeRate,
-        currency: currencies[slot.currency],
-      });
-      const inUSD = convert(dineroObject, "USD");
+    const convert = await createConverter();
+    const totalRevenue = slots.reduce(
+      (acc, slot) => {
+        const dineroObject = dinero({
+          amount: slot.chargeRate,
+          currency: currencies[slot.currency],
+        });
+        const inDefaultCurrency = convert(dineroObject, currency);
 
-      // console.log({
-      //   dineroObject: dineroObject.toJSON(),
-      //   dineroObjectAmount: toDecimal(dineroObject, formatMoney),
-      //   inUSD: inUSD.toJSON(),
-      //   inUSDAmount: toDecimal(inUSD, formatMoney),
-      // });
+        // console.log({
+        //   dineroObject: dineroObject.toJSON(),
+        //   dineroObjectAmount: toDecimal(dineroObject, formatMoney),
+        //   inUSD: inUSD.toJSON(),
+        //   inUSDAmount: toDecimal(inUSD, formatMoney),
+        // });
 
-      return add(acc, multiply(inUSD, Number(slot.duration)));
-    },
-    dinero({ amount: 0, currency: currencies.USD }),
-  );
+        return add(acc, multiply(inDefaultCurrency, Number(slot.duration)));
+      },
+      dinero({ amount: 0, currency: currencies[currency] }),
+    );
 
-  return {
-    billedClients,
-    totalHours,
-    totalRevenue,
-  };
-});
+    return {
+      billedClients,
+      totalHours,
+      totalRevenue,
+    };
+  },
+);
 
 export default async function IndexPage(props: {
   searchParams: { date?: string };
@@ -78,8 +81,10 @@ export default async function IndexPage(props: {
   });
   console.timeEnd("getTimeslots");
 
-  const { billedClients, totalHours, totalRevenue } =
-    await getMonthMetadata(timeslots);
+  const { billedClients, totalHours, totalRevenue } = await getMonthMetadata(
+    timeslots,
+    user.defaultCurrency,
+  );
 
   const slotsByDate = timeslots.reduce<Record<string, Timeslot[]>>(
     (acc, slot) => {
@@ -153,14 +158,22 @@ export default async function IndexPage(props: {
             </p>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="bg-muted">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
               Estimated income
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">$28,750</div>
+            <div className="text-2xl font-bold">
+              {toDecimal(
+                dinero({
+                  amount: 2375000,
+                  currency: currencies[user.defaultCurrency],
+                }),
+                formatMoney,
+              )}
+            </div>
             <p className="text-xs text-muted-foreground">
               after fees and taxes
             </p>
@@ -171,7 +184,12 @@ export default async function IndexPage(props: {
       <section className="flex flex-col gap-4 sm:grid md:grid-cols-2 lg:grid-cols-4">
         <Calendar date={date} timeslots={slotsByDate} />
 
-        <SidePanel date={date} clients={clients} timeslots={selectedDaySlots} />
+        <SidePanel
+          date={date}
+          clients={clients}
+          timeslots={selectedDaySlots}
+          currency={user.defaultCurrency}
+        />
       </section>
     </DashboardShell>
   );
@@ -181,6 +199,7 @@ async function SidePanel(props: {
   date?: Date;
   clients: Client[];
   timeslots: Timeslot[];
+  currency: CurrencyCode;
 }) {
   if (!props.date) {
     return (
@@ -197,7 +216,10 @@ async function SidePanel(props: {
     );
   }
 
-  const { totalRevenue, totalHours } = await getMonthMetadata(props.timeslots);
+  const { totalRevenue, totalHours } = await getMonthMetadata(
+    props.timeslots,
+    props.currency,
+  );
 
   return (
     <Card>
