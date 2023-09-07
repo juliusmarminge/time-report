@@ -3,6 +3,9 @@ import * as dineroCurrencies from "@dinero.js/currencies";
 import type { Dinero, Rates } from "dinero.js";
 import { convert } from "dinero.js";
 
+import type { FixerResponse } from "~/app/api/currencies/route";
+import { BASE_URL } from "./constants";
+
 // @ts-expect-error - Module Augmentation doesn't seem to work.. Want the base as number, not number | number[]
 export const currencies: Record<CurrencyCode, Currency> = dineroCurrencies;
 
@@ -24,14 +27,9 @@ export interface Currency {
 }
 
 export const createConverter = cache(async () => {
-  const ratesWithEurAsBase = (
-    (await (
-      await fetch(
-        `http://data.fixer.io/api/latest?access_key=${process.env.FIXER_API_KEY}`,
-      )
-    ).json()) as { base: string; rates: Record<string, number> }
-  ).rates;
-  await Promise.resolve();
+  const ratesWithEurAsBase = await fetch(new URL("/api/currencies", BASE_URL), {
+    headers: (await import("next/headers")).headers(),
+  }).then((r) => r.json() as Promise<FixerResponse["rates"]>);
 
   return (dineroObject: Dinero<number>, newCurrency: CurrencyCode) => {
     // Flip the rate so that the base is in the desired base currency
