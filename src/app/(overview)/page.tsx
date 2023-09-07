@@ -108,7 +108,7 @@ export default async function IndexPage(props: {
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="w-max md:w-auto">
             <div className="text-2xl font-bold">
               {toDecimal(totalRevenue, formatMoney)}
             </div>
@@ -121,7 +121,7 @@ export default async function IndexPage(props: {
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Billed time</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="w-max md:w-auto">
             <div className="text-2xl font-bold">
               {totalHours}
               <span className="ml-1 text-lg">hours</span>
@@ -137,12 +137,10 @@ export default async function IndexPage(props: {
               Active Clients
             </CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="w-max md:w-auto">
             <div className="text-2xl font-bold">
               {billedClients}
-              <span className="ml-1 text-lg">
-                billed <span className="hidden sm:inline">this month</span>
-              </span>
+              <span className="ml-1 text-lg">billed this month</span>
             </div>
             <p className="text-xs text-muted-foreground">
               out of {clients.length} total clients
@@ -155,7 +153,7 @@ export default async function IndexPage(props: {
               Estimated income
             </CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="w-max md:w-auto">
             <div className="text-2xl font-bold">
               {toDecimal(
                 dinero({
