@@ -39,16 +39,11 @@ const getMonthMetadata = cache(
           amount: slot.chargeRate,
           currency: currencies[slot.currency],
         });
-        const inDefaultCurrency = convert(dineroObject, currency);
 
-        // console.log({
-        //   dineroObject: dineroObject.toJSON(),
-        //   dineroObjectAmount: toDecimal(dineroObject, formatMoney),
-        //   inUSD: inUSD.toJSON(),
-        //   inUSDAmount: toDecimal(inUSD, formatMoney),
-        // });
-
-        return add(acc, multiply(inDefaultCurrency, Number(slot.duration)));
+        return add(
+          acc,
+          multiply(convert(dineroObject, currency), parseFloat(slot.duration)),
+        );
       },
       dinero({ amount: 0, currency: currencies[currency] }),
     );
@@ -71,15 +66,11 @@ export default async function IndexPage(props: {
     ? parseISO(`${props.searchParams.date}T00:00:00.000Z`)
     : undefined;
 
-  console.time("getClients");
   const clients = await getClients();
-  console.timeEnd("getClients");
 
-  console.time("getTimeslots");
   const timeslots = await getTimeslots(date ? startOfMonth(date) : new Date(), {
     mode: "month",
   });
-  console.timeEnd("getTimeslots");
 
   const { billedClients, totalHours, totalRevenue } = await getMonthMetadata(
     timeslots,
