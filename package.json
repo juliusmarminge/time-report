@@ -82,7 +82,8 @@
     "patchedDependencies": {
       "next@13.4.20-canary.16": "patches/next@13.4.20-canary.16.patch",
       "next-auth@0.0.0-manual.ffd05533": "patches/next-auth@0.0.0-manual.ffd05533.patch",
-      "@auth/core@0.13.0": "patches/@auth__core@0.13.0.patch"
+      "@auth/core@0.13.0": "patches/@auth__core@0.13.0.patch",
+      "@auth/drizzle-adapter@0.3.2": "patches/@auth__drizzle-adapter@0.3.2.patch"
     }
   }
 }

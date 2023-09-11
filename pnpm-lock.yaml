@@ -11,6 +11,9 @@ patchedDependencies:
   '@auth/core@0.13.0':
     hash: xlhhr6abzcjl62zfmq2vgusw7i
     path: patches/@auth__core@0.13.0.patch
+  '@auth/drizzle-adapter@0.3.2':
+    hash: dzmhftpvujf22l2eitw4jg5maq
+    path: patches/@auth__drizzle-adapter@0.3.2.patch
   next-auth@0.0.0-manual.ffd05533:
     hash: b6wlhusw33vehysbuyinffvx7i
     path: patches/next-auth@0.0.0-manual.ffd05533.patch
@@ -24,7 +27,7 @@ dependencies:
     version: 0.13.0(patch_hash=xlhhr6abzcjl62zfmq2vgusw7i)
   '@auth/drizzle-adapter':
     specifier: ^0.3.2
-    version: 0.3.2
+    version: 0.3.2(patch_hash=dzmhftpvujf22l2eitw4jg5maq)
   '@dinero.js/currencies':
     specifier: 2.0.0-alpha.14
     version: 2.0.0-alpha.14
@@ -225,13 +228,14 @@ packages:
     dev: false
     patched: true
 
-  /@auth/drizzle-adapter@0.3.2:
+  /@auth/drizzle-adapter@0.3.2(patch_hash=dzmhftpvujf22l2eitw4jg5maq):
     resolution: {integrity: sha512-fHfzwaTomm/RKgFKBO5AJ8JTfR44rX1KX2ASaKRk+4jvVhDh9FCir5BV1Fv68b5ay7XBo9DtcNSQuZp4hbpLYw==}
     dependencies:
       '@auth/core': 0.13.0(patch_hash=xlhhr6abzcjl62zfmq2vgusw7i)
     transitivePeerDependencies:
       - nodemailer
     dev: false
+    patched: true
 
   /@babel/code-frame@7.22.10:
     resolution: {integrity: sha512-/KKIMG4UEL35WmI9OlvMhurwtytjvXoFcGNrOvyG9zIzA8YmPjVtIZUf7b05+TPO7G7/GEmLHDaoCgACHl9hhA==}

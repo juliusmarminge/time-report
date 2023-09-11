@@ -1,0 +1,355 @@
+diff --git a/index.d.ts b/index.d.ts
+index 00166e5af335aa4fd4c4683be4f27180b7dffba0..18855358e262991b59fc54dc72b6ce4a9b1a5d83 100644
+--- a/index.d.ts
++++ b/index.d.ts
+@@ -15,7 +15,7 @@
+  *
+  * @module @auth/drizzle-adapter
+  */
+-import { SqlFlavorOptions, TableFn } from "./lib/utils.js";
++import { ClientFlavors, SqlFlavorOptions, TableFn } from "./lib/utils.js";
+ import type { Adapter } from "@auth/core/adapters";
+ /**
+  * Add the adapter to your `pages/api/[...nextauth].ts` next-auth configuration object.
+@@ -241,5 +241,5 @@ import type { Adapter } from "@auth/core/adapters";
+  * ---
+  *
+  **/
+-export declare function DrizzleAdapter<SqlFlavor extends SqlFlavorOptions>(db: SqlFlavor, table?: TableFn<SqlFlavor>): Adapter;
++export declare function DrizzleAdapter<SqlFlavor extends SqlFlavorOptions>(db: SqlFlavor, tableFnOrTables?: TableFn<SqlFlavor> | Partial<ClientFlavors<SqlFlavor>>): Adapter;
+ //# sourceMappingURL=index.d.ts.map
+\ No newline at end of file
+diff --git a/index.d.ts.map b/index.d.ts.map
+index 4be6d6382a5b69824fdca504473fd82c080147d4..1a66ccf79b6b337b265483b3114f7fc5121fad88 100644
+--- a/index.d.ts.map
++++ b/index.d.ts.map
+@@ -1 +1 @@
+-{"version":3,"file":"index.d.ts","sourceRoot":"","sources":["src/index.ts"],"names":[],"mappings":"AAAA;;;;;;;;;;;;;;;;GAgBG;AAQH,OAAO,EAAE,gBAAgB,EAAE,OAAO,EAAE,MAAM,gBAAgB,CAAA;AAG1D,OAAO,KAAK,EAAE,OAAO,EAAE,MAAM,qBAAqB,CAAA;AAElD;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;IA+NI;AACJ,wBAAgB,cAAc,CAAC,SAAS,SAAS,gBAAgB,EAC/D,EAAE,EAAE,SAAS,EACb,KAAK,CAAC,EAAE,OAAO,CAAC,SAAS,CAAC,GACzB,OAAO,CAYT"}
+\ No newline at end of file
++{"version":3,"file":"index.d.ts","sourceRoot":"","sources":["src/index.ts"],"names":[],"mappings":"AAAA;;;;;;;;;;;;;;;;GAgBG;AAQH,OAAO,EACL,aAAa,EAEb,gBAAgB,EAChB,OAAO,EACR,MAAM,gBAAgB,CAAA;AAGvB,OAAO,KAAK,EAAE,OAAO,EAAE,MAAM,qBAAqB,CAAA;AAElD;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;IA+NI;AACJ,wBAAgB,cAAc,CAAC,SAAS,SAAS,gBAAgB,EAC/D,EAAE,EAAE,SAAS,EACb,eAAe,CAAC,EAAE,OAAO,CAAC,SAAS,CAAC,GAAG,OAAO,CAAC,aAAa,CAAC,SAAS,CAAC,CAAC,GACvE,OAAO,CAqBT"}
+\ No newline at end of file
+diff --git a/index.js b/index.js
+index ebe29a9c6ab9303bbf83535ddbf7b403b443275c..48f4761cb8368d79e0c91684eb647e8a2f82e0af 100644
+--- a/index.js
++++ b/index.js
+@@ -246,15 +246,15 @@ import { is } from "drizzle-orm";
+  * ---
+  *
+  **/
+-export function DrizzleAdapter(db, table) {
++export function DrizzleAdapter(db, tableFnOrTables) {
+     if (is(db, MySqlDatabase)) {
+-        return mySqlDrizzleAdapter(db, table);
++        return mySqlDrizzleAdapter(db, tableFnOrTables);
+     }
+     else if (is(db, PgDatabase)) {
+-        return pgDrizzleAdapter(db, table);
++        return pgDrizzleAdapter(db, tableFnOrTables);
+     }
+     else if (is(db, BaseSQLiteDatabase)) {
+-        return SQLiteDrizzleAdapter(db, table);
++        return SQLiteDrizzleAdapter(db, tableFnOrTables);
+     }
+     throw new Error(`Unsupported database type (${typeof db}) in Auth.js Drizzle adapter.`);
+ }
+diff --git a/lib/mysql.d.ts b/lib/mysql.d.ts
+index b1f64e93fffee283104ebc7721710af2ef329400..375f43c3aa5fc1df921177dfa5f56868f1d932db 100644
+--- a/lib/mysql.d.ts
++++ b/lib/mysql.d.ts
+@@ -1,5 +1,6 @@
+ import { MySqlTableFn, MySqlDatabase } from "drizzle-orm/mysql-core";
+ import type { Adapter } from "@auth/core/adapters";
++import { MinimumSchema } from "./utils";
+ export declare function createTables(mySqlTable: MySqlTableFn): {
+     users: import("drizzle-orm/select.types.d-b947a018").aw<{
+         name: "user";
+@@ -221,5 +222,5 @@ export declare function createTables(mySqlTable: MySqlTableFn): {
+     }>;
+ };
+ export type DefaultSchema = ReturnType<typeof createTables>;
+-export declare function mySqlDrizzleAdapter(client: InstanceType<typeof MySqlDatabase>, tableFn?: MySqlTableFn<undefined>): Adapter;
++export declare function mySqlDrizzleAdapter(client: InstanceType<typeof MySqlDatabase>, tableFnOrTables?: MySqlTableFn | Partial<MinimumSchema["mysql"]>): Adapter;
+ //# sourceMappingURL=mysql.d.ts.map
+\ No newline at end of file
+diff --git a/lib/mysql.d.ts.map b/lib/mysql.d.ts.map
+index 756db3ac959ab79c99663461ea63da78ab34418b..793831818a23604892c4f9e49588fecf97a5d22a 100644
+--- a/lib/mysql.d.ts.map
++++ b/lib/mysql.d.ts.map
+@@ -1 +1 @@
+-{"version":3,"file":"mysql.d.ts","sourceRoot":"","sources":["../src/lib/mysql.ts"],"names":[],"mappings":"AACA,OAAO,EAML,YAAY,EACZ,aAAa,EACd,MAAM,wBAAwB,CAAA;AAE/B,OAAO,KAAK,EAAE,OAAO,EAAkB,MAAM,qBAAqB,CAAA;AAElE,wBAAgB,YAAY,CAAC,UAAU,EAAE,YAAY;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;EA6DpD;AAED,MAAM,MAAM,aAAa,GAAG,UAAU,CAAC,OAAO,YAAY,CAAC,CAAA;AAE3D,wBAAgB,mBAAmB,CACjC,MAAM,EAAE,YAAY,CAAC,OAAO,aAAa,CAAC,EAC1C,OAAO,0BAAsB,GAC5B,OAAO,CAsLT"}
+\ No newline at end of file
++{"version":3,"file":"mysql.d.ts","sourceRoot":"","sources":["../src/lib/mysql.ts"],"names":[],"mappings":"AACA,OAAO,EAML,YAAY,EACZ,aAAa,EACd,MAAM,wBAAwB,CAAA;AAE/B,OAAO,KAAK,EAAE,OAAO,EAAkB,MAAM,qBAAqB,CAAA;AAClE,OAAO,EAAE,aAAa,EAAE,MAAM,SAAS,CAAA;AAEvC,wBAAgB,YAAY,CAAC,UAAU,EAAE,YAAY;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;EA6DpD;AAED,MAAM,MAAM,aAAa,GAAG,UAAU,CAAC,OAAO,YAAY,CAAC,CAAA;AAE3D,wBAAgB,mBAAmB,CACjC,MAAM,EAAE,YAAY,CAAC,OAAO,aAAa,CAAC,EAC1C,eAAe,CAAC,EAAE,YAAY,GAAG,OAAO,CAAC,aAAa,CAAC,OAAO,CAAC,CAAC,GAC/D,OAAO,CA6LT"}
+\ No newline at end of file
+diff --git a/lib/mysql.js b/lib/mysql.js
+index 01d0102e6fdf7454e7b71ef85e82098da0a17a50..8e21caae5211822ce5ba190329d9a7237e0541bf 100644
+--- a/lib/mysql.js
++++ b/lib/mysql.js
+@@ -50,8 +50,14 @@ export function createTables(mySqlTable) {
+     }));
+     return { users, accounts, sessions, verificationTokens };
+ }
+-export function mySqlDrizzleAdapter(client, tableFn = defaultMySqlTableFn) {
+-    const { users, accounts, sessions, verificationTokens } = createTables(tableFn);
++export function mySqlDrizzleAdapter(client, tableFnOrTables) {
++    const defaultTables = createTables(typeof tableFnOrTables === "function"
++        ? tableFnOrTables
++        : defaultMySqlTableFn);
++    const { users, accounts, sessions, verificationTokens } = {
++        ...defaultTables,
++        ...(typeof tableFnOrTables === "object" ? tableFnOrTables : {}),
++    };
+     return {
+         async createUser(data) {
+             const id = crypto.randomUUID();
+diff --git a/lib/pg.d.ts b/lib/pg.d.ts
+index 1d710fad8fbc1e9bbe2b2618c5306f7210ca716b..46c34769902727ba40937682bb567dbe7bd64c3f 100644
+--- a/lib/pg.d.ts
++++ b/lib/pg.d.ts
+@@ -1,5 +1,6 @@
+ import { PgTableFn, PgDatabase } from "drizzle-orm/pg-core";
+ import type { Adapter } from "@auth/core/adapters";
++import { MinimumSchema } from "./utils";
+ export declare function createTables(pgTable: PgTableFn): {
+     users: import("drizzle-orm/db.d-b9835153").az<{
+         name: "user";
+@@ -221,5 +222,5 @@ export declare function createTables(pgTable: PgTableFn): {
+     }>;
+ };
+ export type DefaultSchema = ReturnType<typeof createTables>;
+-export declare function pgDrizzleAdapter(client: InstanceType<typeof PgDatabase>, tableFn?: PgTableFn<undefined>): Adapter;
++export declare function pgDrizzleAdapter(client: InstanceType<typeof PgDatabase>, tableFnOrTables?: PgTableFn | Partial<MinimumSchema["pg"]>): Adapter;
+ //# sourceMappingURL=pg.d.ts.map
+\ No newline at end of file
+diff --git a/lib/pg.d.ts.map b/lib/pg.d.ts.map
+index 5facc408a0b320fe546443f4c9e02dfe637b3699..fdd08a806d490299c13bbabea0baf19fe3902a2b 100644
+--- a/lib/pg.d.ts.map
++++ b/lib/pg.d.ts.map
+@@ -1 +1 @@
+-{"version":3,"file":"pg.d.ts","sourceRoot":"","sources":["../src/lib/pg.ts"],"names":[],"mappings":"AACA,OAAO,EAML,SAAS,EACT,UAAU,EACX,MAAM,qBAAqB,CAAA;AAE5B,OAAO,KAAK,EAAE,OAAO,EAAkB,MAAM,qBAAqB,CAAA;AAElE,wBAAgB,YAAY,CAAC,OAAO,EAAE,SAAS;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;EAoD9C;AAED,MAAM,MAAM,aAAa,GAAG,UAAU,CAAC,OAAO,YAAY,CAAC,CAAA;AAE3D,wBAAgB,gBAAgB,CAC9B,MAAM,EAAE,YAAY,CAAC,OAAO,UAAU,CAAC,EACvC,OAAO,uBAAmB,GACzB,OAAO,CAgKT"}
+\ No newline at end of file
++{"version":3,"file":"pg.d.ts","sourceRoot":"","sources":["../src/lib/pg.ts"],"names":[],"mappings":"AACA,OAAO,EAML,SAAS,EACT,UAAU,EACX,MAAM,qBAAqB,CAAA;AAE5B,OAAO,KAAK,EAAE,OAAO,EAAkB,MAAM,qBAAqB,CAAA;AAClE,OAAO,EAAE,aAAa,EAAE,MAAM,SAAS,CAAA;AAEvC,wBAAgB,YAAY,CAAC,OAAO,EAAE,SAAS;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;EAoD9C;AAED,MAAM,MAAM,aAAa,GAAG,UAAU,CAAC,OAAO,YAAY,CAAC,CAAA;AAE3D,wBAAgB,gBAAgB,CAC9B,MAAM,EAAE,YAAY,CAAC,OAAO,UAAU,CAAC,EACvC,eAAe,CAAC,EAAE,SAAS,GAAG,OAAO,CAAC,aAAa,CAAC,IAAI,CAAC,CAAC,GACzD,OAAO,CAqKT"}
+\ No newline at end of file
+diff --git a/lib/pg.js b/lib/pg.js
+index f3d333f0ba5ab12c807f507b7b52925a0489b136..1e79cdeb8dfbdbc0711676b31119ac4cccf5c9a1 100644
+--- a/lib/pg.js
++++ b/lib/pg.js
+@@ -41,8 +41,12 @@ export function createTables(pgTable) {
+     }));
+     return { users, accounts, sessions, verificationTokens };
+ }
+-export function pgDrizzleAdapter(client, tableFn = defaultPgTableFn) {
+-    const { users, accounts, sessions, verificationTokens } = createTables(tableFn);
++export function pgDrizzleAdapter(client, tableFnOrTables) {
++    const defaultTables = createTables(typeof tableFnOrTables === "function" ? tableFnOrTables : defaultPgTableFn);
++    const { users, accounts, sessions, verificationTokens } = {
++        ...defaultTables,
++        ...(typeof tableFnOrTables === "object" ? tableFnOrTables : {}),
++    };
+     return {
+         async createUser(data) {
+             return await client
+diff --git a/lib/sqlite.d.ts b/lib/sqlite.d.ts
+index ec96f256cf6b7a06257f897d04d5caf33a6b65d1..2a3ac9938b95074d4c59f5979ab26afabb0b8e55 100644
+--- a/lib/sqlite.d.ts
++++ b/lib/sqlite.d.ts
+@@ -1,5 +1,6 @@
+ import { BaseSQLiteDatabase, SQLiteTableFn } from "drizzle-orm/sqlite-core";
+ import type { Adapter } from "@auth/core/adapters";
++import { MinimumSchema } from "./utils";
+ export declare function createTables(sqliteTable: SQLiteTableFn): {
+     users: import("drizzle-orm/db.d-b5fdf746").ag<{
+         name: "user";
+@@ -221,5 +222,5 @@ export declare function createTables(sqliteTable: SQLiteTableFn): {
+     }>;
+ };
+ export type DefaultSchema = ReturnType<typeof createTables>;
+-export declare function SQLiteDrizzleAdapter(client: InstanceType<typeof BaseSQLiteDatabase>, tableFn?: SQLiteTableFn<undefined>): Adapter;
++export declare function SQLiteDrizzleAdapter(client: InstanceType<typeof BaseSQLiteDatabase>, tableFnOrTables?: SQLiteTableFn | Partial<MinimumSchema["sqlite"]>): Adapter;
+ //# sourceMappingURL=sqlite.d.ts.map
+\ No newline at end of file
+diff --git a/lib/sqlite.d.ts.map b/lib/sqlite.d.ts.map
+index 52eb1039e1252f4b77530825d464ee622a64d2b1..d40eafad753ce75faac2152d8a2e158892047be8 100644
+--- a/lib/sqlite.d.ts.map
++++ b/lib/sqlite.d.ts.map
+@@ -1 +1 @@
+-{"version":3,"file":"sqlite.d.ts","sourceRoot":"","sources":["../src/lib/sqlite.ts"],"names":[],"mappings":"AACA,OAAO,EAKL,kBAAkB,EAClB,aAAa,EACd,MAAM,yBAAyB,CAAA;AAEhC,OAAO,KAAK,EAAE,OAAO,EAAkB,MAAM,qBAAqB,CAAA;AAElE,wBAAgB,YAAY,CAAC,WAAW,EAAE,aAAa;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;EAoDtD;AAED,MAAM,MAAM,aAAa,GAAG,UAAU,CAAC,OAAO,YAAY,CAAC,CAAA;AAE3D,wBAAgB,oBAAoB,CAClC,MAAM,EAAE,YAAY,CAAC,OAAO,kBAAkB,CAAC,EAC/C,OAAO,2BAAuB,GAC7B,OAAO,CA2IT"}
+\ No newline at end of file
++{"version":3,"file":"sqlite.d.ts","sourceRoot":"","sources":["../src/lib/sqlite.ts"],"names":[],"mappings":"AACA,OAAO,EAKL,kBAAkB,EAClB,aAAa,EACd,MAAM,yBAAyB,CAAA;AAEhC,OAAO,KAAK,EAAE,OAAO,EAAkB,MAAM,qBAAqB,CAAA;AAClE,OAAO,EAAE,aAAa,EAAE,MAAM,SAAS,CAAA;AAEvC,wBAAgB,YAAY,CAAC,WAAW,EAAE,aAAa;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;EAoDtD;AAED,MAAM,MAAM,aAAa,GAAG,UAAU,CAAC,OAAO,YAAY,CAAC,CAAA;AAE3D,wBAAgB,oBAAoB,CAClC,MAAM,EAAE,YAAY,CAAC,OAAO,kBAAkB,CAAC,EAC/C,eAAe,CAAC,EAAE,aAAa,GAAG,OAAO,CAAC,aAAa,CAAC,QAAQ,CAAC,CAAC,GACjE,OAAO,CAkJT"}
+\ No newline at end of file
+diff --git a/lib/sqlite.js b/lib/sqlite.js
+index 0cbeaf3cc8a70087608d579b13555558abaaec1e..9a66b4dd393f612319f1a6df55101895e197c6a8 100644
+--- a/lib/sqlite.js
++++ b/lib/sqlite.js
+@@ -41,8 +41,14 @@ export function createTables(sqliteTable) {
+     }));
+     return { users, accounts, sessions, verificationTokens };
+ }
+-export function SQLiteDrizzleAdapter(client, tableFn = defaultSqliteTableFn) {
+-    const { users, accounts, sessions, verificationTokens } = createTables(tableFn);
++export function SQLiteDrizzleAdapter(client, tableFnOrTables) {
++    const defaultTables = createTables(typeof tableFnOrTables === "function"
++        ? tableFnOrTables
++        : defaultSqliteTableFn);
++    const { users, accounts, sessions, verificationTokens } = {
++        ...defaultTables,
++        ...(typeof tableFnOrTables === "object" ? tableFnOrTables : {}),
++    };
+     return {
+         createUser(data) {
+             return client
+diff --git a/src/index.ts b/src/index.ts
+index fcb67e273eb61159ac3e630255a84dcdec9cb01d..6f4afe72e420742b36b6a1c787a6a04818a3a227 100644
+--- a/src/index.ts
++++ b/src/index.ts
+@@ -22,7 +22,12 @@ import { BaseSQLiteDatabase, SQLiteTableFn } from "drizzle-orm/sqlite-core"
+ import { mySqlDrizzleAdapter } from "./lib/mysql.js"
+ import { pgDrizzleAdapter } from "./lib/pg.js"
+ import { SQLiteDrizzleAdapter } from "./lib/sqlite.js"
+-import { SqlFlavorOptions, TableFn } from "./lib/utils.js"
++import {
++  ClientFlavors,
++  MinimumSchema,
++  SqlFlavorOptions,
++  TableFn,
++} from "./lib/utils.js"
+ import { is } from "drizzle-orm"
+ 
+ import type { Adapter } from "@auth/core/adapters"
+@@ -48,8 +53,11 @@ import type { Adapter } from "@auth/core/adapters"
+  * ```
+  * 
+  * :::info
+- * If you're using multi-project schemas, you can pass your table function as a second argument
++ * If you're using multi-project schemas, you can pass your table function as a second argument. 
++ * Alternatively, you can pass your tables as an object if your tables includes other 
++ * attributes you want to be returned from the adapter.
+  * :::
++ * 
+  *
+  * ## Setup
+  *
+@@ -253,14 +261,23 @@ import type { Adapter } from "@auth/core/adapters"
+  **/
+ export function DrizzleAdapter<SqlFlavor extends SqlFlavorOptions>(
+   db: SqlFlavor,
+-  table?: TableFn<SqlFlavor>
++  tableFnOrTables?: TableFn<SqlFlavor> | Partial<ClientFlavors<SqlFlavor>>
+ ): Adapter {
+   if (is(db, MySqlDatabase)) {
+-    return mySqlDrizzleAdapter(db, table as MySqlTableFn)
++    return mySqlDrizzleAdapter(
++      db,
++      tableFnOrTables as MySqlTableFn | MinimumSchema["mysql"] | undefined
++    )
+   } else if (is(db, PgDatabase)) {
+-    return pgDrizzleAdapter(db, table as PgTableFn)
++    return pgDrizzleAdapter(
++      db,
++      tableFnOrTables as PgTableFn | MinimumSchema["pg"] | undefined
++    )
+   } else if (is(db, BaseSQLiteDatabase)) {
+-    return SQLiteDrizzleAdapter(db, table as SQLiteTableFn)
++    return SQLiteDrizzleAdapter(
++      db,
++      tableFnOrTables as SQLiteTableFn | MinimumSchema["sqlite"] | undefined
++    )
+   }
+ 
+   throw new Error(
+diff --git a/src/lib/mysql.ts b/src/lib/mysql.ts
+index 87c645dad0e4825a4541e53c58ba70c2c0f69b6c..a11264a79da2ebbf5d106ee2683e1fc84e660214 100644
+--- a/src/lib/mysql.ts
++++ b/src/lib/mysql.ts
+@@ -10,6 +10,7 @@ import {
+ } from "drizzle-orm/mysql-core"
+ 
+ import type { Adapter, AdapterAccount } from "@auth/core/adapters"
++import { MinimumSchema } from "./utils"
+ 
+ export function createTables(mySqlTable: MySqlTableFn) {
+   const users = mySqlTable("user", {
+@@ -78,10 +79,17 @@ export type DefaultSchema = ReturnType<typeof createTables>
+ 
+ export function mySqlDrizzleAdapter(
+   client: InstanceType<typeof MySqlDatabase>,
+-  tableFn = defaultMySqlTableFn
++  tableFnOrTables?: MySqlTableFn | Partial<MinimumSchema["mysql"]>
+ ): Adapter {
+-  const { users, accounts, sessions, verificationTokens } =
+-    createTables(tableFn)
++  const defaultTables = createTables(
++    typeof tableFnOrTables === "function"
++      ? tableFnOrTables
++      : defaultMySqlTableFn
++  )
++  const { users, accounts, sessions, verificationTokens } = {
++    ...defaultTables,
++    ...(typeof tableFnOrTables === "object" ? tableFnOrTables : {}),
++  }
+ 
+   return {
+     async createUser(data) {
+diff --git a/src/lib/pg.ts b/src/lib/pg.ts
+index ec33d7cf9662e09713c1b719d6c75ec4630ec6b1..edaef4fba263ecda2e62b1f0948d87d645c5b072 100644
+--- a/src/lib/pg.ts
++++ b/src/lib/pg.ts
+@@ -10,6 +10,7 @@ import {
+ } from "drizzle-orm/pg-core"
+ 
+ import type { Adapter, AdapterAccount } from "@auth/core/adapters"
++import { MinimumSchema } from "./utils"
+ 
+ export function createTables(pgTable: PgTableFn) {
+   const users = pgTable("user", {
+@@ -69,10 +70,15 @@ export type DefaultSchema = ReturnType<typeof createTables>
+ 
+ export function pgDrizzleAdapter(
+   client: InstanceType<typeof PgDatabase>,
+-  tableFn = defaultPgTableFn
++  tableFnOrTables?: PgTableFn | Partial<MinimumSchema["pg"]>
+ ): Adapter {
+-  const { users, accounts, sessions, verificationTokens } =
+-    createTables(tableFn)
++  const defaultTables = createTables(
++    typeof tableFnOrTables === "function" ? tableFnOrTables : defaultPgTableFn
++  )
++  const { users, accounts, sessions, verificationTokens } = {
++    ...defaultTables,
++    ...(typeof tableFnOrTables === "object" ? tableFnOrTables : {}),
++  }
+ 
+   return {
+     async createUser(data) {
+diff --git a/src/lib/sqlite.ts b/src/lib/sqlite.ts
+index 81fdaa5728bedc6cd4d55d5c0926f11a9653dcb2..e336d7f89eb26ce310a90a76d6e02603fc46ef1b 100644
+--- a/src/lib/sqlite.ts
++++ b/src/lib/sqlite.ts
+@@ -9,6 +9,7 @@ import {
+ } from "drizzle-orm/sqlite-core"
+ 
+ import type { Adapter, AdapterAccount } from "@auth/core/adapters"
++import { MinimumSchema } from "./utils"
+ 
+ export function createTables(sqliteTable: SQLiteTableFn) {
+   const users = sqliteTable("user", {
+@@ -68,10 +69,17 @@ export type DefaultSchema = ReturnType<typeof createTables>
+ 
+ export function SQLiteDrizzleAdapter(
+   client: InstanceType<typeof BaseSQLiteDatabase>,
+-  tableFn = defaultSqliteTableFn
++  tableFnOrTables?: SQLiteTableFn | Partial<MinimumSchema["sqlite"]>
+ ): Adapter {
+-  const { users, accounts, sessions, verificationTokens } =
+-    createTables(tableFn)
++  const defaultTables = createTables(
++    typeof tableFnOrTables === "function"
++      ? tableFnOrTables
++      : defaultSqliteTableFn
++  )
++  const { users, accounts, sessions, verificationTokens } = {
++    ...defaultTables,
++    ...(typeof tableFnOrTables === "object" ? tableFnOrTables : {}),
++  }
+ 
+   return {
+     createUser(data) {
