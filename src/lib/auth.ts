@@ -28,6 +28,8 @@ export const {
   auth,
   CSRF_experimental,
 } = NextAuth({
+  // @ts-expect-error - TODO: Fix this, Bun doesn't support `overrides` yet so drizzle-adapter
+  // is using a differnet version of @auth/core than the one we're augmenting above.
   adapter: {
     ...DrizzleAdapter(db, table),
     async getSessionAndUser(data) {

@@ -27,8 +27,10 @@ export interface Currency {
 }
 
 export const createConverter = cache(async () => {
+  const heads = new Map((await import("next/headers")).headers());
+  heads.delete("content-length");
   const ratesWithEurAsBase = await fetch(new URL("/api/currencies", BASE_URL), {
-    headers: (await import("next/headers")).headers(),
+    headers: Object.fromEntries(heads),
   }).then((r) => r.json() as Promise<FixerResponse["rates"]>);
 
   return (dineroObject: Dinero<number>, newCurrency: CurrencyCode) => {

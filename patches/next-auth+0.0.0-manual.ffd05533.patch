@@ -1,7 +1,7 @@
-diff --git a/lib/index.js b/lib/index.js
-index 5a75f390e1ed59db192587176cf6fabd229cdf84..d123a9aea1b4d861ae78a23951e1feecf831c57c 100644
---- a/lib/index.js
-+++ b/lib/index.js
+diff --git a/node_modules/next-auth/lib/index.js b/node_modules/next-auth/lib/index.js
+index 5a75f39..d123a9a 100644
+--- a/node_modules/next-auth/lib/index.js
++++ b/node_modules/next-auth/lib/index.js
 @@ -9,17 +9,7 @@ async function getSession(headers, config) {
          headers: { cookie: headers.get("cookie") ?? "" },
      });

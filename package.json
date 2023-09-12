@@ -13,10 +13,11 @@
     "format:fix": "pnpm format --write",
     "lint": "eslint . --cache --cache-location 'node_modules/.cache/.eslintcache'",
     "lint:fix": "pnpm lint --fix",
+    "postinstall": "patch-package",
     "ui": "pnpm dlx shadcn-ui"
   },
   "dependencies": {
-    "@auth/core": "0.13.0",
+    "@auth/core": "0.0.0-manual.e9863699",
     "@auth/drizzle-adapter": "^0.3.2",
     "@dinero.js/currencies": "2.0.0-alpha.14",
     "@hookform/resolvers": "^3.3.1",
@@ -69,20 +70,11 @@
     "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-react-hooks": "^4.6.0",
     "mysql2": "^3.6.0",
+    "patch-package": "^8.0.0",
     "postcss": "8.4.28",
     "prettier": "^3.0.2",
     "prettier-plugin-tailwindcss": "^0.5.3",
     "tailwindcss": "3.3.3",
     "typescript": "5.1.6"
-  },
-  "pnpm": {
-    "overrides": {
-      "@auth/core": "0.13.0"
-    },
-    "patchedDependencies": {
-      "next@13.4.20-canary.16": "patches/next@13.4.20-canary.16.patch",
-      "next-auth@0.0.0-manual.ffd05533": "patches/next-auth@0.0.0-manual.ffd05533.patch",
-      "@auth/core@0.13.0": "patches/@auth__core@0.13.0.patch"
-    }
   }
 }
