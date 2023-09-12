@@ -10,11 +10,11 @@
     "build": "next build",
     "start": "next start",
     "format": "prettier . --cache --cache-location='node_modules/.cache/.prettiercache' --list-different",
-    "format:fix": "pnpm format --write",
+    "format:fix": "bun format --write",
     "lint": "eslint . --cache --cache-location 'node_modules/.cache/.eslintcache'",
-    "lint:fix": "pnpm lint --fix",
+    "lint:fix": "bun lint --fix",
     "postinstall": "patch-package",
-    "ui": "pnpm dlx shadcn-ui"
+    "ui": "bunx shadcn-ui"
   },
   "dependencies": {
     "@auth/core": "0.0.0-manual.e9863699",
