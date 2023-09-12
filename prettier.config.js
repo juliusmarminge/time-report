@@ -3,7 +3,7 @@
 /** @typedef  {import("@ianvs/prettier-plugin-sort-imports").PluginConfig} SortImportsConfig */
 
 /** @type { PrettierConfig | SortImportsConfig | TailwindConfig } */
-const prettierConfig = {
+export default {
   plugins: [
     "@ianvs/prettier-plugin-sort-imports",
     "prettier-plugin-tailwindcss",
@@ -24,4 +24,3 @@ const prettierConfig = {
   importOrderTypeScriptVersion: "4.4.0",
 };
 
-export default prettierConfig;
