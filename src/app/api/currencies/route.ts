@@ -21,7 +21,10 @@ export const GET = auth(async (req) => {
     { next: { revalidate: revalidate } },
   );
   if (!res.ok) {
-    return NextResponse.json({ error: "Failed to fetch" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to fetch Fixer" },
+      { status: 500 },
+    );
   }
 
   const rates = ((await res.json()) as FixerResponse).rates;

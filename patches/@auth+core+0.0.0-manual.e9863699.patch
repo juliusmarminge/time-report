@@ -1,7 +1,7 @@
-diff --git a/lib/routes/session.js b/lib/routes/session.js
-index e496d921578b735e640d1fc766582831dcbfdb1c..483c6e811246a61d82386e2e8c3976c71512820f 100644
---- a/lib/routes/session.js
-+++ b/lib/routes/session.js
+diff --git a/node_modules/@auth/core/lib/routes/session.js b/node_modules/@auth/core/lib/routes/session.js
+index e496d92..483c6e8 100644
+--- a/node_modules/@auth/core/lib/routes/session.js
++++ b/node_modules/@auth/core/lib/routes/session.js
 @@ -91,10 +91,7 @@ export async function session(params) {
              const sessionPayload = await callbacks.session({
                  // By default, only exposes a limited subset of information to the client
