@@ -9,7 +9,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "format": "prettier . --cache --cache-location='node_modules/.cache/.prettiercache'",
+    "format": "prettier . --cache --cache-location='node_modules/.cache/.prettiercache' --list-different",
     "format:fix": "pnpm format --write",
     "lint": "eslint . --cache --cache-location 'node_modules/.cache/.eslintcache'",
     "lint:fix": "pnpm lint --fix",
