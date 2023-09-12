@@ -13,7 +13,7 @@
     "format:fix": "pnpm format --write",
     "lint": "eslint . --cache --cache-location 'node_modules/.cache/.eslintcache'",
     "lint:fix": "pnpm lint --fix",
-    "postinstall": "bunx patch-package",
+    "postinstall": "bun x patch-package",
     "ui": "pnpm dlx shadcn-ui"
   },
   "dependencies": {
