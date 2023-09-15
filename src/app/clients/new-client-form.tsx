@@ -2,8 +2,8 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { Cross1Icon, PlusIcon } from "@radix-ui/react-icons";
-import type { FileWithPath } from "@uploadthing/react-dropzone";
-import { useDropzone } from "@uploadthing/react-dropzone";
+import type { FileWithPath } from "@uploadthing/react";
+import { useDropzone } from "@uploadthing/react/hooks";
 
 import { LoadingDots } from "~/components/loading-dots";
 import { cn } from "~/lib/cn";
