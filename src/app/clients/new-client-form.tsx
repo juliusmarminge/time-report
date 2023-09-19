@@ -5,11 +5,14 @@ import { Cross1Icon, PlusIcon } from "@radix-ui/react-icons";
 import type { FileWithPath } from "@uploadthing/react";
 import { useDropzone } from "@uploadthing/react/hooks";
 
+import { createClientAction, deleteImageFromUTAction } from "~/app/_actions";
 import { LoadingDots } from "~/components/loading-dots";
 import { cn } from "~/lib/cn";
 import { currencies } from "~/lib/currencies";
 import { useUploadThing } from "~/lib/uploadthing";
 import { useMobile } from "~/lib/use-mobile";
+import { createClientSchema } from "~/lib/validators";
+import { useAction } from "~/trpc/client";
 import { Button } from "~/ui/button";
 import {
   Form,
@@ -37,8 +40,6 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "~/ui/sheet";
-import { createClient, deleteImageFromUT } from "./_actions";
-import { createClientSchema } from "./_validators";
 
 export function NewClientForm(props: { afterSubmit?: () => void }) {
   const form = useForm({
@@ -46,6 +47,13 @@ export function NewClientForm(props: { afterSubmit?: () => void }) {
     defaultValues: {
       name: "",
       currency: "USD",
+    },
+  });
+
+  const createClient = useAction(createClientAction, {
+    onSuccess: () => {
+      form.reset();
+      props.afterSubmit?.();
     },
   });
 
@@ -93,7 +101,7 @@ export function NewClientForm(props: { afterSubmit?: () => void }) {
 
   async function handleImageDelete(e: React.MouseEvent<HTMLButtonElement>) {
     e.stopPropagation();
-    await deleteImageFromUT(form.getValues("image"));
+    await deleteImageFromUTAction(form.getValues("image"));
     setImageDataUrl(null);
     form.setValue("image", undefined);
   }
@@ -102,11 +110,7 @@ export function NewClientForm(props: { afterSubmit?: () => void }) {
     <Form {...form}>
       <form
         className="flex flex-col gap-4"
-        onSubmit={form.handleSubmit(async (data) => {
-          await createClient(data);
-          form.reset();
-          props.afterSubmit?.();
-        })}
+        onSubmit={form.handleSubmit((values) => createClient.mutate(values))}
       >
         <FormField
           control={form.control}

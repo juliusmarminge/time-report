@@ -5,10 +5,10 @@ import { format, parseISO, startOfMonth } from "date-fns";
 import { add, dinero, multiply, toDecimal } from "dinero.js";
 
 import type { Client, Timeslot } from "~/db/getters";
-import { getClients, getTimeslots } from "~/db/getters";
 import { currentUser } from "~/lib/auth";
 import type { CurrencyCode } from "~/lib/currencies";
 import { createConverter, currencies, formatMoney } from "~/lib/currencies";
+import { trpc } from "~/trpc/server";
 import { Button } from "~/ui/button";
 import {
   Card,
@@ -24,38 +24,6 @@ import { TimeslotCard } from "./timeslot-card";
 
 export const runtime = "edge";
 
-const getMonthMetadata = cache(
-  async (slots: Timeslot[], currency: CurrencyCode) => {
-    const billedClients = new Set(slots.map((slot) => slot.clientId)).size;
-
-    const totalHours = slots.reduce((acc, slot) => {
-      return acc + Number(slot.duration);
-    }, 0);
-
-    const convert = await createConverter();
-    const totalRevenue = slots.reduce(
-      (acc, slot) => {
-        const dineroObject = dinero({
-          amount: slot.chargeRate,
-          currency: currencies[slot.currency],
-        });
-
-        return add(
-          acc,
-          multiply(convert(dineroObject, currency), parseFloat(slot.duration)),
-        );
-      },
-      dinero({ amount: 0, currency: currencies[currency] }),
-    );
-
-    return {
-      billedClients,
-      totalHours,
-      totalRevenue,
-    };
-  },
-);
-
 export default async function IndexPage(props: {
   searchParams: { date?: string };
 }) {
@@ -66,10 +34,12 @@ export default async function IndexPage(props: {
     ? parseISO(`${props.searchParams.date}T00:00:00.000Z`)
     : undefined;
 
-  const clients = await getClients();
+  const clients = await trpc.getClientsForUser.query({ userId: user.id });
 
-  const timeslots = await getTimeslots(date ? startOfMonth(date) : new Date(), {
+  const timeslots = await trpc.getTimeslots.query({
+    date: date ? startOfMonth(date) : new Date(),
     mode: "month",
+    userId: user.id,
   });
 
   const { billedClients, totalHours, totalRevenue } = await getMonthMetadata(
@@ -235,3 +205,35 @@ async function SidePanel(props: {
     </Card>
   );
 }
+
+const getMonthMetadata = cache(
+  async (slots: Timeslot[], currency: CurrencyCode) => {
+    const billedClients = new Set(slots.map((slot) => slot.clientId)).size;
+
+    const totalHours = slots.reduce((acc, slot) => {
+      return acc + Number(slot.duration);
+    }, 0);
+
+    const convert = await createConverter();
+    const totalRevenue = slots.reduce(
+      (acc, slot) => {
+        const dineroObject = dinero({
+          amount: slot.chargeRate,
+          currency: currencies[slot.currency],
+        });
+
+        return add(
+          acc,
+          multiply(convert(dineroObject, currency), parseFloat(slot.duration)),
+        );
+      },
+      dinero({ amount: 0, currency: currencies[currency] }),
+    );
+
+    return {
+      billedClients,
+      totalHours,
+      totalRevenue,
+    };
+  },
+);

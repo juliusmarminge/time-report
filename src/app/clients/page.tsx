@@ -1,4 +1,5 @@
-import { getClients } from "~/db/getters";
+import { currentUser } from "~/lib/auth";
+import { trpc } from "~/trpc/server";
 import { DashboardShell } from "../../components/dashboard-shell";
 import { ClientCard } from "./client-card";
 import { NewClientSheet } from "./new-client-form";
@@ -6,7 +7,8 @@ import { NewClientSheet } from "./new-client-form";
 export const runtime = "edge";
 
 export default async function ClientsPage() {
-  const clients = await getClients();
+  const user = await currentUser();
+  const clients = await trpc.getClientsForUser.query({ userId: user!.id });
 
   return (
     <DashboardShell

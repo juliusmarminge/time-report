@@ -5,9 +5,13 @@ import { useSearchParams } from "next/navigation";
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 import { isFuture, parseISO } from "date-fns";
 
+import { reportTimeslotAction } from "~/app/_actions";
+import { LoadingDots } from "~/components/loading-dots";
 import type { Client } from "~/db/getters";
 import { currencies } from "~/lib/currencies";
 import { useMobile } from "~/lib/use-mobile";
+import { reportTimeSchema } from "~/lib/validators";
+import { useAction } from "~/trpc/client";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -47,8 +51,6 @@ import {
   SheetTrigger,
 } from "~/ui/sheet";
 import { Textarea } from "~/ui/textarea";
-import { reportTime } from "./_actions";
-import { reportTimeSchema } from "./_validators";
 
 export function ReportTimeForm(props: {
   clients: Client[];
@@ -65,17 +67,21 @@ export function ReportTimeForm(props: {
     },
   });
 
+  const reportSlot = useAction(reportTimeslotAction, {
+    onSuccess: () => {
+      // form.reset();
+      props.afterSubmit?.();
+    },
+    onError: (error) => {
+      console.error(error);
+      props.afterSubmit?.();
+    },
+  });
+
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit(async (values) => {
-          // FIXME: The `afterSubmit` should not be invoked before the request
-          // But it seems like this promise doesn't resolve properly all the time
-          props.afterSubmit?.();
-          await reportTime(values);
-          form.reset();
-          props.afterSubmit?.();
-        })}
+        onSubmit={form.handleSubmit((values) => reportSlot.mutate(values))}
         className="flex flex-col gap-4"
       >
         <FormField
@@ -200,7 +206,12 @@ export function ReportTimeForm(props: {
           )}
         />
 
-        <Button type="submit">Report time</Button>
+        <Button type="submit">
+          {reportSlot.status === "loading" && (
+            <LoadingDots className="mr-2 h-4 w-4" />
+          )}
+          Report time
+        </Button>
       </form>
     </Form>
   );

@@ -6,9 +6,11 @@ import { format } from "date-fns";
 import type { Dinero } from "dinero.js";
 import { dinero, toDecimal } from "dinero.js";
 
+import { deleteClientAction, updateClientAction } from "~/app/_actions";
 import { LoadingDots } from "~/components/loading-dots";
 import type { Client } from "~/db/getters";
 import { currencies, formatMoney } from "~/lib/currencies";
+import { useAction } from "~/trpc/client";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -33,7 +35,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/ui/select";
-import { deleteClient, updateClient } from "./_actions";
 
 export function ClientCard(props: { client: Client }) {
   const { client } = props;
@@ -95,7 +96,6 @@ function EditingClientCard(props: {
   defaultCharge: Dinero<number>;
 }) {
   const { client } = props;
-  const [updating, setUpdating] = useState(false);
 
   const [editingName, setEditingName] = useState(client.name);
   const [editingChargeRate, setEditingChargeRate] = useState(
@@ -103,16 +103,12 @@ function EditingClientCard(props: {
   );
   const [editingCurrency, setEditingCurrency] = useState<string>(client.curr);
 
-  const updateClientInfo = async () => {
-    setUpdating(true);
-    await updateClient(props.client.id, {
-      name: editingName,
-      currency: editingCurrency,
-      defaultCharge: editingChargeRate,
-    });
-    setUpdating(false);
-    props.setIsEditing(false);
-  };
+  const updateClient = useAction(updateClientAction, {
+    onSuccess: () => props.setIsEditing(false),
+  });
+  const deleteClient = useAction(deleteClientAction, {
+    onSuccess: () => props.setIsEditing(false),
+  });
 
   return (
     <Card>
@@ -137,9 +133,16 @@ function EditingClientCard(props: {
           size="icon"
           type="submit"
           className="ml-auto"
-          onClick={updateClientInfo}
+          onClick={() =>
+            updateClient.mutate({
+              clientId: client.id,
+              name: editingName,
+              currency: editingCurrency,
+              defaultCharge: editingChargeRate,
+            })
+          }
         >
-          {updating ? (
+          {updateClient.status === "loading" ? (
             <LoadingDots className="h-5 w-5" />
           ) : (
             <CheckIcon className="h-5 w-5" />
@@ -163,9 +166,7 @@ function EditingClientCard(props: {
                 <AlertDialogCancel>Cancel</AlertDialogCancel>
                 <AlertDialogAction
                   asChild
-                  onClick={async () => {
-                    await deleteClient({ id: client.id });
-                  }}
+                  onClick={() => deleteClient.mutate(client.id)}
                 >
                   <Button variant="destructive">Yes, Delete</Button>
                 </AlertDialogAction>

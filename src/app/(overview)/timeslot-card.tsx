@@ -5,9 +5,11 @@ import { CheckIcon, Pencil1Icon, TrashIcon } from "@radix-ui/react-icons";
 import type { Dinero } from "dinero.js";
 import { dinero, toDecimal } from "dinero.js";
 
+import { deleteTimeslotAction, updateTimeslotAction } from "~/app/_actions";
 import { LoadingDots } from "~/components/loading-dots";
 import type { Timeslot } from "~/db/getters";
 import { currencies, formatMoney } from "~/lib/currencies";
+import { useAction } from "~/trpc/client";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -31,7 +33,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/ui/select";
-import { deleteTimeslot, updateTimeslot } from "./_actions";
 
 export function TimeslotCard(props: { slot: Timeslot }) {
   const [isEditing, setIsEditing] = useState(false);
@@ -90,19 +91,12 @@ function EditingTimeslotCard(props: {
     props.slot.currency,
   );
 
-  const [updating, setUpdating] = useState(false);
-  const [deleting, setDeleting] = useState(false);
-
-  const updateSlot = async () => {
-    setUpdating(true);
-    await updateTimeslot(props.slot.id, {
-      duration: editingDuration,
-      chargeRate: editingChargeRate,
-      currency: editingCurrency,
-    });
-    setUpdating(false);
-    props.setIsEditing(false);
-  };
+  const deleteSlot = useAction(deleteTimeslotAction, {
+    onSuccess: () => props.setIsEditing(false),
+  });
+  const updateSlot = useAction(updateTimeslotAction, {
+    onSuccess: () => props.setIsEditing(false),
+  });
 
   return (
     <Card>
@@ -152,9 +146,16 @@ function EditingTimeslotCard(props: {
           size="icon"
           type="submit"
           className="ml-auto"
-          onClick={updateSlot}
+          onClick={() =>
+            updateSlot.mutate({
+              id: props.slot.id,
+              duration: editingDuration,
+              chargeRate: editingChargeRate,
+              currency: editingCurrency,
+            })
+          }
         >
-          {updating ? (
+          {updateSlot.status === "loading" ? (
             <LoadingDots className="h-4 w-4" />
           ) : (
             <CheckIcon className="h-4 w-4" />
@@ -176,14 +177,12 @@ function EditingTimeslotCard(props: {
                 <AlertDialogCancel>Cancel</AlertDialogCancel>
                 <AlertDialogAction
                   asChild
-                  onClick={async () => {
-                    setDeleting(true);
-                    await deleteTimeslot(props.slot.id);
-                    setDeleting(false);
-                  }}
+                  onClick={() => deleteSlot.mutate(props.slot.id)}
                 >
                   <Button variant="destructive">
-                    {deleting && <LoadingDots className="mr-2 h-4 w-4" />}
+                    {deleteSlot.status === "loading" && (
+                      <LoadingDots className="mr-2 h-4 w-4" />
+                    )}
                     Yes, Delete
                   </Button>
                 </AlertDialogAction>
