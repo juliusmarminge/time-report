@@ -58,6 +58,10 @@ export const {
         },
       };
     },
+
+    signIn:  ({ user }) => {
+      return user.email === "julius0216@outlook.com"
+    },
   },
   pages: {
     signIn: "/login",
