@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 import { isFuture, parseISO } from "date-fns";
 
+import { LoadingDots } from "~/components/loading-dots";
 import type { Client } from "~/db/getters";
 import { currencies } from "~/lib/currencies";
 import { useMobile } from "~/lib/use-mobile";
@@ -49,7 +50,6 @@ import {
 import { Textarea } from "~/ui/textarea";
 import { reportTime } from "./_actions";
 import { reportTimeSchema } from "./_validators";
-import { LoadingDots } from "~/components/loading-dots";
 
 export function ReportTimeForm(props: {
   clients: Client[];
@@ -202,7 +202,7 @@ export function ReportTimeForm(props: {
         />
 
         <Button type="submit">
-          {form.formState.isSubmitting && <LoadingDots className="mr-2"/>}
+          {form.formState.isSubmitting && <LoadingDots className="mr-2" />}
           Report time
         </Button>
       </form>
