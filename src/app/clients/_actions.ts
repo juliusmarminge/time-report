@@ -33,7 +33,7 @@ export async function createClient(props: Input<typeof createClientSchema>) {
     tenantId: user.id,
   });
 
-  revalidateTag("/");
+  revalidateTag("clients");
 }
 
 export async function updateClient(
@@ -60,7 +60,7 @@ export async function updateClient(
     })
     .where(eq(client.id, clientId));
 
-  revalidateTag("/");
+  revalidateTag("clients");
 }
 
 export async function deleteClient(props: { id: number }) {
@@ -75,7 +75,7 @@ export async function deleteClient(props: { id: number }) {
     await utapi.deleteFiles([imageKey]);
   }
 
-  revalidateTag("/");
+  revalidateTag("clients");
 }
 
 export async function deleteImageFromUT(imageUrl: string | undefined) {

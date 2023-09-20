@@ -36,13 +36,13 @@ export async function reportTime(props: Input<typeof reportTimeSchema>) {
     tenantId: user.id,
   });
 
-  revalidateTag("/");
+  revalidateTag("timeslots");
 }
 
 export async function deleteTimeslot(id: number) {
   await db.delete(timeslot).where(eq(timeslot.id, id));
 
-  revalidateTag("/");
+  revalidateTag("timeslots");
 }
 
 export async function updateTimeslot(
@@ -67,5 +67,5 @@ export async function updateTimeslot(
     })
     .where(eq(timeslot.id, id));
 
-  revalidateTag("/");
+  revalidateTag("timeslots");
 }

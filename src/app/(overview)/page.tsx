@@ -7,6 +7,7 @@ import { add, dinero, multiply, toDecimal } from "dinero.js";
 import type { Client, Timeslot } from "~/db/getters";
 import { getClients, getTimeslots } from "~/db/getters";
 import { currentUser } from "~/lib/auth";
+import { withUnstableCache } from "~/lib/cache";
 import type { CurrencyCode } from "~/lib/currencies";
 import { createConverter, currencies, formatMoney } from "~/lib/currencies";
 import { Button } from "~/ui/button";
@@ -66,10 +67,16 @@ export default async function IndexPage(props: {
     ? parseISO(`${props.searchParams.date}T00:00:00.000Z`)
     : undefined;
 
-  const clients = await getClients();
+  const clients = await withUnstableCache({
+    fn: getClients,
+    args: [],
+    tags: ["clients"],
+  });
 
-  const timeslots = await getTimeslots(date ? startOfMonth(date) : new Date(), {
-    mode: "month",
+  const timeslots = await withUnstableCache({
+    fn: getTimeslots,
+    args: [startOfMonth(date ?? new Date()), { mode: "month" }],
+    tags: ["timeslots"],
   });
 
   const { billedClients, totalHours, totalRevenue } = await getMonthMetadata(
