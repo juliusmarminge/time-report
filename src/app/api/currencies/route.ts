@@ -11,8 +11,9 @@ export interface FixerResponse {
   rates: Record<string, number>;
 }
 
-export const GET = auth(async (req) => {
-  if (!req.auth?.user?.id) {
+export const GET = async () => {
+  const sesh = await auth();
+  if (!sesh?.user?.id) {
     return NextResponse.json({ error: "Not authorized" }, { status: 401 });
   }
 
@@ -29,4 +30,4 @@ export const GET = auth(async (req) => {
 
   const rates = ((await res.json()) as FixerResponse).rates;
   return NextResponse.json(rates);
-});
+};
