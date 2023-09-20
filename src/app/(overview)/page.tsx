@@ -69,13 +69,13 @@ export default async function IndexPage(props: {
 
   const clients = await withUnstableCache({
     fn: getClients,
-    args: [],
+    args: [user.id],
     tags: ["clients"],
   });
 
   const timeslots = await withUnstableCache({
     fn: getTimeslots,
-    args: [startOfMonth(date ?? new Date()), { mode: "month" }],
+    args: [startOfMonth(date ?? new Date()), user.id, { mode: "month" }],
     tags: ["timeslots"],
   });
 

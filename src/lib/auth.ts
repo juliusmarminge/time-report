@@ -58,11 +58,6 @@ export const {
         },
       };
     },
-
-    signIn:  ({ user }) => {
-      if (process.env.NODE_ENV === "development") return true;
-      return user.email === "julius0216@outlook.com"
-    },
   },
   pages: {
     signIn: "/login",

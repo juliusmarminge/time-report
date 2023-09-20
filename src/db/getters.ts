@@ -1,14 +1,10 @@
 import { endOfMonth, startOfMonth } from "date-fns";
 import { and, between, eq } from "drizzle-orm";
 
-import { currentUser } from "~/lib/auth";
 import { db } from ".";
 import { client, timeslot } from "./schema";
 
-export const getClients = async () => {
-  const user = await currentUser();
-  if (!user) return [];
-
+export const getClients = async (userId: string) => {
   const clients = await db
     .select({
       id: client.id,
@@ -19,7 +15,7 @@ export const getClients = async () => {
       createdAt: client.createdAt,
     })
     .from(client)
-    .where(eq(client.tenantId, user.id));
+    .where(eq(client.tenantId, userId));
 
   return clients;
 };
@@ -27,11 +23,9 @@ export type Client = Awaited<ReturnType<typeof getClients>>[number];
 
 export const getTimeslots = async (
   date: Date,
+  userId: string,
   opts: { mode: "exact" | "month" },
 ) => {
-  const user = await currentUser();
-  if (!user) return [];
-
   const slots = await db
     .select({
       id: timeslot.id,
@@ -47,7 +41,7 @@ export const getTimeslots = async (
     .innerJoin(client, eq(client.id, timeslot.clientId))
     .where(
       and(
-        eq(timeslot.tenantId, user.id),
+        eq(timeslot.tenantId, userId),
         opts.mode === "exact"
           ? eq(timeslot.date, date)
           : between(timeslot.date, startOfMonth(date), endOfMonth(date)),
