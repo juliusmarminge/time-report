@@ -49,6 +49,7 @@ import {
 import { Textarea } from "~/ui/textarea";
 import { reportTime } from "./_actions";
 import { reportTimeSchema } from "./_validators";
+import { LoadingDots } from "~/components/loading-dots";
 
 export function ReportTimeForm(props: {
   clients: Client[];
@@ -71,7 +72,7 @@ export function ReportTimeForm(props: {
         onSubmit={form.handleSubmit(async (values) => {
           // FIXME: The `afterSubmit` should not be invoked before the request
           // But it seems like this promise doesn't resolve properly all the time
-          props.afterSubmit?.();
+          // props.afterSubmit?.();
           await reportTime(values);
           form.reset();
           props.afterSubmit?.();
@@ -200,7 +201,10 @@ export function ReportTimeForm(props: {
           )}
         />
 
-        <Button type="submit">Report time</Button>
+        <Button type="submit">
+          {form.formState.isSubmitting && <LoadingDots className="mr-2"/>}
+          Report time
+        </Button>
       </form>
     </Form>
   );
