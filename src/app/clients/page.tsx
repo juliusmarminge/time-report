@@ -1,4 +1,7 @@
+import { redirect } from "next/navigation";
+
 import { getClients } from "~/db/getters";
+import { currentUser } from "~/lib/auth";
 import { DashboardShell } from "../../components/dashboard-shell";
 import { ClientCard } from "./client-card";
 import { NewClientSheet } from "./new-client-form";
@@ -6,7 +9,9 @@ import { NewClientSheet } from "./new-client-form";
 export const runtime = "edge";
 
 export default async function ClientsPage() {
-  const clients = await getClients();
+  const user = await currentUser();
+  if (!user) redirect("/login");
+  const clients = await getClients(user.id);
 
   return (
     <DashboardShell
