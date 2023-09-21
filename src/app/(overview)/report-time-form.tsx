@@ -70,10 +70,9 @@ export function ReportTimeForm(props: {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(async (values) => {
-          // FIXME: The `afterSubmit` should not be invoked before the request
-          // But it seems like this promise doesn't resolve properly all the time
-          // props.afterSubmit?.();
+          console.log("[client] calling action");
           await reportTime(values);
+          console.log("[client] got action returned");
           form.reset();
           props.afterSubmit?.();
         })}

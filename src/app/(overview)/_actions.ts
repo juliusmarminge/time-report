@@ -24,8 +24,6 @@ export async function reportTime(props: Input<typeof reportTimeSchema>) {
   const normalizedAmount =
     input.chargeRate * currency.base ** currency.exponent;
 
-  console.log({ charged: input.chargeRate, normalized: normalizedAmount });
-
   await db.insert(timeslot).values({
     date: input.date,
     duration: String(input.duration),
@@ -37,6 +35,7 @@ export async function reportTime(props: Input<typeof reportTimeSchema>) {
   });
 
   revalidateTag("timeslots");
+  console.log("[server]: returning from action");
 }
 
 export async function deleteTimeslot(id: number) {
