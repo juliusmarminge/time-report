@@ -1,3 +1,26 @@
+diff --git a/node_modules/next-auth/index.js b/node_modules/next-auth/index.js
+index ccb7f5d..7539458 100644
+--- a/node_modules/next-auth/index.js
++++ b/node_modules/next-auth/index.js
+@@ -120,7 +120,7 @@ import { jsx as _jsx } from "react/jsx-runtime";
+  * @module index
+  */
+ import { Auth, skipCSRFCheck, raw } from "@auth/core";
+-import { cookies, headers } from "next/headers.js";
++import { cookies, headers } from "next/headers";
+ import { detectOrigin, reqWithEnvUrl, setEnvDefaults } from "./lib/env.js";
+ import { initAuth } from "./lib/index.js";
+ import { redirect } from "next/navigation";
+diff --git a/node_modules/next-auth/lib/env.js b/node_modules/next-auth/lib/env.js
+index 87d0a26..e3db1b4 100644
+--- a/node_modules/next-auth/lib/env.js
++++ b/node_modules/next-auth/lib/env.js
+@@ -1,4 +1,4 @@
+-import { NextRequest } from "next/server.js";
++import { NextRequest } from "next/server";
+ export function setEnvDefaults(config) {
+     config.secret ?? (config.secret = process.env.NEXTAUTH_SECRET ?? process.env.AUTH_SECRET);
+     config.trustHost ?? (config.trustHost = !!(process.env.AUTH_URL ??
 diff --git a/node_modules/next-auth/lib/index.js b/node_modules/next-auth/lib/index.js
 index 5a75f39..d123a9a 100644
 --- a/node_modules/next-auth/lib/index.js
@@ -21,3 +44,15 @@ index 5a75f39..d123a9a 100644
  }
  function isReqWrapper(arg) {
      return typeof arg === "function";
+diff --git a/node_modules/next-auth/src/lib/env.ts b/node_modules/next-auth/src/lib/env.ts
+index d2e83e7..bdb7727 100644
+--- a/node_modules/next-auth/src/lib/env.ts
++++ b/node_modules/next-auth/src/lib/env.ts
+@@ -1,5 +1,5 @@
+-import { NextRequest } from "next/server.js"
+-import type { headers } from "next/headers.js"
++import { NextRequest } from "next/server"
++import type { headers } from "next/headers"
+ 
+ import type { NextAuthConfig } from "./index.js"
+ 

@@ -11,27 +11,3 @@ index cae03a9..fbc9b2a 100644
              urlPathname: (store == null ? void 0 : store.urlPathname) || "/",
              isStaticGeneration: !!(store == null ? void 0 : store.isStaticGeneration)
          }, async ()=>{
-diff --git a/node_modules/next/server.js b/node_modules/next/server.js
-index 1fe002a..277dd0f 100644
---- a/node_modules/next/server.js
-+++ b/node_modules/next/server.js
-@@ -3,8 +3,8 @@ const serverExports = {
-     .NextRequest,
-   NextResponse: require('next/dist/server/web/spec-extension/response')
-     .NextResponse,
--  ImageResponse: require('next/dist/server/web/spec-extension/image-response')
--    .ImageResponse,
-+  // ImageResponse: require('next/dist/server/web/spec-extension/image-response')
-+  //   .ImageResponse,
-   userAgentFromString: require('next/dist/server/web/spec-extension/user-agent')
-     .userAgentFromString,
-   userAgent: require('next/dist/server/web/spec-extension/user-agent')
-@@ -23,7 +23,7 @@ module.exports = serverExports
- // make import { xxx } from 'next/server' work
- exports.NextRequest = serverExports.NextRequest
- exports.NextResponse = serverExports.NextResponse
--exports.ImageResponse = serverExports.ImageResponse
-+// exports.ImageResponse = serverExports.ImageResponse
- exports.userAgentFromString = serverExports.userAgentFromString
- exports.userAgent = serverExports.userAgent
- exports.URLPattern = serverExports.URLPattern
