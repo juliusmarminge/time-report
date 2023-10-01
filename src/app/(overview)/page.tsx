@@ -19,9 +19,9 @@ import {
   CardTitle,
 } from "~/ui/card";
 import { DashboardShell } from "../../components/dashboard-shell";
-import { Calendar } from "./calendar";
-import { ReportTimeSheet } from "./report-time-form";
-import { TimeslotCard } from "./timeslot-card";
+import { Calendar } from "./_components/calendar";
+import { ReportTimeSheet } from "./_components/report-time-form";
+import { TimeslotCard } from "./_components/timeslot-card";
 
 export const runtime = "edge";
 

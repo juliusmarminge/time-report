@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { getClients } from "~/db/getters";
 import { currentUser } from "~/lib/auth";
 import { DashboardShell } from "../../components/dashboard-shell";
-import { ClientCard } from "./client-card";
+import { ClientCard } from "./_components/client-card";
 import { NewClientSheet } from "./new-client-form";
 
 export const runtime = "edge";

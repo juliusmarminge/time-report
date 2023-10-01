@@ -6,6 +6,7 @@ import {
   decimal,
   index,
   int,
+  mysqlEnum,
   mysqlTableCreator,
   primaryKey,
   serial,
@@ -54,13 +55,36 @@ export const timeslot = table(
     createdAt: timestamp("created_at", { fsp: 3 }).default(
       sql`CURRENT_TIMESTAMP(3)`,
     ),
+    periodId: int("period_id"),
   },
   (timeslot) => ({
     date: index("date_idx").on(timeslot.date),
     clientIdIdx: index("clientId_idx").on(timeslot.clientId),
     tenantIdIdx: index("tenantId_idx").on(timeslot.tenantId),
+    periodIdIdx: index("periodId_idx").on(timeslot.periodId),
   }),
 );
+
+export const timeslotRelations = relations(timeslot, ({ one }) => ({
+  client: one(client, { fields: [timeslot.clientId], references: [client.id] }),
+}));
+
+export const period = table("period", {
+  id: serial("id").primaryKey(),
+  clientId: bigint("client_id", { mode: "number" }).notNull(),
+  tenantId: varchar("tenant_id", { length: 255 }).notNull(),
+  startDate: date("start_date").notNull(),
+  endDate: date("end_date").notNull(),
+  status: mysqlEnum("status", ["open", "closed"]).notNull(),
+  createdAt: timestamp("created_at", { fsp: 3 }).default(
+    sql`CURRENT_TIMESTAMP(3)`,
+  ),
+});
+
+export const periodRelations = relations(period, ({ one, many }) => ({
+  client: one(client, { fields: [period.clientId], references: [client.id] }),
+  timeslots: many(timeslot),
+}));
 
 export const users = table("user", {
   id: varchar("id", { length: 255 }).notNull().primaryKey(),

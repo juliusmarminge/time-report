@@ -3,11 +3,11 @@ import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 
+import { DesktopSidebar } from "~/components/desktop-nav";
+import { MobileNav } from "~/components/mobile-nav";
 import { TailwindIndicator } from "~/components/tailwind-indicator";
 import { ThemeProvider } from "~/components/theme-provider";
 import { cn } from "~/lib/cn";
-import { DesktopSidebar } from "./desktop-nav";
-import { MobileNav } from "./mobile-nav";
 
 const fontSans = Inter({
   subsets: ["latin"],

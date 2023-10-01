@@ -3,7 +3,7 @@ import Link from "next/link";
 import { NavButton } from "~/components/nav-button";
 import { currentUser } from "~/lib/auth";
 import { cn } from "~/lib/cn";
-import { SettingsMenu } from "../components/settings-menu";
+import { SettingsMenu } from "./settings-menu";
 
 export async function DesktopSidebar(props: { className?: string }) {
   const user = await currentUser();

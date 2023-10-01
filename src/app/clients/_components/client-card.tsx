@@ -33,7 +33,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/ui/select";
-import { deleteClient, updateClient } from "./_actions";
+import { deleteClient, updateClient } from "../_actions";
 
 export function ClientCard(props: { client: Client }) {
   const { client } = props;

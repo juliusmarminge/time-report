@@ -81,6 +81,7 @@ export async function deleteClient(props: { id: number }) {
 export async function deleteImageFromUT(imageUrl: string | undefined) {
   const imageKey = imageUrl?.split("/f/")[1];
   if (imageKey) {
-    await utapi.deleteFiles([imageKey]);
+    const res = await utapi.deleteFiles([imageKey]);
+    console.log(res);
   }
 }
