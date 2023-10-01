@@ -75,8 +75,8 @@ export const period = table("period", {
   tenantId: varchar("tenant_id", { length: 255 }).notNull(),
   startDate: date("start_date").notNull(),
   endDate: date("end_date").notNull(),
-  status: mysqlEnum("status", ["open", "closed"]).notNull(),
-  createdAt: timestamp("created_at", { fsp: 3 }).default(
+  status: mysqlEnum("status", ["open", "closed"]).notNull().default("open"),
+  createdAt: timestamp("created_at", { fsp: 3, mode: "date" }).default(
     sql`CURRENT_TIMESTAMP(3)`,
   ),
 });
