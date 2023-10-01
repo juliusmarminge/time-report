@@ -27,6 +27,13 @@ export const client = table(
     name: varchar("name", { length: 255 }).notNull(),
     image: varchar("image", { length: 255 }),
     defaultCharge: int("default_charge").notNull(),
+    defaultBillingPeriod: mysqlEnum("default_billing_period", [
+      "weekly",
+      "biweekly",
+      "monthly",
+    ])
+      .notNull()
+      .default("monthly"),
     currency: varchar("currency", { length: 3 })
       .$type<CurrencyCode>()
       .notNull(),
@@ -38,6 +45,11 @@ export const client = table(
     tenantIdIdx: index("tenantId_idx").on(client.tenantId),
   }),
 );
+
+export const clientRelations = relations(client, ({ many }) => ({
+  timeslots: many(timeslot),
+  periods: many(period),
+}));
 
 export const timeslot = table(
   "timeslot",
@@ -67,6 +79,7 @@ export const timeslot = table(
 
 export const timeslotRelations = relations(timeslot, ({ one }) => ({
   client: one(client, { fields: [timeslot.clientId], references: [client.id] }),
+  period: one(period, { fields: [timeslot.periodId], references: [period.id] }),
 }));
 
 export const period = table("period", {
@@ -81,9 +94,8 @@ export const period = table("period", {
   ),
 });
 
-export const periodRelations = relations(period, ({ one, many }) => ({
+export const periodRelations = relations(period, ({ one }) => ({
   client: one(client, { fields: [period.clientId], references: [client.id] }),
-  timeslots: many(timeslot),
 }));
 
 export const users = table("user", {

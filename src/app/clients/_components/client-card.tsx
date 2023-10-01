@@ -77,11 +77,12 @@ export function ClientCard(props: { client: Client }) {
           <Pencil1Icon className="h-4 w-4" />
         </Button>
       </div>
-      <CardContent className="p-6 pt-0">
+      <CardContent className="flex flex-col gap-4 p-6 pt-0">
         {client.curr && client.defaultCharge && (
           <p className="text-base text-muted-foreground">
             {`Default charge: `}
             {toDecimal(defaultCharge, (money) => formatMoney(money))}
+            {` `}/ hour, billed {client.defaultBillingPeriod}
           </p>
         )}
       </CardContent>
@@ -101,6 +102,9 @@ function EditingClientCard(props: {
   const [editingChargeRate, setEditingChargeRate] = useState(
     toDecimal(props.defaultCharge),
   );
+  const [editingDefaultPeriod, setEditingDefaultPeriod] = useState(
+    client.defaultBillingPeriod,
+  );
   const [editingCurrency, setEditingCurrency] = useState<string>(client.curr);
 
   const updateClientInfo = async () => {
@@ -109,6 +113,7 @@ function EditingClientCard(props: {
       name: editingName,
       currency: editingCurrency,
       defaultCharge: editingChargeRate,
+      defaultBillingPeriod: editingDefaultPeriod,
     });
     setUpdating(false);
     props.setIsEditing(false);
@@ -174,7 +179,7 @@ function EditingClientCard(props: {
           </AlertDialogContent>
         </AlertDialog>
       </div>
-      <CardContent className="p-6 pt-0">
+      <CardContent className="flex flex-col gap-4 p-6 pt-0">
         {client.curr && client.defaultCharge && (
           <Label>
             <span className="text-sm font-medium text-muted-foreground">
@@ -205,6 +210,26 @@ function EditingClientCard(props: {
             </div>
           </Label>
         )}
+        <Label>
+          <span className="text-sm font-medium text-muted-foreground">
+            Default billing period
+          </span>
+          <Select
+            onValueChange={(val) => setEditingDefaultPeriod(val as "weekly")}
+            value={editingDefaultPeriod}
+          >
+            <SelectTrigger className="capitalize">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {["weekly", "biweekly", "monthly"].map((period) => (
+                <SelectItem key={period} value={period} className="capitalize">
+                  {period}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </Label>
       </CardContent>
     </Card>
   );

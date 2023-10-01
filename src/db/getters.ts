@@ -11,6 +11,7 @@ export const getClients = async (userId: string) => {
       name: client.name,
       image: client.image,
       defaultCharge: client.defaultCharge,
+      defaultBillingPeriod: client.defaultBillingPeriod,
       curr: client.currency,
       createdAt: client.createdAt,
     })

@@ -46,6 +46,7 @@ export function NewClientForm(props: { afterSubmit?: () => void }) {
     defaultValues: {
       name: "",
       currency: "USD",
+      defaultBillingPeriod: "monthly",
     },
   });
 
@@ -209,6 +210,39 @@ export function NewClientForm(props: { afterSubmit?: () => void }) {
                   <FormMessage />
                 </FormItem>
               </div>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="defaultBillingPeriod"
+          render={({ field }) => (
+            <FormItem className="flex">
+              <FormLabel>Billing period</FormLabel>
+              <FormDescription>
+                The default billing period for this client. How often you send
+                invoices to this client.
+              </FormDescription>
+              <Select onValueChange={field.onChange} value={field.value}>
+                <FormControl>
+                  <SelectTrigger className="w-full capitalize">
+                    <SelectValue />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {["weekly", "biweekly", "monthly"].map((period) => (
+                    <SelectItem
+                      key={period}
+                      value={period}
+                      className="capitalize"
+                    >
+                      {period}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
               <FormMessage />
             </FormItem>
           )}

@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 
 import { getClients } from "~/db/getters";
 import { currentUser } from "~/lib/auth";
+import { withUnstableCache } from "~/lib/cache";
 import { DashboardShell } from "../../components/dashboard-shell";
 import { ClientCard } from "./_components/client-card";
 import { NewClientSheet } from "./_components/new-client-form";
@@ -11,7 +12,12 @@ export const runtime = "edge";
 export default async function ClientsPage() {
   const user = await currentUser();
   if (!user) redirect("/login");
-  const clients = await getClients(user.id);
+
+  const clients = await withUnstableCache({
+    fn: getClients,
+    args: [user.id],
+    tags: ["clients"],
+  });
 
   return (
     <DashboardShell

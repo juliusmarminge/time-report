@@ -1,4 +1,4 @@
-import { cache } from "react";
+import { cache, Suspense } from "react";
 import { redirect } from "next/navigation";
 import { HamburgerMenuIcon } from "@radix-ui/react-icons";
 import { format, parseISO, startOfMonth } from "date-fns";
@@ -237,7 +237,9 @@ async function SidePanel(props: {
         {props.timeslots.map((slot) => (
           <TimeslotCard key={slot.id} slot={slot} />
         ))}
-        <ReportTimeSheet clients={props.clients} />
+        <Suspense>
+          <ReportTimeSheet clients={props.clients} />
+        </Suspense>
       </CardContent>
     </Card>
   );

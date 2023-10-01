@@ -1,13 +1,14 @@
 "use server";
 
 import { revalidateTag } from "next/cache";
+import { endOfMonth, startOfMonth } from "date-fns";
 import { eq } from "drizzle-orm";
 import { utapi } from "uploadthing/server";
 import type { Input } from "valibot";
 import { parseAsync } from "valibot";
 
 import { db } from "~/db";
-import { client } from "~/db/schema";
+import { client, period } from "~/db/schema";
 import { currentUser } from "~/lib/auth";
 import type { CurrencyCode } from "../../lib/currencies";
 import { currencies } from "../../lib/currencies";
@@ -25,11 +26,19 @@ export async function createClient(props: Input<typeof createClientSchema>) {
   const normalizedAmount =
     input.defaultCharge * currency.base ** currency.exponent;
 
-  await db.insert(client).values({
+  const newClient = await db.insert(client).values({
     name: input.name,
     currency: input.currency as CurrencyCode,
     defaultCharge: normalizedAmount,
+    defaultBillingPeriod: input.defaultBillingPeriod,
     image: input.image,
+    tenantId: user.id,
+  });
+
+  await db.insert(period).values({
+    clientId: parseInt(newClient.insertId),
+    startDate: startOfMonth(new Date()),
+    endDate: endOfMonth(new Date()),
     tenantId: user.id,
   });
 
@@ -57,6 +66,7 @@ export async function updateClient(
       name: input.name,
       currency: input.currency as CurrencyCode,
       defaultCharge: normalizedAmount,
+      defaultBillingPeriod: input.defaultBillingPeriod,
     })
     .where(eq(client.id, clientId));
 
