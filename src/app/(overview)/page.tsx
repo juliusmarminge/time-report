@@ -110,7 +110,7 @@ export default async function IndexPage(props: {
         <Button className="hidden sm:inline-flex">Close month</Button>,
       ]}
     >
-      <section className="flex gap-4 overflow-x-scroll md:grid md:grid-cols-2 lg:grid-cols-4">
+      <section className="flex gap-4 overflow-x-scroll md:grid md:grid-cols-2 lg:grid-cols-3">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
@@ -154,7 +154,7 @@ export default async function IndexPage(props: {
             </p>
           </CardContent>
         </Card>
-        <Card className="bg-muted">
+        {/* <Card className="bg-muted">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">
               Estimated income
@@ -174,7 +174,7 @@ export default async function IndexPage(props: {
               after fees and taxes
             </p>
           </CardContent>
-        </Card>
+        </Card> */}
       </section>
 
       <section className="flex flex-col gap-4 sm:grid md:grid-cols-2 lg:grid-cols-4">
