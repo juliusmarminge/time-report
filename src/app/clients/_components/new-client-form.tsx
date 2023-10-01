@@ -37,8 +37,8 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "~/ui/sheet";
-import { createClient, deleteImageFromUT } from "./_actions";
-import { createClientSchema } from "./_validators";
+import { createClient, deleteImageFromUT } from "../_actions";
+import { createClientSchema } from "../_validators";
 
 export function NewClientForm(props: { afterSubmit?: () => void }) {
   const form = useForm({

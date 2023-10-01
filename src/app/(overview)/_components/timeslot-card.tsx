@@ -31,7 +31,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/ui/select";
-import { deleteTimeslot, updateTimeslot } from "./_actions";
+import { deleteTimeslot, updateTimeslot } from "../_actions";
 
 export function TimeslotCard(props: { slot: Timeslot }) {
   const [isEditing, setIsEditing] = useState(false);

@@ -48,8 +48,8 @@ import {
   SheetTrigger,
 } from "~/ui/sheet";
 import { Textarea } from "~/ui/textarea";
-import { reportTime } from "./_actions";
-import { reportTimeSchema } from "./_validators";
+import { reportTime } from "../_actions";
+import { reportTimeSchema } from "../_validators";
 
 export function ReportTimeForm(props: {
   clients: Client[];

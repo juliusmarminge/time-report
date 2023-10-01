@@ -4,7 +4,7 @@ import { getClients } from "~/db/getters";
 import { currentUser } from "~/lib/auth";
 import { DashboardShell } from "../../components/dashboard-shell";
 import { ClientCard } from "./_components/client-card";
-import { NewClientSheet } from "./new-client-form";
+import { NewClientSheet } from "./_components/new-client-form";
 
 export const runtime = "edge";
 
