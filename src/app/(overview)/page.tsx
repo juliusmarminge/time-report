@@ -1,16 +1,14 @@
 import { cache, Suspense } from "react";
 import { redirect } from "next/navigation";
-import { HamburgerMenuIcon } from "@radix-ui/react-icons";
 import { format, parseISO, startOfMonth } from "date-fns";
 import { add, dinero, multiply, toDecimal } from "dinero.js";
 
 import type { Client, Timeslot } from "~/db/getters";
-import { getClients, getTimeslots } from "~/db/getters";
+import { getClients, getOpenPeriods, getTimeslots } from "~/db/getters";
 import { currentUser } from "~/lib/auth";
 import { withUnstableCache } from "~/lib/cache";
 import type { CurrencyCode } from "~/lib/currencies";
 import { createConverter, currencies, formatMoney } from "~/lib/currencies";
-import { Button } from "~/ui/button";
 import {
   Card,
   CardContent,
@@ -20,6 +18,7 @@ import {
 } from "~/ui/card";
 import { DashboardShell } from "../../components/dashboard-shell";
 import { Calendar } from "./_components/calendar";
+import { ClosePeriodSheet } from "./_components/close-periods";
 import { ReportTimeSheet } from "./_components/report-time-form";
 import { TimeslotCard } from "./_components/timeslot-card";
 
@@ -104,10 +103,9 @@ export default async function IndexPage(props: {
       description="Browse a summary of how your business is doing this month."
       className="gap-4"
       headerActions={[
-        <Button size="icon" variant="outline">
-          <HamburgerMenuIcon className="h-5 w-5" />
-        </Button>,
-        <Button className="hidden sm:inline-flex">Close month</Button>,
+        <Suspense>
+          <ClosePeriod />
+        </Suspense>,
       ]}
     >
       <section className="flex gap-4 overflow-x-scroll md:grid md:grid-cols-2 lg:grid-cols-3">
@@ -189,6 +187,15 @@ export default async function IndexPage(props: {
       </section>
     </DashboardShell>
   );
+}
+
+async function ClosePeriod() {
+  const user = await currentUser();
+  if (!user) return null;
+
+  const openPeriods = await getOpenPeriods(user.id);
+
+  return <ClosePeriodSheet openPeriods={openPeriods} />;
 }
 
 async function SidePanel(props: {
