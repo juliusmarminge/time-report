@@ -72,6 +72,8 @@ export default async function IndexPage(props: {
     tags: ["clients"],
   });
 
+  console.log("Got clients for userId", user.id, clients);
+
   const timeslots = await withUnstableCache({
     fn: getTimeslots,
     args: [startOfMonth(date ?? new Date()), user.id, { mode: "month" }],
@@ -193,7 +195,11 @@ async function ClosePeriod() {
   const user = await currentUser();
   if (!user) return null;
 
-  const openPeriods = await getOpenPeriods(user.id);
+  const openPeriods = await withUnstableCache({
+    fn: getOpenPeriods,
+    args: [user.id],
+    tags: ["periods"],
+  });
 
   return <ClosePeriodSheet openPeriods={openPeriods} />;
 }

@@ -6,7 +6,8 @@ import { parseAsync } from "valibot";
 import type { Input } from "valibot";
 
 import { db } from "~/db";
-import { timeslot } from "~/db/schema";
+import { getOpenPeriods } from "~/db/getters";
+import { period, timeslot } from "~/db/schema";
 import { currentUser } from "~/lib/auth";
 import type { CurrencyCode } from "~/lib/currencies";
 import { currencies } from "~/lib/currencies";
@@ -39,6 +40,9 @@ export async function reportTime(props: Input<typeof reportTimeSchema>) {
 }
 
 export async function deleteTimeslot(id: number) {
+  const user = await currentUser();
+  if (!user) return;
+
   await db.delete(timeslot).where(eq(timeslot.id, id));
 
   revalidateTag("timeslots");
@@ -48,6 +52,9 @@ export async function updateTimeslot(
   id: number,
   props: Input<typeof updateSchema>,
 ) {
+  const user = await currentUser();
+  if (!user) return;
+
   const input = await parseAsync(updateSchema, props);
   const currency = input.currency
     ? currencies[input.currency as CurrencyCode]
@@ -67,4 +74,32 @@ export async function updateTimeslot(
     .where(eq(timeslot.id, id));
 
   revalidateTag("timeslots");
+}
+
+export async function closePeriod(
+  id: number,
+  props: {
+    openNewPeriod: boolean;
+  },
+) {
+  const user = await currentUser();
+  if (!user) return;
+
+  const openPeriods = await getOpenPeriods(user.id);
+  const p = openPeriods.find((p) => p.period.id === id);
+
+  if (!p) {
+    throw new Error("Period not found");
+  }
+
+  await db
+    .update(period)
+    .set({ status: "closed", closedAt: new Date() })
+    .where(eq(period.id, id));
+
+  if (props.openNewPeriod) {
+    // TODO:
+  }
+
+  revalidateTag("periods");
 }

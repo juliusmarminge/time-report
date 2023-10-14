@@ -19,6 +19,8 @@ export default async function ClientsPage() {
     tags: ["clients"],
   });
 
+  console.log("Got clients for userId", user.id, clients);
+
   return (
     <DashboardShell
       title="Clients"

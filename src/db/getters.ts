@@ -54,10 +54,20 @@ export const getTimeslots = async (
 export type Timeslot = Awaited<ReturnType<typeof getTimeslots>>[number];
 
 export const getOpenPeriods = async (userId: string) => {
+  const p = await db.query.period.findMany({
+    where: and(eq(period.tenantId, userId), eq(period.status, "open")),
+    with: {
+      client: true,
+      timeslot: true,
+    },
+  });
+  console.log("relational", p);
+
   const periods = await db
     .select()
     .from(period)
     .innerJoin(client, eq(period.clientId, client.id))
+    .innerJoin(timeslot, eq(timeslot.periodId, period.id))
     .where(and(eq(period.tenantId, userId), eq(period.status, "open")));
 
   return periods;
