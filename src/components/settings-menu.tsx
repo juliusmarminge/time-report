@@ -30,6 +30,7 @@ export function SettingsMenu(props: {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button
+          disabled={!user}
           className={cn(
             "justify-start gap-2 bg-popover py-6 text-popover-foreground hover:bg-zinc-300 dark:hover:bg-zinc-950",
             props.className,
