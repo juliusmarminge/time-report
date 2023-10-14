@@ -201,6 +201,8 @@ async function ClosePeriod() {
     tags: ["periods"],
   });
 
+  console.log("Got open periods for userId", user.id, openPeriods);
+
   return <ClosePeriodSheet openPeriods={openPeriods} />;
 }
 

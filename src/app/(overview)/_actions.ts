@@ -86,7 +86,7 @@ export async function closePeriod(
   if (!user) return;
 
   const openPeriods = await getOpenPeriods(user.id);
-  const p = openPeriods.find((p) => p.period.id === id);
+  const p = openPeriods.find((p) => p.id === id);
 
   if (!p) {
     throw new Error("Period not found");

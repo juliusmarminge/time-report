@@ -2,8 +2,10 @@
 
 import { Fragment, useEffect, useState } from "react";
 import { format } from "date-fns";
+import { dinero, toDecimal } from "dinero.js";
 
 import type { Period } from "~/db/getters";
+import { currencies, formatMoney } from "~/lib/currencies";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -32,7 +34,7 @@ export function ClosePeriodSheet(props: { openPeriods: Period[] }) {
 
   useEffect(() => {
     const hasExpiredPeriods = props.openPeriods.some(
-      (period) => period.period.endDate < new Date(),
+      (period) => period.endDate < new Date(),
     );
     setExpiredPeriodsDialogOpen(hasExpiredPeriods);
   }, []);
@@ -51,11 +53,11 @@ export function ClosePeriodSheet(props: { openPeriods: Period[] }) {
             </SheetDescription>
           </SheetHeader>
           <div className="flex flex-col gap-4">
-            {props.openPeriods.map(({ client, period, timeslot }, idx) => (
+            {props.openPeriods.map((period, idx) => (
               <Fragment key={period.id}>
-                <div className="flex flex-col gap-1">
+                <div className="flex flex-col gap-2">
                   <div className="flex items-center gap-2">
-                    <h2 className="text-lg font-bold">{client.name}</h2>
+                    <h2 className="text-lg font-bold">{period.client.name}</h2>
                     <p className="text-sm text-muted-foreground">
                       {format(period.startDate, "MMM do")} to{" "}
                       {format(period.endDate, "MMM do")}
@@ -66,7 +68,43 @@ export function ClosePeriodSheet(props: { openPeriods: Period[] }) {
                       </Badge>
                     )}
                   </div>
-                  <p className="text-sm text-muted-foreground">{`You have ${timeslot} timeslots.`}</p>
+                  <p className="text-sm">
+                    {period.timeslot.length} reported times for a total of{" "}
+                    <b>
+                      {toDecimal(
+                        dinero({
+                          // FIXME: This is wrong maths that doesn't account for currency
+                          amount: period.timeslot.reduce(
+                            (acc, slot) => slot.chargeRate + acc,
+                            0,
+                          ),
+                          currency: currencies.USD,
+                        }),
+                        formatMoney,
+                      )}
+                    </b>
+                  </p>
+                  <ul>
+                    {period.timeslot.map((slot) => {
+                      const chargeRate = dinero({
+                        amount: slot.chargeRate,
+                        currency: currencies[slot.currency],
+                      });
+                      return (
+                        <div>
+                          <p className="text-sm text-muted-foreground">
+                            {format(slot.date, "MMM do")}
+                            {` - `}
+                            {slot.duration}
+                            {`h @ `}
+                            {toDecimal(chargeRate, (money) =>
+                              formatMoney(money),
+                            )}
+                          </p>
+                        </div>
+                      );
+                    })}
+                  </ul>
                   <div className="flex flex-col gap-2">
                     <Button
                       onClick={async () => {

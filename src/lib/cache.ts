@@ -13,7 +13,7 @@ export async function withUnstableCache<
       const result = await opts.fn(...args);
       return superjson.serialize(result);
     },
-    undefined,
+    opts.tags,
     { tags: opts.tags },
   )(...opts.args);
 
