@@ -79,7 +79,8 @@ export function ClosePeriodSheet(props: { openPeriods: Period[] }) {
                               slot.chargeRate * +slot.duration + acc,
                             0,
                           ),
-                          currency: currencies[period.timeslot[0].currency],
+                          currency:
+                            currencies[period.timeslot[0].currency ?? "USD"],
                         }),
                         formatMoney,
                       )}
