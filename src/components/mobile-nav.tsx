@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { HamburgerMenuIcon } from "@radix-ui/react-icons";
+import { format } from "date-fns";
 
 import { NavButton } from "~/components/nav-button";
 import { cn } from "~/lib/cn";
@@ -15,7 +16,7 @@ export function MobileNav(props: { className?: string }) {
       )}
     >
       <Link
-        href="/"
+        href={`/?date=${format(new Date(), "yyyy-MM-dd")}`}
         className="flex cursor-pointer items-center stroke-stone-800 text-2xl font-semibold tracking-tight duration-200 hover:stroke-stone-700 hover:text-stone-700 dark:stroke-stone-500 dark:text-stone-200 dark:hover:stroke-white dark:hover:text-white"
       >
         <span className="bg-gradient-to-tr from-gray-800 to-gray-500 bg-clip-text text-transparent dark:from-gray-100 dark:to-gray-400">

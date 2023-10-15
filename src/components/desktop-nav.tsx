@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { format } from "date-fns";
 
 import { NavButton } from "~/components/nav-button";
 import { currentUser } from "~/lib/auth";
@@ -26,7 +27,7 @@ export async function DesktopSidebar(props: { className?: string }) {
       </Link>
 
       <div className="flex flex-col gap-4 p-4">
-        <NavButton href="/">
+        <NavButton href={`/?date=${format(new Date(), "yyyy-MM-dd")}`}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
