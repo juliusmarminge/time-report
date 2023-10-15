@@ -75,10 +75,11 @@ export function ClosePeriodSheet(props: { openPeriods: Period[] }) {
                         dinero({
                           // FIXME: This is wrong maths that doesn't account for currency
                           amount: period.timeslot.reduce(
-                            (acc, slot) => slot.chargeRate + acc,
+                            (acc, slot) =>
+                              slot.chargeRate * +slot.duration + acc,
                             0,
                           ),
-                          currency: currencies.USD,
+                          currency: currencies[period.timeslot[0].currency],
                         }),
                         formatMoney,
                       )}
