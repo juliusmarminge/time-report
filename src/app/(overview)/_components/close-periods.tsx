@@ -28,7 +28,7 @@ import {
 } from "~/ui/sheet";
 import { closePeriod } from "../_actions";
 
-export function PeriodCard(props: { period: Period }) {
+function PeriodCard(props: { period: Period }) {
   const { period } = props;
 
   const nSlots = period.timeslot.length;
