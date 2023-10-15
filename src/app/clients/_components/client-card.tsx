@@ -4,7 +4,7 @@ import { useState } from "react";
 import { CheckIcon, Pencil1Icon, TrashIcon } from "@radix-ui/react-icons";
 import { format } from "date-fns";
 import type { Dinero } from "dinero.js";
-import { dinero, toDecimal } from "dinero.js";
+import { add, dinero, toDecimal } from "dinero.js";
 
 import { LoadingDots } from "~/components/loading-dots";
 import type { Client } from "~/db/getters";
@@ -21,6 +21,7 @@ import {
   AlertDialogTrigger,
 } from "~/ui/alert-dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "~/ui/avatar";
+import { Badge } from "~/ui/badge";
 import { Button } from "~/ui/button";
 import { Card, CardContent, CardHeader } from "~/ui/card";
 import { Input } from "~/ui/input";
@@ -39,7 +40,7 @@ export function ClientCard(props: { client: Client }) {
   const { client } = props;
   const defaultCharge = dinero({
     amount: client.defaultCharge,
-    currency: currencies[client.curr],
+    currency: currencies[client.currency],
   });
 
   const [isEditing, setIsEditing] = useState(false);
@@ -53,6 +54,27 @@ export function ClientCard(props: { client: Client }) {
     );
   }
 
+  const sortedPeriods = client.periods.sort((a, b) =>
+    a.startDate < b.startDate ? 1 : -1,
+  );
+
+  const periodAmounts = sortedPeriods.map((p) =>
+    dinero({
+      // FIXME: This is wrong maths that doesn't account
+      // for differnt currencies in the same period
+      amount: p.timeslot.reduce(
+        (acc, slot) => slot.chargeRate * +slot.duration + acc,
+        0,
+      ),
+      currency: currencies[p.timeslot[0]?.currency ?? "USD"],
+    }),
+  );
+
+  const clientTotal = periodAmounts.reduce(
+    (acc, amount) => add(acc, amount),
+    dinero({ amount: 0, currency: currencies[client.currency] }),
+  );
+
   return (
     <Card>
       <div className="flex items-start justify-between p-6">
@@ -64,7 +86,16 @@ export function ClientCard(props: { client: Client }) {
           <div>
             <h2 className="text-xl font-bold">{client.name}</h2>
             <p className="text-sm text-muted-foreground">
-              Created: {format(client.createdAt, "MMMM do yyyy")}
+              Created: {format(client.createdAt, "MMMM do yyyy")},{" "}
+              {client.currency && client.defaultCharge && (
+                <p className="text-sm text-muted-foreground">
+                  {`Billed `}
+                  {client.defaultBillingPeriod}
+                  {` at `}
+                  {toDecimal(defaultCharge, (money) => formatMoney(money))}
+                  {` an hour `}
+                </p>
+              )}
             </p>
           </div>
         </CardHeader>
@@ -78,13 +109,42 @@ export function ClientCard(props: { client: Client }) {
         </Button>
       </div>
       <CardContent className="flex flex-col gap-4 p-6 pt-0">
-        {client.curr && client.defaultCharge && (
-          <p className="text-base text-muted-foreground">
-            {`Default charge: `}
-            {toDecimal(defaultCharge, (money) => formatMoney(money))}
-            {` `}/ hour, billed {client.defaultBillingPeriod}
-          </p>
-        )}
+        <h3 className="text-base font-semibold">
+          Total invoiced: {toDecimal(clientTotal, formatMoney)}
+        </h3>
+
+        <div className="flex flex-col gap-2">
+          <h3 className="text-base font-semibold">Billing Periods</h3>
+          <ul className="flex flex-col gap-2">
+            {sortedPeriods.map((p, i) => (
+              <div className="flex flex-col gap-1">
+                <div key={p.id} className="flex items-center gap-2">
+                  <Badge
+                    className="capitalize"
+                    variant={p.status === "open" ? "default" : "secondary"}
+                  >
+                    {p.status}
+                  </Badge>
+                  {p.endDate < new Date() && p.status === "open" && (
+                    <Badge variant="destructive" className="ml-auto">
+                      Expired
+                    </Badge>
+                  )}
+                  <p className="text-sm text-muted-foreground">
+                    {format(p.startDate, "MMM do")} to{" "}
+                    {format(p.endDate, "MMM do")}
+                  </p>
+                </div>
+                <p className="text-sm">
+                  {p.timeslot.reduce((acc, slot) => +slot.duration + acc, 0)}{" "}
+                  hours reported for a total of{" "}
+                  <b>{toDecimal(periodAmounts[i], formatMoney)}</b>
+                </p>
+              </div>
+            ))}
+          </ul>
+        </div>
+        {/* <pre>{JSON.stringify(client, null, 4)}</pre> */}
       </CardContent>
     </Card>
   );
@@ -105,7 +165,9 @@ function EditingClientCard(props: {
   const [editingDefaultPeriod, setEditingDefaultPeriod] = useState(
     client.defaultBillingPeriod,
   );
-  const [editingCurrency, setEditingCurrency] = useState<string>(client.curr);
+  const [editingCurrency, setEditingCurrency] = useState<string>(
+    client.currency,
+  );
 
   const updateClientInfo = async () => {
     setUpdating(true);
@@ -180,7 +242,7 @@ function EditingClientCard(props: {
         </AlertDialog>
       </div>
       <CardContent className="flex flex-col gap-4 p-6 pt-0">
-        {client.curr && client.defaultCharge && (
+        {client.currency && client.defaultCharge && (
           <Label>
             <span className="text-sm font-medium text-muted-foreground">
               Charge rate
