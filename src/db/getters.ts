@@ -2,7 +2,7 @@ import { endOfMonth, startOfMonth } from "date-fns";
 import { and, between, eq } from "drizzle-orm";
 
 import { db } from ".";
-import { client, timeslot } from "./schema";
+import { client, period, timeslot } from "./schema";
 
 export const getClients = async (userId: string) => {
   const clients = await db
@@ -52,3 +52,16 @@ export const getTimeslots = async (
   return slots;
 };
 export type Timeslot = Awaited<ReturnType<typeof getTimeslots>>[number];
+
+export const getOpenPeriods = async (userId: string) => {
+  const periods = await db.query.period.findMany({
+    where: and(eq(period.tenantId, userId), eq(period.status, "open")),
+    with: {
+      client: true,
+      timeslot: true,
+    },
+  });
+
+  return periods;
+};
+export type Period = Awaited<ReturnType<typeof getOpenPeriods>>[number];

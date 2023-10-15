@@ -58,7 +58,7 @@ export const timeslot = table(
     clientId: bigint("client_id", { mode: "number" }).notNull(),
     tenantId: varchar("tenant_id", { length: 255 }).notNull(),
     date: date("date").notNull(),
-    duration: decimal("duration", { scale: 2, precision: 4 }).notNull(),
+    duration: decimal("duration", { scale: 2, precision: 5 }).notNull(),
     description: text("description"),
     chargeRate: int("charge_rate").notNull(),
     currency: varchar("currency", { length: 3 })
@@ -88,14 +88,16 @@ export const period = table("period", {
   tenantId: varchar("tenant_id", { length: 255 }).notNull(),
   startDate: date("start_date").notNull(),
   endDate: date("end_date").notNull(),
+  closedAt: timestamp("closed_at", { fsp: 3, mode: "date" }),
   status: mysqlEnum("status", ["open", "closed"]).notNull().default("open"),
   createdAt: timestamp("created_at", { fsp: 3, mode: "date" }).default(
     sql`CURRENT_TIMESTAMP(3)`,
   ),
 });
 
-export const periodRelations = relations(period, ({ one }) => ({
+export const periodRelations = relations(period, ({ one, many }) => ({
   client: one(client, { fields: [period.clientId], references: [client.id] }),
+  timeslot: many(timeslot),
 }));
 
 export const users = table("user", {
