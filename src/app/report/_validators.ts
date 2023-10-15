@@ -2,6 +2,7 @@ import { parse } from "date-fns";
 import {
   coerce,
   date,
+  literal,
   number,
   object,
   optional,
@@ -27,3 +28,15 @@ export const updateSchema = object({
   currency: string(),
   chargeRate: transform(string(), Number),
 });
+
+export const closePeriodSchema = union([
+  object({
+    openNewPeriod: literal(false),
+  }),
+  object({
+    openNewPeriod: literal(true),
+    clientId: number(),
+    periodStart: date(),
+    periodEnd: date(),
+  }),
+]);
