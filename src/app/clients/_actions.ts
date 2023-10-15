@@ -43,6 +43,7 @@ export async function createClient(props: Input<typeof createClientSchema>) {
   });
 
   revalidateTag("clients");
+  revalidateTag("periods");
 }
 
 export async function updateClient(

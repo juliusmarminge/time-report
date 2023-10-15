@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidateTag } from "next/cache";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { parseAsync } from "valibot";
 import type { Input } from "valibot";
 
@@ -25,6 +25,20 @@ export async function reportTime(props: Input<typeof reportTimeSchema>) {
   const normalizedAmount =
     input.chargeRate * currency.base ** currency.exponent;
 
+  const slotPeriod = await db.query.period.findFirst({
+    where: and(
+      eq(period.status, "open"),
+      eq(period.tenantId, user.id),
+      eq(period.clientId, input.clientId),
+    ),
+  });
+  if (!slotPeriod) {
+    // TODO: Create a new one
+    throw new Error("No open period found");
+  }
+
+  console.log("Inserting timeslot for period", slotPeriod.id);
+
   await db.insert(timeslot).values({
     date: input.date,
     duration: String(input.duration),
@@ -33,10 +47,11 @@ export async function reportTime(props: Input<typeof reportTimeSchema>) {
     description: input.description,
     clientId: input.clientId,
     tenantId: user.id,
+    periodId: slotPeriod.id,
   });
 
   revalidateTag("timeslots");
-  console.log("[server]: returning from action");
+  revalidateTag("periods");
 }
 
 export async function deleteTimeslot(id: number) {
@@ -46,6 +61,7 @@ export async function deleteTimeslot(id: number) {
   await db.delete(timeslot).where(eq(timeslot.id, id));
 
   revalidateTag("timeslots");
+  revalidateTag("periods");
 }
 
 export async function updateTimeslot(
@@ -74,6 +90,7 @@ export async function updateTimeslot(
     .where(eq(timeslot.id, id));
 
   revalidateTag("timeslots");
+  revalidateTag("periods");
 }
 
 export async function closePeriod(

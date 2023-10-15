@@ -58,7 +58,7 @@ export const timeslot = table(
     clientId: bigint("client_id", { mode: "number" }).notNull(),
     tenantId: varchar("tenant_id", { length: 255 }).notNull(),
     date: date("date").notNull(),
-    duration: decimal("duration", { scale: 2, precision: 4 }).notNull(),
+    duration: decimal("duration", { scale: 2, precision: 5 }).notNull(),
     description: text("description"),
     chargeRate: int("charge_rate").notNull(),
     currency: varchar("currency", { length: 3 })

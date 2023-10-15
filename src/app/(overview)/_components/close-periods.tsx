@@ -91,7 +91,7 @@ export function ClosePeriodSheet(props: { openPeriods: Period[] }) {
                         currency: currencies[slot.currency],
                       });
                       return (
-                        <div>
+                        <div key={slot.id}>
                           <p className="text-sm text-muted-foreground">
                             {format(slot.date, "MMM do")}
                             {` - `}
