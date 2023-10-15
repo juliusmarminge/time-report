@@ -30,7 +30,7 @@ export function MobileNav(props: { className?: string }) {
           </Button>
         </SheetTrigger>
         <SheetContent side="left" className="flex flex-col gap-4 p-4">
-          <NavButton href="/" inSheet>
+          <NavButton href="/report" inSheet>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"

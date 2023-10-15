@@ -32,7 +32,7 @@ export default async function IndexPage(props: {
   if (!user) redirect("/login");
 
   if (!props.searchParams.date) {
-    redirect("/?date=" + format(new Date(), "yyyy-MM-dd"));
+    redirect("/report?date=" + format(new Date(), "yyyy-MM-dd"));
   }
   const date = parseISO(`${props.searchParams.date}T00:00:00.000Z`);
 
@@ -76,8 +76,8 @@ export default async function IndexPage(props: {
 
   return (
     <DashboardShell
-      title="Overview"
-      description="Browse a summary of how your business is doing this month."
+      title="Report Time"
+      description="Browse how your business is doing this month and report time."
       className="gap-4"
       headerActions={[
         <Suspense>
