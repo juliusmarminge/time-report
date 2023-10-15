@@ -1,4 +1,4 @@
-import { endOfMonth, startOfMonth } from "date-fns";
+import { add, endOfMonth, startOfMonth, sub } from "date-fns";
 import { and, between, eq } from "drizzle-orm";
 
 import { db } from ".";
@@ -43,7 +43,13 @@ export const getTimeslots = async (
         eq(timeslot.tenantId, userId),
         opts.mode === "exact"
           ? eq(timeslot.date, date)
-          : between(timeslot.date, startOfMonth(date), endOfMonth(date)),
+          : between(
+              timeslot.date,
+              // pad the month with a week on either side
+              // to account for timeslots that start/end in the previous/next month
+              sub(startOfMonth(date), { days: 6 }),
+              add(endOfMonth(date), { days: 6 }),
+            ),
       ),
     );
 
