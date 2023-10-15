@@ -89,7 +89,7 @@ export function ClientCard(props: { client: Client }) {
               Created: {format(client.createdAt, "MMMM do yyyy")},{" "}
               {client.currency && client.defaultCharge && (
                 <p className="text-sm text-muted-foreground">
-                  {`Billed `}
+                  {`Invoiced `}
                   {client.defaultBillingPeriod}
                   {` at `}
                   {toDecimal(defaultCharge, (money) => formatMoney(money))}
