@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { format } from "date-fns";
 import { useDayRender } from "react-day-picker";
@@ -15,21 +15,35 @@ export function Calendar(props: {
   timeslots: Record<string, Timeslot[]> | null;
 }) {
   const { date: selectedDate, timeslots } = props;
+  const [month, setMonth] = useState(selectedDate);
   const router = useRouter();
+
+  const [_, startTransition] = useTransition();
 
   return (
     <CalendarCore
       className="col-span-3 h-full overflow-y-scroll"
       mode="single"
-      selected={selectedDate}
-      onSelect={(date) => {
+      selected={selectedDate ?? new Date()}
+      month={month}
+      onMonthChange={(month) => {
         const url = new URL(window.location.href);
-        if (date) {
-          url.searchParams.set("date", format(date, "yyyy-MM-dd"));
-        } else {
-          url.searchParams.delete("date");
-        }
-        router.push(url.href, { scroll: false });
+        url.searchParams.set("date", format(month, "yyyy-MM-dd"));
+
+        startTransition(() => {
+          router.push(url.href, { scroll: false });
+          setMonth(month);
+        });
+      }}
+      onSelect={(date) => {
+        if (!date) return;
+
+        const url = new URL(window.location.href);
+        url.searchParams.set("date", format(date, "yyyy-MM-dd"));
+        startTransition(() => {
+          router.push(url.href, { scroll: false });
+          setMonth(date);
+        });
       }}
       components={{
         Day: (props) => {

@@ -1,14 +1,15 @@
-import { cache, Suspense } from "react";
+import { Suspense } from "react";
 import { redirect } from "next/navigation";
 import { format, parseISO, startOfMonth } from "date-fns";
-import { add, dinero, multiply, toDecimal } from "dinero.js";
+import { toDecimal } from "dinero.js";
 
 import type { Client, Timeslot } from "~/db/getters";
 import { getClients, getOpenPeriods, getTimeslots } from "~/db/getters";
 import { currentUser } from "~/lib/auth";
 import { withUnstableCache } from "~/lib/cache";
 import type { CurrencyCode } from "~/lib/currencies";
-import { createConverter, currencies, formatMoney } from "~/lib/currencies";
+import { formatMoney } from "~/lib/currencies";
+import { getMonthMetadata } from "~/lib/get-month-metadata";
 import {
   Card,
   CardContent,
@@ -24,47 +25,16 @@ import { TimeslotCard } from "./_components/timeslot-card";
 
 export const runtime = "edge";
 
-const getMonthMetadata = cache(
-  async (slots: Timeslot[], currency: CurrencyCode) => {
-    const billedClients = new Set(slots.map((slot) => slot.clientId)).size;
-
-    const totalHours = slots.reduce((acc, slot) => {
-      return acc + Number(slot.duration);
-    }, 0);
-
-    const convert = await createConverter();
-    const totalRevenue = slots.reduce(
-      (acc, slot) => {
-        const dineroObject = dinero({
-          amount: slot.chargeRate,
-          currency: currencies[slot.currency],
-        });
-
-        return add(
-          acc,
-          multiply(convert(dineroObject, currency), parseFloat(slot.duration)),
-        );
-      },
-      dinero({ amount: 0, currency: currencies[currency] }),
-    );
-
-    return {
-      billedClients,
-      totalHours,
-      totalRevenue,
-    };
-  },
-);
-
 export default async function IndexPage(props: {
   searchParams: { date?: string };
 }) {
   const user = await currentUser();
   if (!user) redirect("/login");
 
-  const date = props.searchParams.date
-    ? parseISO(`${props.searchParams.date}T00:00:00.000Z`)
-    : undefined;
+  if (!props.searchParams.date) {
+    redirect("/?date=" + format(new Date(), "yyyy-MM-dd"));
+  }
+  const date = parseISO(`${props.searchParams.date}T00:00:00.000Z`);
 
   const clients = await withUnstableCache({
     fn: getClients,
@@ -80,8 +50,13 @@ export default async function IndexPage(props: {
     tags: ["timeslots"],
   });
 
+  const monthSlots = timeslots.filter(
+    (slot) =>
+      format(slot.date, "yyyy-MM") === format(date ?? new Date(), "yyyy-MM"),
+  );
+
   const { billedClients, totalHours, totalRevenue } = await getMonthMetadata(
-    timeslots,
+    monthSlots,
     user.defaultCurrency,
   );
 
