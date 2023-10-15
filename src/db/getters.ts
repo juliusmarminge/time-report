@@ -5,18 +5,16 @@ import { db } from ".";
 import { client, period, timeslot } from "./schema";
 
 export const getClients = async (userId: string) => {
-  const clients = await db
-    .select({
-      id: client.id,
-      name: client.name,
-      image: client.image,
-      defaultCharge: client.defaultCharge,
-      defaultBillingPeriod: client.defaultBillingPeriod,
-      curr: client.currency,
-      createdAt: client.createdAt,
-    })
-    .from(client)
-    .where(eq(client.tenantId, userId));
+  const clients = await db.query.client.findMany({
+    where: eq(client.tenantId, userId),
+    with: {
+      periods: {
+        with: {
+          timeslot: true,
+        },
+      },
+    },
+  });
 
   return clients;
 };

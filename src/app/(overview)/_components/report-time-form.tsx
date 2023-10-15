@@ -61,7 +61,7 @@ export function ReportTimeForm(props: {
     defaultValues: {
       date: props.date,
       clientId: props.clients[0].id,
-      currency: props.clients[0].curr,
+      currency: props.clients[0].currency,
       chargeRate: props.clients[0].defaultCharge / 100,
     },
   });
@@ -98,7 +98,8 @@ export function ReportTimeForm(props: {
                   // Update the default charge and currency to match with the client
                   client?.defaultCharge &&
                     form.setValue("chargeRate", client.defaultCharge / 100);
-                  client?.curr && form.setValue("currency", client.curr);
+                  client?.currency &&
+                    form.setValue("currency", client.currency);
                 }}
                 value={String(field.value)}
               >
