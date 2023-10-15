@@ -40,7 +40,7 @@ function PeriodCard(props: { period: Period }) {
       (acc, slot) => slot.chargeRate * +slot.duration + acc,
       0,
     ),
-    currency: currencies[period.timeslot[0].currency ?? "USD"],
+    currency: currencies[period.timeslot[0]?.currency ?? "USD"],
   });
 
   return (
