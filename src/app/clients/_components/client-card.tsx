@@ -114,7 +114,7 @@ export function ClientCard(props: { client: Client }) {
         </h3>
 
         <div className="flex flex-col gap-2">
-          <h3 className="text-base font-semibold">Periods</h3>
+          <h3 className="text-base font-semibold">Billing Periods</h3>
           <ul className="flex flex-col gap-2">
             {sortedPeriods.map((p, i) => (
               <div className="flex flex-col gap-1">
