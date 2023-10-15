@@ -224,7 +224,7 @@ function EditingClientCard(props: {
             <AlertDialogHeader>
               <AlertDialogTitle>Delete client</AlertDialogTitle>
               <AlertDialogDescription>
-                {`Are you sure you want to delete the client "${client.name}"?`}
+                {`Are you sure you want to delete the client "${client.name}"? `}
                 {`This will also delete all timeslots for this client.`}
               </AlertDialogDescription>
               <AlertDialogFooter>
