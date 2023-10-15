@@ -28,6 +28,71 @@ import {
 } from "~/ui/sheet";
 import { closePeriod } from "../_actions";
 
+function PeriodCard(props: { period: Period }) {
+  const { period } = props;
+
+  const nSlots = period.timeslot.length;
+  const nHours = period.timeslot.reduce((acc, slot) => +slot.duration + acc, 0);
+  const revenue = dinero({
+    // FIXME: This is wrong maths that doesn't account
+    // for differnt currencies in the same period
+    amount: period.timeslot.reduce(
+      (acc, slot) => slot.chargeRate * +slot.duration + acc,
+      0,
+    ),
+    currency: currencies[period.timeslot[0].currency ?? "USD"],
+  });
+
+  return (
+    <div className="flex flex-col gap-2">
+      <div className="flex items-center gap-2">
+        <h2 className="text-lg font-bold">{period.client.name}</h2>
+        <p className="text-sm text-muted-foreground">
+          {format(period.startDate, "MMM do")} to{" "}
+          {format(period.endDate, "MMM do")}
+        </p>
+        {period.endDate < new Date() && (
+          <Badge variant="destructive" className="ml-auto">
+            Expired
+          </Badge>
+        )}
+      </div>
+      <p className="text-sm">
+        {nSlots} reported times ({nHours}h) for a total of{" "}
+        <b>{toDecimal(revenue, formatMoney)}</b>
+      </p>
+      <ul>
+        {period.timeslot.map((slot) => {
+          const chargeRate = dinero({
+            amount: slot.chargeRate,
+            currency: currencies[slot.currency],
+          });
+          return (
+            <div key={slot.id}>
+              <p className="text-sm text-muted-foreground">
+                {format(slot.date, "MMM do")}
+                {` - `}
+                {slot.duration}
+                {`h @ `}
+                {toDecimal(chargeRate, (money) => formatMoney(money))}
+              </p>
+            </div>
+          );
+        })}
+      </ul>
+      <div className="flex flex-col gap-2">
+        <Button
+          onClick={async () => {
+            await closePeriod(period.id, { openNewPeriod: false });
+          }}
+        >
+          Close Period
+        </Button>
+      </div>
+    </div>
+  );
+}
+
 export function ClosePeriodSheet(props: { openPeriods: Period[] }) {
   const [expiredPeriodsDialogOpen, setExpiredPeriodsDialogOpen] =
     useState(false);
@@ -55,68 +120,7 @@ export function ClosePeriodSheet(props: { openPeriods: Period[] }) {
           <div className="flex flex-col gap-4">
             {props.openPeriods.map((period, idx) => (
               <Fragment key={period.id}>
-                <div className="flex flex-col gap-2">
-                  <div className="flex items-center gap-2">
-                    <h2 className="text-lg font-bold">{period.client.name}</h2>
-                    <p className="text-sm text-muted-foreground">
-                      {format(period.startDate, "MMM do")} to{" "}
-                      {format(period.endDate, "MMM do")}
-                    </p>
-                    {period.endDate < new Date() && (
-                      <Badge variant="destructive" className="ml-auto">
-                        Expired
-                      </Badge>
-                    )}
-                  </div>
-                  <p className="text-sm">
-                    {period.timeslot.length} reported times for a total of{" "}
-                    <b>
-                      {toDecimal(
-                        dinero({
-                          // FIXME: This is wrong maths that doesn't account for currency
-                          amount: period.timeslot.reduce(
-                            (acc, slot) =>
-                              slot.chargeRate * +slot.duration + acc,
-                            0,
-                          ),
-                          currency:
-                            currencies[period.timeslot[0].currency ?? "USD"],
-                        }),
-                        formatMoney,
-                      )}
-                    </b>
-                  </p>
-                  <ul>
-                    {period.timeslot.map((slot) => {
-                      const chargeRate = dinero({
-                        amount: slot.chargeRate,
-                        currency: currencies[slot.currency],
-                      });
-                      return (
-                        <div key={slot.id}>
-                          <p className="text-sm text-muted-foreground">
-                            {format(slot.date, "MMM do")}
-                            {` - `}
-                            {slot.duration}
-                            {`h @ `}
-                            {toDecimal(chargeRate, (money) =>
-                              formatMoney(money),
-                            )}
-                          </p>
-                        </div>
-                      );
-                    })}
-                  </ul>
-                  <div className="flex flex-col gap-2">
-                    <Button
-                      onClick={async () => {
-                        await closePeriod(period.id, { openNewPeriod: false });
-                      }}
-                    >
-                      Close Period
-                    </Button>
-                  </div>
-                </div>
+                <PeriodCard period={period} />
                 {idx < props.openPeriods.length - 1 && <Separator />}
               </Fragment>
             ))}
