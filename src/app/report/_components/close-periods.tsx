@@ -1,7 +1,7 @@
 "use client";
 
 import { Fragment, useEffect, useState } from "react";
-import { format } from "date-fns";
+import { addDays, addWeeks, endOfMonth, endOfWeek, format } from "date-fns";
 import { dinero, toDecimal } from "dinero.js";
 
 import type { Period } from "~/db/getters";
@@ -17,6 +17,17 @@ import {
 } from "~/ui/alert-dialog";
 import { Badge } from "~/ui/badge";
 import { Button } from "~/ui/button";
+import { DatePicker } from "~/ui/date-picker";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "~/ui/dialog";
+import { Label } from "~/ui/label";
 import { Separator } from "~/ui/separator";
 import {
   Sheet,
@@ -80,16 +91,83 @@ function PeriodCard(props: { period: Period }) {
           );
         })}
       </ul>
-      <div className="flex flex-col gap-2">
-        <Button
-          onClick={async () => {
-            await closePeriod(period.id, { openNewPeriod: false });
-          }}
-        >
-          Close Period
-        </Button>
-      </div>
+      <ClosePeriodConfirmationModal period={period} />
     </div>
+  );
+}
+
+export function ClosePeriodConfirmationModal(props: { period: Period }) {
+  const [newPeriodDialogOpen, setNewPeriodDialogOpen] = useState(false);
+  const [newPeriodStart, setNewPeriodStart] = useState<Date>(
+    addDays(props.period.endDate, 1),
+  );
+  const billingPeriod = props.period.client.defaultBillingPeriod;
+  const [newPeriodEnd, setNewPeriodEnd] = useState<Date>(
+    billingPeriod === "monthly"
+      ? endOfMonth(newPeriodStart)
+      : billingPeriod === "biweekly"
+      ? endOfWeek(addWeeks(newPeriodStart, 1))
+      : endOfWeek(newPeriodStart),
+  );
+
+  return (
+    <Dialog open={newPeriodDialogOpen} onOpenChange={setNewPeriodDialogOpen}>
+      <DialogTrigger asChild>
+        <Button>Close Period</Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Close Period</DialogTitle>
+          <DialogDescription>
+            Closing a period marks the end of this billing period. You can
+            choose to open a new one for the upcoming billing period, or close
+            this one without opening a new one.
+          </DialogDescription>
+        </DialogHeader>
+        <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-1">
+            <Label>New Period Start</Label>
+            <DatePicker
+              required
+              date={newPeriodStart}
+              setDate={setNewPeriodStart}
+            />
+          </div>
+          <div className="flex flex-col gap-1">
+            <Label>New Period End</Label>
+            <DatePicker
+              required
+              date={newPeriodEnd}
+              setDate={setNewPeriodEnd}
+            />
+          </div>
+        </div>
+        <DialogFooter>
+          <Button
+            variant="secondary"
+            onClick={async () => {
+              await closePeriod(props.period.id, { openNewPeriod: false });
+              setNewPeriodDialogOpen(false);
+            }}
+          >
+            Close Period
+          </Button>
+          <Button
+            onClick={async () => {
+              await closePeriod(props.period.id, {
+                openNewPeriod: true,
+                clientId: props.period.client.id,
+                periodStart: newPeriodStart,
+                periodEnd: newPeriodEnd,
+              });
+              setNewPeriodDialogOpen(false);
+            }}
+          >
+            Close and Open New Period
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }
 

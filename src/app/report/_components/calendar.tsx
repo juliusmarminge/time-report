@@ -22,7 +22,16 @@ export function Calendar(props: {
 
   return (
     <CalendarCore
+      ISOWeek
+      captionLayout="dropdown-buttons"
       className="col-span-3 h-full overflow-y-scroll"
+      classNames={{
+        month: "w-full space-y-4",
+        head_cell:
+          "flex-1 text-left px-4 text-muted-foreground text-[0.8rem] font-normal",
+        caption_label: "text-lg font-medium",
+        cell: "relative flex-1 p-0 text-sm focus-within:relative focus-within:z-20 [&:has([aria-selected])]:bg-accent",
+      }}
       mode="single"
       selected={selectedDate ?? new Date()}
       month={month}

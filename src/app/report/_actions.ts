@@ -11,7 +11,11 @@ import { period, timeslot } from "~/db/schema";
 import { currentUser } from "~/lib/auth";
 import type { CurrencyCode } from "~/lib/currencies";
 import { currencies } from "~/lib/currencies";
-import { reportTimeSchema, updateSchema } from "./_validators";
+import {
+  closePeriodSchema,
+  reportTimeSchema,
+  updateSchema,
+} from "./_validators";
 
 export async function reportTime(props: Input<typeof reportTimeSchema>) {
   const user = await currentUser();
@@ -95,12 +99,12 @@ export async function updateTimeslot(
 
 export async function closePeriod(
   id: number,
-  props: {
-    openNewPeriod: boolean;
-  },
+  props: Input<typeof closePeriodSchema>,
 ) {
   const user = await currentUser();
   if (!user) return;
+
+  const input = await parseAsync(closePeriodSchema, props);
 
   const openPeriods = await getOpenPeriods(user.id);
   const p = openPeriods.find((p) => p.id === id);
@@ -114,9 +118,16 @@ export async function closePeriod(
     .set({ status: "closed", closedAt: new Date() })
     .where(eq(period.id, id));
 
-  if (props.openNewPeriod) {
-    // TODO:
+  if (input.openNewPeriod) {
+    await db.insert(period).values({
+      status: "open",
+      tenantId: user.id,
+      clientId: input.clientId,
+      startDate: input.periodStart,
+      endDate: input.periodEnd,
+    });
   }
 
   revalidateTag("periods");
+  revalidateTag("clients");
 }

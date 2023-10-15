@@ -1,7 +1,13 @@
 "use server";
 
 import { revalidateTag } from "next/cache";
-import { endOfMonth, startOfMonth } from "date-fns";
+import {
+  addWeeks,
+  endOfMonth,
+  endOfWeek,
+  startOfMonth,
+  startOfWeek,
+} from "date-fns";
 import { eq } from "drizzle-orm";
 import { utapi } from "uploadthing/server";
 import type { Input } from "valibot";
@@ -37,8 +43,16 @@ export async function createClient(props: Input<typeof createClientSchema>) {
 
   await db.insert(period).values({
     clientId: parseInt(newClient.insertId),
-    startDate: startOfMonth(new Date()),
-    endDate: endOfMonth(new Date()),
+    startDate:
+      input.defaultBillingPeriod === "monthly"
+        ? startOfMonth(new Date())
+        : startOfWeek(new Date()),
+    endDate:
+      input.defaultBillingPeriod === "monthly"
+        ? endOfMonth(new Date())
+        : input.defaultBillingPeriod === "biweekly"
+        ? endOfWeek(addWeeks(new Date(), 1))
+        : endOfWeek(new Date()),
     tenantId: user.id,
   });
 
@@ -74,25 +88,21 @@ export async function updateClient(
   revalidateTag("clients");
 }
 
+export async function deleteImageFromUT(imageUrl: string | null | undefined) {
+  const imageKey = imageUrl?.split("/f/")[1];
+  if (imageKey) {
+    await utapi.deleteFiles([imageKey]);
+  }
+}
+
 export async function deleteClient(props: { id: number }) {
   const [clientImage] = await db
     .select({ image: client.image })
     .from(client)
     .where(eq(client.id, props.id));
-  await db.delete(client).where(eq(client.id, props.id));
 
-  const imageKey = clientImage.image?.split("/f/")[1];
-  if (imageKey) {
-    await utapi.deleteFiles([imageKey]);
-  }
+  await db.delete(client).where(eq(client.id, props.id));
+  await deleteImageFromUT(clientImage.image);
 
   revalidateTag("clients");
-}
-
-export async function deleteImageFromUT(imageUrl: string | undefined) {
-  const imageKey = imageUrl?.split("/f/")[1];
-  if (imageKey) {
-    const res = await utapi.deleteFiles([imageKey]);
-    console.log(res);
-  }
 }
