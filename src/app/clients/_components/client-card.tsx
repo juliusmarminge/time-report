@@ -136,8 +136,9 @@ export function ClientCard(props: { client: Client }) {
                   </p>
                 </div>
                 <p className="text-sm">
+                  {p.status === "closed" ? "Invoiced" : "Reported"}{" "}
                   {p.timeslot.reduce((acc, slot) => +slot.duration + acc, 0)}{" "}
-                  hours reported for a total of{" "}
+                  hours for a total of{" "}
                   <b>{toDecimal(periodAmounts[i], formatMoney)}</b>
                 </p>
               </div>
