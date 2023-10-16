@@ -56,6 +56,7 @@ export async function reportTime(props: Input<typeof reportTimeSchema>) {
 
   revalidateTag("timeslots");
   revalidateTag("periods");
+  revalidateTag("clients");
 }
 
 export async function deleteTimeslot(id: number) {
@@ -66,6 +67,7 @@ export async function deleteTimeslot(id: number) {
 
   revalidateTag("timeslots");
   revalidateTag("periods");
+  revalidateTag("clients");
 }
 
 export async function updateTimeslot(
@@ -95,6 +97,7 @@ export async function updateTimeslot(
 
   revalidateTag("timeslots");
   revalidateTag("periods");
+  revalidateTag("clients");
 }
 
 export async function closePeriod(

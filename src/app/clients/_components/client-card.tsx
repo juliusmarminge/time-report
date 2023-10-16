@@ -66,7 +66,7 @@ export function ClientCard(props: { client: Client }) {
         (acc, slot) => slot.chargeRate * +slot.duration + acc,
         0,
       ),
-      currency: currencies[p.timeslot[0]?.currency ?? "USD"],
+      currency: currencies[p.timeslot[0]?.currency ?? client.currency],
     }),
   );
 
@@ -117,7 +117,7 @@ export function ClientCard(props: { client: Client }) {
           <h3 className="text-base font-semibold">Billing Periods</h3>
           <ul className="flex flex-col gap-2">
             {sortedPeriods.map((p, i) => (
-              <div className="flex flex-col gap-1">
+              <div key={p.id} className="flex flex-col gap-1">
                 <div key={p.id} className="flex items-center gap-2">
                   <Badge
                     className="capitalize"
