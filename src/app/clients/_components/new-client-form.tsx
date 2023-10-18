@@ -257,16 +257,20 @@ export function NewClientForm(props: { afterSubmit?: () => void }) {
   );
 }
 
-export function NewClientSheet() {
+export function NewClientSheet(props: { trigger: "full" | "icon" }) {
   const [open, setOpen] = useState(false);
   const isMobile = useMobile();
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
-        <Button size="icon" variant="outline">
-          <PlusIcon className="h-5 w-5" />
-        </Button>
+        {props.trigger === "full" ? (
+          <Button>Create a client to report time</Button>
+        ) : (
+          <Button size="icon" variant="outline">
+            <PlusIcon className="h-5 w-5" />
+          </Button>
+        )}
       </SheetTrigger>
       <SheetContent
         side={isMobile ? "bottom" : "right"}

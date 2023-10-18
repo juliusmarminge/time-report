@@ -26,7 +26,7 @@ export default async function ClientsPage() {
       title="Clients"
       description="Browse and manage your clients."
       className="gap-4"
-      headerActions={<NewClientSheet />}
+      headerActions={<NewClientSheet trigger="icon" />}
     >
       {clients.length === 0 && (
         <div className="flex h-[600px] flex-col items-center justify-center gap-4 rounded-lg border border-dashed">
