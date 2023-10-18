@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { ChevronRightIcon, ExitIcon } from "@radix-ui/react-icons";
 import type { Session } from "next-auth";
 import { signOut } from "next-auth/react";
@@ -26,11 +27,27 @@ export function SettingsMenu(props: {
 }) {
   const { user } = props;
 
+  if (!user) {
+    return (
+      <Button
+        asChild
+        className={cn(
+          "justify-start gap-2 bg-popover py-6 text-popover-foreground hover:bg-zinc-300 dark:hover:bg-zinc-950",
+          props.className,
+        )}
+      >
+        <Link href="/signin">
+          <span className="text-sm font-semibold">Sign in to get started</span>
+          <ChevronRightIcon className="ml-auto h-4 w-4" />
+        </Link>
+      </Button>
+    );
+  }
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button
-          disabled={!user}
           className={cn(
             "justify-start gap-2 bg-popover py-6 text-popover-foreground hover:bg-zinc-300 dark:hover:bg-zinc-950",
             props.className,
@@ -47,12 +64,11 @@ export function SettingsMenu(props: {
               {(user?.name ?? "U").slice(0, 2).toUpperCase()}
             </AvatarFallback>
           </Avatar>
-          <span className="text-sm font-semibold">
-            {user?.name ?? "Sign in to get started"}
-          </span>
+          <span className="text-sm font-semibold">{user.name}</span>
           <ChevronRightIcon className="ml-auto h-4 w-4" />
         </Button>
       </DropdownMenuTrigger>
+
       <DropdownMenuContent side="top" align="start" className="w-40">
         <DropdownMenuGroup>
           <DropdownMenuSub>
