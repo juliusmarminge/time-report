@@ -26,6 +26,14 @@ export interface Currency {
   readonly exponent: number;
 }
 
+export function normalizeAmount(
+  amount: number,
+  currency: CurrencyCode = "USD",
+) {
+  const currencyInfo = currencies[currency];
+  return amount * currencyInfo.base ** currencyInfo.exponent;
+}
+
 export const createConverter = cache(async () => {
   const heads = new Map((await import("next/headers")).headers());
   heads.delete("content-length");

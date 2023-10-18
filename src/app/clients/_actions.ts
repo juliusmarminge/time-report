@@ -8,16 +8,16 @@ import {
   startOfMonth,
   startOfWeek,
 } from "date-fns";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { utapi } from "uploadthing/server";
 import type { Input } from "valibot";
 import { parseAsync } from "valibot";
 
 import { db } from "~/db";
-import { client, period } from "~/db/schema";
+import { client, period, timeslot } from "~/db/schema";
 import { currentUser } from "~/lib/auth";
 import type { CurrencyCode } from "../../lib/currencies";
-import { currencies } from "../../lib/currencies";
+import { normalizeAmount } from "../../lib/currencies";
 import { createClientSchema, updateClientSchema } from "./_validators";
 
 export async function createClient(props: Input<typeof createClientSchema>) {
@@ -26,16 +26,13 @@ export async function createClient(props: Input<typeof createClientSchema>) {
 
   const input = await parseAsync(createClientSchema, props);
 
-  const currency = input.currency
-    ? currencies[input.currency as CurrencyCode]
-    : currencies.USD;
-  const normalizedAmount =
-    input.defaultCharge * currency.base ** currency.exponent;
+  const currencyCode = input.currency as CurrencyCode;
+  const normalized = normalizeAmount(input.defaultCharge, currencyCode);
 
   const newClient = await db.insert(client).values({
     name: input.name,
-    currency: input.currency as CurrencyCode,
-    defaultCharge: normalizedAmount,
+    currency: currencyCode,
+    defaultCharge: normalized,
     defaultBillingPeriod: input.defaultBillingPeriod,
     image: input.image,
     tenantId: user.id,
@@ -67,20 +64,23 @@ export async function updateClient(
   const user = await currentUser();
   if (!user) return;
 
+  const existing = await db.query.client.findFirst({
+    columns: { id: true },
+    where: and(eq(client.tenantId, user.id), eq(client.id, clientId)),
+  });
+  if (!existing) throw new Error("Unauthorized");
+
   const input = await parseAsync(updateClientSchema, props);
 
-  const currency = input.currency
-    ? currencies[input.currency as CurrencyCode]
-    : currencies.USD;
-  const normalizedAmount =
-    input.defaultCharge * currency.base ** currency.exponent;
+  const currencyCode = input.currency as CurrencyCode;
+  const normalized = normalizeAmount(input.defaultCharge, currencyCode);
 
   await db
     .update(client)
     .set({
       name: input.name,
-      currency: input.currency as CurrencyCode,
-      defaultCharge: normalizedAmount,
+      currency: currencyCode,
+      defaultCharge: normalized,
       defaultBillingPeriod: input.defaultBillingPeriod,
     })
     .where(eq(client.id, clientId));
@@ -89,6 +89,9 @@ export async function updateClient(
 }
 
 export async function deleteImageFromUT(imageUrl: string | null | undefined) {
+  const user = await currentUser();
+  if (!user) return;
+
   const imageKey = imageUrl?.split("/f/")[1];
   if (imageKey) {
     await utapi.deleteFiles([imageKey]);
@@ -96,13 +99,21 @@ export async function deleteImageFromUT(imageUrl: string | null | undefined) {
 }
 
 export async function deleteClient(props: { id: number }) {
-  const [clientImage] = await db
-    .select({ image: client.image })
-    .from(client)
-    .where(eq(client.id, props.id));
+  const user = await currentUser();
+  if (!user) return;
 
-  await db.delete(client).where(eq(client.id, props.id));
-  await deleteImageFromUT(clientImage.image);
+  const existing = await db.query.client.findFirst({
+    columns: { id: true, image: true },
+    where: and(eq(client.tenantId, user.id), eq(client.id, props.id)),
+  });
+  if (!existing) throw new Error("Unauthorized");
+
+  await Promise.all([
+    db.delete(client).where(eq(client.id, props.id)),
+    db.delete(period).where(eq(period.clientId, props.id)),
+    db.delete(timeslot).where(eq(timeslot.clientId, props.id)),
+    deleteImageFromUT(existing.image),
+  ]);
 
   revalidateTag("clients");
 }
