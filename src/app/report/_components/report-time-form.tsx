@@ -224,19 +224,11 @@ export function ReportTimeSheet(props: { clients: Client[] }) {
       <Sheet open={open} onOpenChange={setOpen}>
         {date && isFuture(date) ? (
           <AlertDialogTrigger asChild>
-            <Button>
-              {props.clients.length > 0
-                ? "Report time"
-                : "Create a client to report time"}
-            </Button>
+            <Button>Report time</Button>
           </AlertDialogTrigger>
         ) : (
-          <SheetTrigger asChild disabled={props.clients.length === 0}>
-            <Button>
-              {props.clients.length > 0
-                ? "Report time"
-                : "Create a client to report time"}
-            </Button>
+          <SheetTrigger asChild>
+            <Button>Report time</Button>
           </SheetTrigger>
         )}
         <SheetContent side={isMobile ? "bottom" : "right"}>

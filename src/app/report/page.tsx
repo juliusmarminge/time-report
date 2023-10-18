@@ -18,6 +18,7 @@ import {
   CardTitle,
 } from "~/ui/card";
 import { DashboardShell } from "../../components/dashboard-shell";
+import { NewClientSheet } from "../clients/_components/new-client-form";
 import { Calendar } from "./_components/calendar";
 import { ClosePeriodSheet } from "./_components/close-periods";
 import { ReportTimeSheet } from "./_components/report-time-form";
@@ -228,7 +229,11 @@ async function SidePanel(props: {
           <TimeslotCard key={slot.id} slot={slot} />
         ))}
         <Suspense>
-          <ReportTimeSheet clients={props.clients} />
+          {props.clients.length === 0 ? (
+            <NewClientSheet trigger="full" />
+          ) : (
+            <ReportTimeSheet clients={props.clients} />
+          )}
         </Suspense>
       </CardContent>
     </Card>
