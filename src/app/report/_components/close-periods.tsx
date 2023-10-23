@@ -5,7 +5,9 @@ import { addDays, addWeeks, endOfMonth, endOfWeek, format } from "date-fns";
 import { dinero, toDecimal } from "dinero.js";
 
 import type { Period } from "~/db/getters";
+import type { CurrencyCode } from "~/lib/currencies";
 import { currencies, formatMoney } from "~/lib/currencies";
+import { convert, slotsToDineros, sumDineros } from "~/lib/monetary";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -39,19 +41,21 @@ import {
 } from "~/ui/sheet";
 import { closePeriod } from "../_actions";
 
-function PeriodCard(props: { period: Period }) {
+function PeriodCard(props: {
+  period: Period;
+  // TODO: Maybe put into context to avoid prop drilling everywhere
+  conversionRates: Record<string, number>;
+  userCurrency: CurrencyCode;
+}) {
   const { period } = props;
 
   const nSlots = period.timeslot.length;
   const nHours = period.timeslot.reduce((acc, slot) => +slot.duration + acc, 0);
-  const revenue = dinero({
-    // FIXME: This is wrong maths that doesn't account
-    // for differnt currencies in the same period
-    amount: period.timeslot.reduce(
-      (acc, slot) => slot.chargeRate * +slot.duration + acc,
-      0,
-    ),
-    currency: currencies[period.timeslot[0]?.currency ?? "USD"],
+
+  const revenue = sumDineros({
+    dineros: slotsToDineros(period.timeslot),
+    currency: props.userCurrency,
+    converter: (d, c) => convert(d, c, props.conversionRates),
   });
 
   return (
@@ -171,7 +175,11 @@ export function ClosePeriodConfirmationModal(props: { period: Period }) {
   );
 }
 
-export function ClosePeriodSheet(props: { openPeriods: Period[] }) {
+export function ClosePeriodSheet(props: {
+  openPeriods: Period[];
+  conversionRates: Record<string, number>;
+  userCurrency: CurrencyCode;
+}) {
   const [expiredPeriodsDialogOpen, setExpiredPeriodsDialogOpen] =
     useState(false);
 
@@ -198,7 +206,11 @@ export function ClosePeriodSheet(props: { openPeriods: Period[] }) {
           <div className="flex flex-col gap-4">
             {props.openPeriods.map((period, idx) => (
               <Fragment key={period.id}>
-                <PeriodCard period={period} />
+                <PeriodCard
+                  period={period}
+                  conversionRates={props.conversionRates}
+                  userCurrency={props.userCurrency}
+                />
                 {idx < props.openPeriods.length - 1 && <Separator />}
               </Fragment>
             ))}

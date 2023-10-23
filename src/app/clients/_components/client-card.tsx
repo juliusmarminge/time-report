@@ -4,11 +4,13 @@ import { useState } from "react";
 import { CheckIcon, Pencil1Icon, TrashIcon } from "@radix-ui/react-icons";
 import { format } from "date-fns";
 import type { Dinero } from "dinero.js";
-import { add, dinero, toDecimal } from "dinero.js";
+import { dinero, toDecimal } from "dinero.js";
 
 import { LoadingDots } from "~/components/loading-dots";
 import type { Client } from "~/db/getters";
+import type { CurrencyCode } from "~/lib/currencies";
 import { currencies, formatMoney } from "~/lib/currencies";
+import { convert, slotsToDineros, sumDineros } from "~/lib/monetary";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -36,7 +38,11 @@ import {
 } from "~/ui/select";
 import { deleteClient, updateClient } from "../_actions";
 
-export function ClientCard(props: { client: Client }) {
+export function ClientCard(props: {
+  client: Client;
+  conversionRates: Record<string, number>;
+  userCurrency: CurrencyCode;
+}) {
   const { client } = props;
   const defaultCharge = dinero({
     amount: client.defaultCharge,
@@ -59,21 +65,18 @@ export function ClientCard(props: { client: Client }) {
   );
 
   const periodAmounts = sortedPeriods.map((p) =>
-    dinero({
-      // FIXME: This is wrong maths that doesn't account
-      // for differnt currencies in the same period
-      amount: p.timeslot.reduce(
-        (acc, slot) => slot.chargeRate * +slot.duration + acc,
-        0,
-      ),
-      currency: currencies[p.timeslot[0]?.currency ?? client.currency],
+    sumDineros({
+      dineros: slotsToDineros(p.timeslot),
+      currency: props.userCurrency,
+      converter: (d, c) => convert(d, c, props.conversionRates),
     }),
   );
 
-  const clientTotal = periodAmounts.reduce(
-    (acc, amount) => add(acc, amount),
-    dinero({ amount: 0, currency: currencies[client.currency] }),
-  );
+  const clientTotal = sumDineros({
+    dineros: periodAmounts,
+    currency: props.userCurrency,
+    converter: (d, c) => convert(d, c, props.conversionRates),
+  });
 
   return (
     <Card>

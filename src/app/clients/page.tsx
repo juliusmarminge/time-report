@@ -1,13 +1,14 @@
 import { redirect } from "next/navigation";
 
+import { DashboardShell } from "~/components/dashboard-shell";
 import { getClients } from "~/db/getters";
 import { currentUser } from "~/lib/auth";
 import { withUnstableCache } from "~/lib/cache";
-import { DashboardShell } from "../../components/dashboard-shell";
+import { createConverter } from "~/lib/currencies";
 import { ClientCard } from "./_components/client-card";
 import { NewClientSheet } from "./_components/new-client-form";
 
-export const runtime = "edge";
+// export const runtime = "edge";
 
 export default async function ClientsPage() {
   const user = await currentUser();
@@ -19,7 +20,7 @@ export default async function ClientsPage() {
     tags: ["clients"],
   });
 
-  console.log("Got clients for userId", user.id, clients);
+  const converter = await createConverter();
 
   return (
     <DashboardShell
@@ -37,7 +38,12 @@ export default async function ClientsPage() {
         </div>
       )}
       {clients.map((client) => (
-        <ClientCard key={client.id} client={client} />
+        <ClientCard
+          key={client.id}
+          client={client}
+          conversionRates={converter.rates}
+          userCurrency={user.defaultCurrency}
+        />
       ))}
     </DashboardShell>
   );

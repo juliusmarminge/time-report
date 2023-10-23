@@ -8,7 +8,7 @@ import { getClients, getOpenPeriods, getTimeslots } from "~/db/getters";
 import { currentUser } from "~/lib/auth";
 import { withUnstableCache } from "~/lib/cache";
 import type { CurrencyCode } from "~/lib/currencies";
-import { formatMoney } from "~/lib/currencies";
+import { createConverter, formatMoney } from "~/lib/currencies";
 import { getMonthMetadata } from "~/lib/get-month-metadata";
 import {
   Card,
@@ -24,7 +24,7 @@ import { ClosePeriodSheet } from "./_components/close-periods";
 import { ReportTimeSheet } from "./_components/report-time-form";
 import { TimeslotCard } from "./_components/timeslot-card";
 
-export const runtime = "edge";
+// export const runtime = "edge";
 
 export default async function IndexPage(props: {
   searchParams: { date?: string };
@@ -177,9 +177,17 @@ async function ClosePeriod() {
     tags: ["periods"],
   });
 
+  const converter = await createConverter();
+
   console.log("Got open periods for userId", user.id, openPeriods);
 
-  return <ClosePeriodSheet openPeriods={openPeriods} />;
+  return (
+    <ClosePeriodSheet
+      openPeriods={openPeriods}
+      conversionRates={converter.rates}
+      userCurrency={user.defaultCurrency}
+    />
+  );
 }
 
 async function SidePanel(props: {

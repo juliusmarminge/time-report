@@ -1,9 +1,9 @@
 import { cache } from "react";
-import { add, dinero, multiply } from "dinero.js";
 
 import type { Timeslot } from "~/db/getters";
 import type { CurrencyCode } from "./currencies";
-import { createConverter, currencies } from "./currencies";
+import { createConverter } from "./currencies";
+import { slotsToDineros, sumDineros } from "./monetary";
 
 export const getMonthMetadata = cache(
   async (slots: Timeslot[], currency: CurrencyCode) => {
@@ -13,21 +13,12 @@ export const getMonthMetadata = cache(
       return acc + Number(slot.duration);
     }, 0);
 
-    const convert = await createConverter();
-    const totalRevenue = slots.reduce(
-      (acc, slot) => {
-        const dineroObject = dinero({
-          amount: slot.chargeRate,
-          currency: currencies[slot.currency],
-        });
-
-        return add(
-          acc,
-          multiply(convert(dineroObject, currency), parseFloat(slot.duration)),
-        );
-      },
-      dinero({ amount: 0, currency: currencies[currency] }),
-    );
+    const converter = await createConverter();
+    const totalRevenue = sumDineros({
+      dineros: slotsToDineros(slots),
+      converter: converter.convert,
+      currency,
+    });
 
     return {
       billedClients,
