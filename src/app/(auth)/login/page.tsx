@@ -2,8 +2,9 @@ import { GitHubLogoIcon } from "@radix-ui/react-icons";
 
 import { CSRF_experimental } from "~/lib/auth";
 import { Button } from "~/ui/button";
+import { EmailSignIn } from "./email";
 
-export const runtime = "edge";
+// export const runtime = "edge";
 
 export default function LoginPage() {
   return (
@@ -24,6 +25,8 @@ export default function LoginPage() {
           </Button>
           <CSRF_experimental />
         </form>
+
+        {process.env.USE_OFFLINE && <EmailSignIn />}
       </div>
     </div>
   );

@@ -1,4 +1,6 @@
 import { redirect } from "next/navigation";
+import type { Provider } from "@auth/core/providers";
+import Email from "@auth/core/providers/email";
 import Github from "@auth/core/providers/github";
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import { eq } from "drizzle-orm";
@@ -43,7 +45,23 @@ export const {
       return sessionAndUsers[0] ?? null;
     },
   },
-  providers: providers.map((p) => p.handler),
+  providers: [
+    ...providers.map((p) => p.handler),
+    ...(process.env.USE_OFFLINE
+      ? [
+          Email({
+            from: "foo@bar.com",
+            generateVerificationToken() {
+              return crypto.randomUUID().replace("-", "").slice(0, 6);
+            },
+            async sendVerificationRequest(opts) {
+              await new Promise((r) => setTimeout(r, 1000));
+              console.log(`[EMAIL LOGIN]: ${opts.identifier} - ${opts.token}`);
+            },
+          }) as Provider,
+        ]
+      : []),
+  ],
   callbacks: {
     session: ({ session, user }) => {
       return {
