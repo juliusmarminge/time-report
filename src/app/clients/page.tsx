@@ -8,7 +8,7 @@ import { createConverter } from "~/lib/currencies";
 import { ClientCard } from "./_components/client-card";
 import { NewClientSheet } from "./_components/new-client-form";
 
-// export const runtime = "edge";
+export const runtime = "edge";
 
 export default async function ClientsPage() {
   const user = await currentUser();

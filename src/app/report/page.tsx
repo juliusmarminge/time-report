@@ -24,7 +24,7 @@ import { ClosePeriodSheet } from "./_components/close-periods";
 import { ReportTimeSheet } from "./_components/report-time-form";
 import { TimeslotCard } from "./_components/timeslot-card";
 
-// export const runtime = "edge";
+export const runtime = "edge";
 
 export default async function IndexPage(props: {
   searchParams: { date?: string };
