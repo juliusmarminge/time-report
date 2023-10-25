@@ -1,7 +1,7 @@
 import { Client } from "@planetscale/database";
 import type { Logger } from "drizzle-orm";
 import { drizzle as defaultDrizzle } from "drizzle-orm/mysql2";
-import type { PlanetScaleDatabase} from "drizzle-orm/planetscale-serverless";
+import type { PlanetScaleDatabase } from "drizzle-orm/planetscale-serverless";
 import { drizzle as pscaleDrizzle } from "drizzle-orm/planetscale-serverless";
 import { createPool } from "mysql2/promise";
 
@@ -16,7 +16,10 @@ function createDrizzle() {
   if (process.env.USE_OFFLINE) {
     const db = defaultDrizzle(
       createPool({
-        uri: process.env.DATABASE_URL,
+        host: "localhost",
+        user: "root",
+        port: 3306,
+        database: "time-report",
       }),
       {
         schema,
@@ -25,7 +28,7 @@ function createDrizzle() {
       },
     );
 
-    return db
+    return db;
   }
 
   return pscaleDrizzle(
