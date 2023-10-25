@@ -4,7 +4,7 @@ import { CSRF_experimental } from "~/lib/auth";
 import { Button } from "~/ui/button";
 import { EmailSignIn } from "./email";
 
-export const runtime = "edge";
+// export const runtime = "edge";
 
 export default function LoginPage() {
   return (

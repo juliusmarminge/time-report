@@ -38,8 +38,15 @@ export async function createClient(props: Input<typeof createClientSchema>) {
     tenantId: user.id,
   });
 
+  // FIXME: mysql2 and pscale type interops
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  const newClientId: number = Array.isArray(newClient)
+    ? // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      newClient[0].insertId
+    : parseInt(newClient.insertId);
+
   await db.insert(period).values({
-    clientId: parseInt(newClient.insertId),
+    clientId: newClientId,
     startDate:
       input.defaultBillingPeriod === "monthly"
         ? startOfMonth(new Date())
