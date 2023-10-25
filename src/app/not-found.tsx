@@ -3,8 +3,6 @@ import Link from "next/link";
 import { DashboardShell } from "~/components/dashboard-shell";
 import { buttonVariants } from "~/ui/button";
 
-// export const runtime = "edge";
-
 export default function NotFound() {
   return (
     <DashboardShell title="Not Found">
