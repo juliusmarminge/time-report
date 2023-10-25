@@ -1,10 +1,10 @@
 import { GitHubLogoIcon } from "@radix-ui/react-icons";
 
-import { CSRF_experimental } from "~/lib/auth";
+import { signIn } from "~/lib/auth";
 import { Button } from "~/ui/button";
 import { EmailSignIn } from "./email";
 
-// export const runtime = "edge";
+export const runtime = "edge";
 
 export default function LoginPage() {
   return (
@@ -18,12 +18,16 @@ export default function LoginPage() {
             </p>
           </div>
         </div>
-        <form action="/api/auth/signin/github" method="post">
+        <form
+          action={async () => {
+            "use server";
+            await signIn("github", { redirectTo: "/report" });
+          }}
+        >
           <Button type="submit" className="px-10">
             <GitHubLogoIcon className="mr-2 h-4 w-4" />
             Sign in with GitHub
           </Button>
-          <CSRF_experimental />
         </form>
 
         {process.env.USE_OFFLINE && <EmailSignIn />}

@@ -1,6 +1,5 @@
 import { redirect } from "next/navigation";
-import type { Provider } from "@auth/core/providers";
-import Email from "@auth/core/providers/email";
+import type { EmailConfig, Provider } from "@auth/core/providers";
 import Github from "@auth/core/providers/github";
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import { eq } from "drizzle-orm";
@@ -25,10 +24,22 @@ declare module "@auth/core/adapters" {
   interface AdapterUser extends InferSelectModel<typeof users> {}
 }
 
+const mockEmailProvider: Partial<EmailConfig> = {
+  id: "email",
+  type: "email",
+  async sendVerificationRequest(opts) {
+    await new Promise((r) => setTimeout(r, 1000));
+    console.log(`[EMAIL LOGIN]: ${opts.identifier} - ${opts.token}`);
+  },
+};
+
 export const {
   handlers: { GET, POST },
+  // eslint-disable-next-line @typescript-eslint/unbound-method
+  signIn,
+  // eslint-disable-next-line @typescript-eslint/unbound-method
+  signOut,
   auth,
-  CSRF_experimental,
 } = NextAuth({
   adapter: {
     ...DrizzleAdapter(db, table),
@@ -47,20 +58,7 @@ export const {
   },
   providers: [
     ...providers.map((p) => p.handler),
-    ...(process.env.USE_OFFLINE
-      ? [
-          Email({
-            from: "foo@bar.com",
-            generateVerificationToken() {
-              return crypto.randomUUID().replace("-", "").slice(0, 6);
-            },
-            async sendVerificationRequest(opts) {
-              await new Promise((r) => setTimeout(r, 1000));
-              console.log(`[EMAIL LOGIN]: ${opts.identifier} - ${opts.token}`);
-            },
-          }) as Provider,
-        ]
-      : []),
+    ...(process.env.USE_OFFLINE ? [mockEmailProvider as Provider] : []),
   ],
   callbacks: {
     session: ({ session, user }) => {

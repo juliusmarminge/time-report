@@ -17,7 +17,7 @@
     "ui": "bunx shadcn-ui"
   },
   "dependencies": {
-    "@auth/core": "^0.16.1",
+    "@auth/core": "^0.18.0",
     "@auth/drizzle-adapter": "^0.3.2",
     "@dinero.js/currencies": "2.0.0-alpha.14",
     "@hookform/resolvers": "^3.3.1",
@@ -41,8 +41,9 @@
     "date-fns": "^2.30.0",
     "dinero.js": "2.0.0-alpha.14",
     "drizzle-orm": "^0.28.5",
-    "next": "13.5.4",
-    "next-auth": "0.0.0-manual.ffd05533",
+    "mysql2": "^3.6.0",
+    "next": "13.5.6",
+    "next-auth": "5.0.0-beta.0",
     "next-themes": "^0.2.1",
     "react": "18.2.0",
     "react-day-picker": "^8.8.1",
@@ -66,12 +67,11 @@
     "dotenv-cli": "^7.3.0",
     "drizzle-kit": "^0.19.13",
     "eslint": "8.47.0",
-    "eslint-config-next": "13.5.4",
+    "eslint-config-next": "13.5.6",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-import": "^2.28.1",
     "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-react-hooks": "^4.6.0",
-    "mysql2": "^3.6.0",
     "patch-package": "^8.0.0",
     "postcss": "8.4.31",
     "prettier": "^3.0.2",
@@ -80,7 +80,7 @@
     "typescript": "5.2.2"
   },
   "overrides": {
-    "@auth/core": "0.16.1",
+    "@auth/core": "0.18.0",
     "@types/react": "18.2.28",
     "@types/react-dom": "18.2.13"
   }
