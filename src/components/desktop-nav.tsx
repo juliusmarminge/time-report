@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import Link from "next/link";
 
 import { NavButton } from "~/components/nav-button";
@@ -5,9 +6,7 @@ import { currentUser } from "~/lib/auth";
 import { cn } from "~/lib/cn";
 import { SettingsMenu } from "./settings-menu";
 
-export async function DesktopSidebar(props: { className?: string }) {
-  const user = await currentUser();
-
+export function DesktopSidebar(props: { className?: string }) {
   return (
     <aside
       className={cn(
@@ -62,7 +61,15 @@ export async function DesktopSidebar(props: { className?: string }) {
         </NavButton>
       </div>
 
-      <SettingsMenu className="mx-4 mt-auto" user={user} />
+      <Suspense>
+        <SettingsWrapped />
+      </Suspense>
     </aside>
   );
+}
+
+export async function SettingsWrapped() {
+  const user = await currentUser();
+
+  return <SettingsMenu className="mx-4 mt-auto" user={user} />;
 }

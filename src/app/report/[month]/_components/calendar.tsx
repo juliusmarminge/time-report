@@ -5,17 +5,20 @@ import { useRouter } from "next/navigation";
 import { format } from "date-fns";
 import { useDayRender } from "react-day-picker";
 
-import type { Timeslot } from "~/db/getters";
+import type { Client, Timeslot } from "~/db/getters";
 import { cn } from "~/lib/cn";
+import type { CurrencyCode } from "~/lib/currencies";
 import { Button } from "~/ui/button";
 import { Calendar as CalendarCore } from "~/ui/calendar";
+import { SidePanel } from "./side-panel";
 
 export function Calendar(props: {
-  date?: Date;
+  date: Date;
+  setDate: (date: Date) => void;
   timeslots: Record<string, Timeslot[]> | null;
 }) {
-  const { date: selectedDate, timeslots } = props;
-  const [month, setMonth] = useState(selectedDate);
+  const { timeslots } = props;
+  const [month, setMonth] = useState(props.date);
   const router = useRouter();
 
   const [_, startTransition] = useTransition();
@@ -33,11 +36,11 @@ export function Calendar(props: {
         cell: "relative flex-1 p-0 text-sm focus-within:relative focus-within:z-20 [&:has([aria-selected])]:bg-accent",
       }}
       mode="single"
-      selected={selectedDate ?? new Date()}
+      selected={props.date}
       month={month}
       onMonthChange={(month) => {
         const url = new URL(window.location.href);
-        url.searchParams.set("date", format(month, "yyyy-MM-dd"));
+        url.pathname = `/report/${format(month, "MMMyy")}`;
 
         startTransition(() => {
           router.push(url.href, { scroll: false });
@@ -48,10 +51,11 @@ export function Calendar(props: {
         if (!date) return;
 
         const url = new URL(window.location.href);
-        url.searchParams.set("date", format(date, "yyyy-MM-dd"));
+        url.pathname = `/report/${format(date, "MMMyy")}`;
         startTransition(() => {
           router.push(url.href, { scroll: false });
           setMonth(date);
+          props.setDate(date);
         });
       }}
       components={{
@@ -84,5 +88,29 @@ export function Calendar(props: {
         },
       }}
     />
+  );
+}
+
+export function CalendarAndSidePanel(props: {
+  referenceDate: Date;
+  timeslots: Record<string, Timeslot[]> | null;
+  clients: Client[];
+  userCurrency: CurrencyCode;
+  conversionRates: Record<CurrencyCode, number>;
+}) {
+  const [date, setDate] = useState(props.referenceDate);
+  const selectedDaySlots = props.timeslots?.[format(date, "yyyy-MM-dd")] ?? [];
+
+  return (
+    <>
+      <Calendar date={date} setDate={setDate} timeslots={props.timeslots} />
+      <SidePanel
+        date={date}
+        clients={props.clients}
+        timeslots={selectedDaySlots}
+        currency={props.userCurrency}
+        conversionRates={props.conversionRates}
+      />
+    </>
   );
 }
