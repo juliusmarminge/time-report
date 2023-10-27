@@ -1,9 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { useSearchParams } from "next/navigation";
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
-import { isFuture, parseISO } from "date-fns";
+import { format, isFuture } from "date-fns";
 
 import { LoadingDots } from "~/components/loading-dots";
 import type { Client } from "~/db/getters";
@@ -210,19 +209,14 @@ export function ReportTimeForm(props: {
   );
 }
 
-export function ReportTimeSheet(props: { clients: Client[] }) {
+export function ReportTimeSheet(props: { date: Date; clients: Client[] }) {
   const isMobile = useMobile();
-
-  const params = useSearchParams();
-  const dateStr = params.get("date");
-  const date = dateStr ? parseISO(`${dateStr}T00:00:00.000Z`) : undefined;
-
   const [open, setOpen] = useState(false);
 
   return (
     <AlertDialog>
       <Sheet open={open} onOpenChange={setOpen}>
-        {date && isFuture(date) ? (
+        {props.date && isFuture(props.date) ? (
           <AlertDialogTrigger asChild>
             <Button>Report time</Button>
           </AlertDialogTrigger>
@@ -238,7 +232,7 @@ export function ReportTimeSheet(props: { clients: Client[] }) {
           <div className="py-4">
             <ReportTimeForm
               clients={props.clients}
-              date={date}
+              date={props.date}
               afterSubmit={() => setOpen(false)}
             />
           </div>
@@ -253,7 +247,8 @@ export function ReportTimeSheet(props: { clients: Client[] }) {
           </AlertDialogTitle>
           <AlertDialogDescription>
             {`You're about to report time for a future date `}
-            <b>({dateStr})</b>.{` Are you sure you want to continue?`}
+            <b>({format(props.date, "yyyy-MM-dd")})</b>.
+            {` Are you sure you want to continue?`}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

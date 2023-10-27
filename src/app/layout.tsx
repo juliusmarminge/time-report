@@ -1,6 +1,6 @@
 import "./globals.css";
 
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { GeistMono, GeistSans } from "geist/font";
 
 import { DesktopSidebar } from "~/components/desktop-nav";
@@ -10,21 +10,25 @@ import { ThemeProvider } from "~/components/theme-provider";
 import { cn } from "~/lib/cn";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://timeit.jumr.dev"),
   title: {
     default: "Time Reporting App",
     template: `%s - Time Reporting App`,
   },
   description:
     "An app for indie contractors to track time and generate invoices.",
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "white" },
-    { media: "(prefers-color-scheme: dark)", color: "black" },
-  ],
   icons: {
     icon: "/favicon.ico",
     shortcut: "/favicon-16x16.png",
     apple: "/apple-touch-icon.png",
   },
+};
+
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "white" },
+    { media: "(prefers-color-scheme: dark)", color: "black" },
+  ],
 };
 
 export default function RootLayout(props: { children: React.ReactNode }) {

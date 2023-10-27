@@ -1,60 +1,52 @@
 import { Suspense } from "react";
 import { redirect } from "next/navigation";
-import { format, parseISO, startOfMonth } from "date-fns";
+import { Temporal } from "@js-temporal/polyfill";
+import { format, isSameMonth, parse } from "date-fns";
 import { toDecimal } from "dinero.js";
 
-import type { Client, Timeslot } from "~/db/getters";
+import type { Timeslot } from "~/db/getters";
 import { getClients, getOpenPeriods, getTimeslots } from "~/db/getters";
 import { currentUser } from "~/lib/auth";
 import { withUnstableCache } from "~/lib/cache";
-import type { CurrencyCode } from "~/lib/currencies";
 import { createConverter, formatMoney } from "~/lib/currencies";
 import { getMonthMetadata } from "~/lib/get-month-metadata";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "~/ui/card";
-import { DashboardShell } from "../../components/dashboard-shell";
-import { NewClientSheet } from "../clients/_components/new-client-form";
-import { Calendar } from "./_components/calendar";
+import { Card, CardContent, CardHeader, CardTitle } from "~/ui/card";
+import { DashboardShell } from "../../../components/dashboard-shell";
+import { CalendarAndSidePanel } from "./_components/calendar";
 import { ClosePeriodSheet } from "./_components/close-periods";
-import { ReportTimeSheet } from "./_components/report-time-form";
-import { TimeslotCard } from "./_components/timeslot-card";
 
 export const runtime = "edge";
 
-export default async function IndexPage(props: {
-  searchParams: { date?: string };
-}) {
+export default async function IndexPage(props: { params: { month?: string } }) {
   const user = await currentUser();
   if (!user) redirect("/login");
 
-  if (!props.searchParams.date) {
-    redirect("/report?date=" + format(new Date(), "yyyy-MM-dd"));
+  if (!props.params.month) {
+    redirect("/report/" + format(new Date(), "MMMyy"));
   }
-  const date = parseISO(`${props.searchParams.date}T00:00:00.000Z`);
 
+  const date = parse(props.params.month, "MMMyy", new Date());
+  console.log(
+    "SERVER GOT DATE",
+    date,
+    format(date, "yyyy-MM-dd"),
+    Temporal.PlainDate.from(format(date, "yyyy-MM-dd")).toString(),
+  );
   const clients = await withUnstableCache({
     fn: getClients,
     args: [user.id],
     tags: ["clients"],
   });
 
-  console.log("Got clients for userId", user.id, clients);
-
   const timeslots = await withUnstableCache({
     fn: getTimeslots,
-    args: [startOfMonth(date ?? new Date()), user.id, { mode: "month" }],
+    args: [date, user.id, { mode: "month" }],
     tags: ["timeslots"],
   });
 
-  const monthSlots = timeslots.filter(
-    (slot) =>
-      format(slot.date, "yyyy-MM") === format(date ?? new Date(), "yyyy-MM"),
-  );
+  const monthSlots = timeslots.filter((slot) => isSameMonth(slot.date, date));
+
+  const converter = await createConverter();
 
   const { billedClients, totalHours, totalRevenue } = await getMonthMetadata(
     monthSlots,
@@ -70,10 +62,6 @@ export default async function IndexPage(props: {
     },
     {},
   );
-
-  const selectedDaySlots = date
-    ? slotsByDate?.[format(date, "yyyy-MM-dd")] ?? []
-    : [];
 
   return (
     <DashboardShell
@@ -130,37 +118,15 @@ export default async function IndexPage(props: {
             </p>
           </CardContent>
         </Card>
-        {/* <Card className="bg-muted">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              Estimated income
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="w-max md:w-auto">
-            <div className="text-2xl font-bold">
-              {toDecimal(
-                dinero({
-                  amount: 2375000,
-                  currency: currencies[user.defaultCurrency],
-                }),
-                formatMoney,
-              )}
-            </div>
-            <p className="text-xs text-muted-foreground">
-              after fees and taxes
-            </p>
-          </CardContent>
-        </Card> */}
       </section>
 
       <section className="flex flex-col gap-4 sm:grid md:grid-cols-2 lg:grid-cols-4">
-        <Calendar date={date} timeslots={slotsByDate} />
-
-        <SidePanel
-          date={date}
+        <CalendarAndSidePanel
+          referenceDate={date}
           clients={clients}
-          timeslots={selectedDaySlots}
-          currency={user.defaultCurrency}
+          timeslots={slotsByDate}
+          userCurrency={user.defaultCurrency}
+          conversionRates={converter.rates}
         />
       </section>
     </DashboardShell>
@@ -179,71 +145,11 @@ async function ClosePeriod() {
 
   const converter = await createConverter();
 
-  console.log("Got open periods for userId", user.id, openPeriods);
-
   return (
     <ClosePeriodSheet
       openPeriods={openPeriods}
       conversionRates={converter.rates}
       userCurrency={user.defaultCurrency}
     />
-  );
-}
-
-async function SidePanel(props: {
-  date?: Date;
-  clients: Client[];
-  timeslots: Timeslot[];
-  currency: CurrencyCode;
-}) {
-  if (!props.date) {
-    return (
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-xl">No date selected</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-sm text-muted-foreground">
-            Select a date to view timeslots.
-          </p>
-        </CardContent>
-      </Card>
-    );
-  }
-
-  const { totalRevenue, totalHours } = await getMonthMetadata(
-    props.timeslots,
-    props.currency,
-  );
-
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="text-xl">
-          {format(props.date, "EEEE, MMMM do")}
-        </CardTitle>
-        <CardDescription>
-          {totalHours} hours billed for a total of{" "}
-          {toDecimal(totalRevenue, formatMoney)}
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="flex flex-col gap-4">
-        {props.timeslots.length === 0 && (
-          <p className="text-sm text-muted-foreground">
-            No timeslots for this date.
-          </p>
-        )}
-        {props.timeslots.map((slot) => (
-          <TimeslotCard key={slot.id} slot={slot} />
-        ))}
-        <Suspense>
-          {props.clients.length === 0 ? (
-            <NewClientSheet trigger="full" />
-          ) : (
-            <ReportTimeSheet clients={props.clients} />
-          )}
-        </Suspense>
-      </CardContent>
-    </Card>
   );
 }

@@ -1,5 +1,6 @@
 // import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
+import { format } from "date-fns";
 
 import { auth } from "~/lib/auth";
 
@@ -26,6 +27,11 @@ export default auth((req) => {
   if (!auth?.user) {
     // Protected path and user is not signed in, redirect to signin
     url.pathname = "/login";
+    return NextResponse.redirect(url);
+  }
+
+  if (url.pathname === "/report") {
+    url.pathname = `/report/${format(new Date(), "MMMyy")}`;
     return NextResponse.redirect(url);
   }
 
