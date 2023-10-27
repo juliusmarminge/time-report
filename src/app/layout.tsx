@@ -1,18 +1,13 @@
 import "./globals.css";
 
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { GeistMono, GeistSans } from "geist/font";
 
 import { DesktopSidebar } from "~/components/desktop-nav";
 import { MobileNav } from "~/components/mobile-nav";
 import { TailwindIndicator } from "~/components/tailwind-indicator";
 import { ThemeProvider } from "~/components/theme-provider";
 import { cn } from "~/lib/cn";
-
-const fontSans = Inter({
-  subsets: ["latin"],
-  variable: "--font-sans",
-});
 
 export const metadata: Metadata = {
   title: {
@@ -39,7 +34,8 @@ export default function RootLayout(props: { children: React.ReactNode }) {
         <body
           className={cn(
             "min-h-screen font-sans antialiased",
-            fontSans.variable,
+            GeistSans.variable,
+            GeistMono.variable,
           )}
         >
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
