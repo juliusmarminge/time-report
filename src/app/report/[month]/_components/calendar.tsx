@@ -109,7 +109,7 @@ export function CalendarAndSidePanel(props: {
   const timeslots = tson.deserialize(props.timeslots);
 
   const [date, setDate] = useState(temporal);
-  const selectedDaySlots = timeslots?.[temporal.toString()] ?? [];
+  const selectedDaySlots = timeslots?.[date.toString()] ?? [];
 
   return (
     <>

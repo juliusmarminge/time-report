@@ -1,3 +1,5 @@
+"use client";
+
 import { Suspense } from "react";
 import type { Temporal } from "@js-temporal/polyfill";
 import { toDecimal } from "dinero.js";

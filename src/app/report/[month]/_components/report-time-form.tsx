@@ -70,7 +70,6 @@ export function ReportTimeForm(props: {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(async (values) => {
-          console.log("values", values);
           await reportTime({
             ...values,
             date: Temporal.PlainDate.from(values.date as string).toString(),

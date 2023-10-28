@@ -51,8 +51,6 @@ function PeriodCard(props: {
 }) {
   const { period } = props;
 
-  console.log(period);
-
   const nSlots = period.timeslot.length;
   const nHours = period.timeslot.reduce((acc, slot) => +slot.duration + acc, 0);
 
@@ -87,12 +85,11 @@ function PeriodCard(props: {
             amount: slot.chargeRate,
             currency: currencies[slot.currency],
           });
-          const slotDate = slot.date;
 
           return (
             <div key={slot.id}>
               <p className="text-sm text-muted-foreground">
-                {formatOrdinal(slotDate)}
+                {formatOrdinal(slot.date)}
                 {` - `}
                 {slot.duration}
                 {`h @ `}
@@ -188,15 +185,13 @@ export function ClosePeriodSheet(props: {
   userCurrency: CurrencyCode;
 }) {
   const openPeriods = tson.deserialize(props.openPeriods);
-  const [expiredPeriodsDialogOpen, setExpiredPeriodsDialogOpen] =
-    useState(false);
 
+  const [dialogOpen, setDialogOpen] = useState(false);
   useEffect(() => {
-    console.log(openPeriods);
     const hasExpiredPeriods = openPeriods.some((period) =>
       isPast(period.endDate),
     );
-    setExpiredPeriodsDialogOpen(hasExpiredPeriods);
+    setDialogOpen(hasExpiredPeriods);
   }, []);
 
   return (
@@ -227,10 +222,7 @@ export function ClosePeriodSheet(props: {
         </div>
       </SheetContent>
 
-      <AlertDialog
-        open={expiredPeriodsDialogOpen}
-        onOpenChange={setExpiredPeriodsDialogOpen}
-      >
+      <AlertDialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <AlertDialogContent>
           <AlertDialogTitle>You have expired periods.</AlertDialogTitle>
           <AlertDialogDescription>

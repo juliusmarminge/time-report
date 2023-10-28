@@ -25,12 +25,8 @@ const temporalDateColumn = customType<{
   driverData: string;
 }>({
   dataType: () => "date",
-  fromDriver(value) {
-    return Temporal.PlainDate.from(value);
-  },
-  toDriver(value) {
-    return value.toString();
-  },
+  fromDriver: (value) => Temporal.PlainDate.from(value),
+  toDriver: (value) => value.toString(),
 });
 
 export const client = table(

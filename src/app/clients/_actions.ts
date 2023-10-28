@@ -40,21 +40,19 @@ export async function createClient(props: Input<typeof createClientSchema>) {
     : parseInt(newClient.insertId);
 
   const now = Temporal.Now.plainDateISO();
-  const startDate =
-    input.defaultBillingPeriod === "monthly"
-      ? now.with({ day: 1 })
-      : now.with({ day: now.day - now.dayOfWeek });
-  const endDate =
-    input.defaultBillingPeriod === "monthly"
-      ? now.with({ day: now.daysInMonth })
-      : input.defaultBillingPeriod === "biweekly"
-      ? now.with({ day: now.day - now.dayOfWeek + 13 })
-      : now.with({ day: now.day - now.dayOfWeek + 6 });
 
   await db.insert(period).values({
     clientId: newClientId,
-    startDate,
-    endDate,
+    startDate:
+      input.defaultBillingPeriod === "monthly"
+        ? now.with({ day: 1 })
+        : now.with({ day: now.day - now.dayOfWeek }),
+    endDate:
+      input.defaultBillingPeriod === "monthly"
+        ? now.with({ day: now.daysInMonth })
+        : input.defaultBillingPeriod === "biweekly"
+        ? now.add({ days: 13 - now.dayOfWeek })
+        : now.add({ days: 6 - now.dayOfWeek }),
     tenantId: user.id,
   });
 
