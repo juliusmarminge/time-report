@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidateTag } from "next/cache";
+import { Temporal } from "@js-temporal/polyfill";
 import { and, eq } from "drizzle-orm";
 import { parseAsync } from "valibot";
 import type { Input } from "valibot";
@@ -46,7 +47,7 @@ export async function reportTime(props: Input<typeof reportTimeSchema>) {
   console.log("Inserting timeslot for period", slotPeriod.id);
 
   await db.insert(timeslot).values({
-    date: input.date,
+    date: Temporal.PlainDate.from(input.date),
     duration: String(input.duration),
     chargeRate: normalized,
     currency: currencyCode,
@@ -131,8 +132,8 @@ export async function closePeriod(
       status: "open",
       tenantId: user.id,
       clientId: input.clientId,
-      startDate: input.periodStart,
-      endDate: input.periodEnd,
+      startDate: Temporal.PlainDate.from(input.periodStart),
+      endDate: Temporal.PlainDate.from(input.periodEnd),
     });
   }
 

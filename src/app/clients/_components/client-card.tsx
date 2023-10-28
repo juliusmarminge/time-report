@@ -11,6 +11,7 @@ import type { Client } from "~/db/getters";
 import type { CurrencyCode } from "~/lib/currencies";
 import { currencies, formatMoney } from "~/lib/currencies";
 import { convert, slotsToDineros, sumDineros } from "~/lib/monetary";
+import { formatOrdinal, isPast } from "~/lib/temporal";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -128,14 +129,13 @@ export function ClientCard(props: {
                   >
                     {p.status}
                   </Badge>
-                  {p.endDate < new Date() && p.status === "open" && (
+                  {isPast(p.endDate) && p.status === "open" && (
                     <Badge variant="destructive" className="ml-auto">
                       Expired
                     </Badge>
                   )}
                   <p className="text-sm text-muted-foreground">
-                    {format(p.startDate, "MMM do")} to{" "}
-                    {format(p.endDate, "MMM do")}
+                    {formatOrdinal(p.startDate)} to {formatOrdinal(p.endDate)}
                   </p>
                 </div>
                 <p className="text-sm">
@@ -148,7 +148,6 @@ export function ClientCard(props: {
             ))}
           </ul>
         </div>
-        {/* <pre>{JSON.stringify(client, null, 4)}</pre> */}
       </CardContent>
     </Card>
   );

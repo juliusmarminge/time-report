@@ -1,8 +1,9 @@
 import type { AdapterAccount } from "@auth/core/adapters";
+import { Temporal } from "@js-temporal/polyfill";
 import { relations, sql } from "drizzle-orm";
 import {
   bigint,
-  date,
+  customType,
   decimal,
   index,
   int,
@@ -18,6 +19,15 @@ import {
 import type { CurrencyCode } from "~/lib/currencies";
 
 export const table = mysqlTableCreator((name) => `timeit_${name}`);
+
+const temporalDateColumn = customType<{
+  data: Temporal.PlainDate;
+  driverData: string;
+}>({
+  dataType: () => "date",
+  fromDriver: (value) => Temporal.PlainDate.from(value),
+  toDriver: (value) => value.toString(),
+});
 
 export const client = table(
   "client",
@@ -57,7 +67,7 @@ export const timeslot = table(
     id: serial("id").primaryKey(),
     clientId: bigint("client_id", { mode: "number" }).notNull(),
     tenantId: varchar("tenant_id", { length: 255 }).notNull(),
-    date: date("date").notNull(),
+    date: temporalDateColumn("date").notNull(),
     duration: decimal("duration", { scale: 2, precision: 5 }).notNull(),
     description: text("description"),
     chargeRate: int("charge_rate").notNull(),
@@ -86,8 +96,8 @@ export const period = table("period", {
   id: serial("id").primaryKey(),
   clientId: bigint("client_id", { mode: "number" }).notNull(),
   tenantId: varchar("tenant_id", { length: 255 }).notNull(),
-  startDate: date("start_date").notNull(),
-  endDate: date("end_date").notNull(),
+  startDate: temporalDateColumn("start_date").notNull(),
+  endDate: temporalDateColumn("end_date").notNull(),
   closedAt: timestamp("closed_at", { fsp: 3, mode: "date" }),
   status: mysqlEnum("status", ["open", "closed"]).notNull().default("open"),
   createdAt: timestamp("created_at", { fsp: 3, mode: "date" }).default(

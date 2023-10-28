@@ -1,13 +1,7 @@
 "use server";
 
 import { revalidateTag } from "next/cache";
-import {
-  addWeeks,
-  endOfMonth,
-  endOfWeek,
-  startOfMonth,
-  startOfWeek,
-} from "date-fns";
+import { Temporal } from "@js-temporal/polyfill";
 import { and, eq } from "drizzle-orm";
 import { utapi } from "uploadthing/server";
 import type { Input } from "valibot";
@@ -45,18 +39,20 @@ export async function createClient(props: Input<typeof createClientSchema>) {
       newClient[0].insertId
     : parseInt(newClient.insertId);
 
+  const now = Temporal.Now.plainDateISO();
+
   await db.insert(period).values({
     clientId: newClientId,
     startDate:
       input.defaultBillingPeriod === "monthly"
-        ? startOfMonth(new Date())
-        : startOfWeek(new Date()),
+        ? now.with({ day: 1 })
+        : now.with({ day: now.day - now.dayOfWeek }),
     endDate:
       input.defaultBillingPeriod === "monthly"
-        ? endOfMonth(new Date())
+        ? now.with({ day: now.daysInMonth })
         : input.defaultBillingPeriod === "biweekly"
-        ? endOfWeek(addWeeks(new Date(), 1))
-        : endOfWeek(new Date()),
+        ? now.add({ days: 13 - now.dayOfWeek })
+        : now.add({ days: 6 - now.dayOfWeek }),
     tenantId: user.id,
   });
 

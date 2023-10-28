@@ -1,12 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import { Temporal } from "@js-temporal/polyfill";
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
-import { format, isFuture } from "date-fns";
 
 import { LoadingDots } from "~/components/loading-dots";
 import type { Client } from "~/db/getters";
 import { currencies } from "~/lib/currencies";
+import { isFuture } from "~/lib/temporal";
 import { useMobile } from "~/lib/use-mobile";
 import {
   AlertDialog,
@@ -52,13 +53,13 @@ import { reportTimeSchema } from "../_validators";
 
 export function ReportTimeForm(props: {
   clients: Client[];
-  date?: Date;
+  date?: Temporal.PlainDate;
   afterSubmit?: () => void;
 }) {
   const form = useForm({
     schema: reportTimeSchema,
     defaultValues: {
-      date: props.date,
+      date: props.date?.toString(),
       clientId: props.clients[0].id,
       currency: props.clients[0].currency,
       chargeRate: props.clients[0].defaultCharge / 100,
@@ -69,9 +70,10 @@ export function ReportTimeForm(props: {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(async (values) => {
-          console.log("[client] calling action");
-          await reportTime(values);
-          console.log("[client] got action returned");
+          await reportTime({
+            ...values,
+            date: Temporal.PlainDate.from(values.date as string).toString(),
+          });
           form.reset();
           props.afterSubmit?.();
         })}
@@ -209,7 +211,10 @@ export function ReportTimeForm(props: {
   );
 }
 
-export function ReportTimeSheet(props: { date: Date; clients: Client[] }) {
+export function ReportTimeSheet(props: {
+  date: Temporal.PlainDate;
+  clients: Client[];
+}) {
   const isMobile = useMobile();
   const [open, setOpen] = useState(false);
 
@@ -247,7 +252,7 @@ export function ReportTimeSheet(props: { date: Date; clients: Client[] }) {
           </AlertDialogTitle>
           <AlertDialogDescription>
             {`You're about to report time for a future date `}
-            <b>({format(props.date, "yyyy-MM-dd")})</b>.
+            <b>({props.date.toString()})</b>.
             {` Are you sure you want to continue?`}
           </AlertDialogDescription>
         </AlertDialogHeader>

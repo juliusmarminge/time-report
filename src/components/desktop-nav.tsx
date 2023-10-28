@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import Link from "next/link";
+import { Temporal } from "@js-temporal/polyfill";
 
 import { NavButton } from "~/components/nav-button";
 import { currentUser } from "~/lib/auth";
@@ -25,7 +26,14 @@ export function DesktopSidebar(props: { className?: string }) {
       </Link>
 
       <div className="flex flex-col gap-4 p-4">
-        <NavButton href="/report">
+        <NavButton
+          href={`/report/${Temporal.Now.plainDateISO()
+            .toLocaleString("en-US", {
+              month: "short",
+              year: "2-digit",
+            })
+            .replace(" ", "")}`}
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"

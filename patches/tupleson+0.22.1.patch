@@ -1,0 +1,13 @@
+diff --git a/node_modules/tupleson/lib/index.d.mts b/node_modules/tupleson/lib/index.d.mts
+index be090d7..8725d7e 100644
+--- a/node_modules/tupleson/lib/index.d.mts
++++ b/node_modules/tupleson/lib/index.d.mts
+@@ -2,7 +2,7 @@ export { TsonCircularReferenceError, TsonError } from './errors.mjs';
+ export { createTson } from './sync/createTson.mjs';
+ export { createTsonDeserialize, createTsonParser } from './sync/deserialize.mjs';
+ export { createTsonSerialize, createTsonStringify } from './sync/serialize.mjs';
+-export { TsonOptions, TsonType } from './sync/syncTypes.mjs';
++export { TsonOptions, TsonSerialized, TsonType } from './sync/syncTypes.mjs';
+ export { tsonBigint } from './sync/handlers/tsonBigint.mjs';
+ export { tsonDate } from './sync/handlers/tsonDate.mjs';
+ export { tsonRegExp } from './sync/handlers/tsonRegExp.mjs';

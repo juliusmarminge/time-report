@@ -1,7 +1,6 @@
 import { Suspense } from "react";
 import { redirect } from "next/navigation";
 import { Temporal } from "@js-temporal/polyfill";
-import { format, isSameMonth, parse } from "date-fns";
 import { toDecimal } from "dinero.js";
 
 import type { Timeslot } from "~/db/getters";
@@ -10,6 +9,8 @@ import { currentUser } from "~/lib/auth";
 import { withUnstableCache } from "~/lib/cache";
 import { createConverter, formatMoney } from "~/lib/currencies";
 import { getMonthMetadata } from "~/lib/get-month-metadata";
+import { isSameMonth } from "~/lib/temporal";
+import { tson } from "~/lib/tson";
 import { Card, CardContent, CardHeader, CardTitle } from "~/ui/card";
 import { DashboardShell } from "../../../components/dashboard-shell";
 import { CalendarAndSidePanel } from "./_components/calendar";
@@ -17,21 +18,49 @@ import { ClosePeriodSheet } from "./_components/close-periods";
 
 export const runtime = "edge";
 
-export default async function IndexPage(props: { params: { month?: string } }) {
+const parseMonthParam = (month: string) => {
+  // MMMyy => jan23 for example, parse it to a Temporal.PlainDate { 2023-01-01 }
+  const [monthCode, yearNr] = month.match(/\d+|\D+/g) as string[];
+  const monthNr =
+    [
+      "jan",
+      "feb",
+      "mar",
+      "apr",
+      "may",
+      "jun",
+      "jul",
+      "aug",
+      "sep",
+      "oct",
+      "nov",
+      "dec",
+    ].indexOf(monthCode.toLowerCase()) + 1;
+
+  return Temporal.PlainDate.from({
+    year: 2000 + +yearNr,
+    month: monthNr,
+    day: 1,
+  });
+};
+
+export default async function IndexPage(props: { params: { month: string } }) {
   const user = await currentUser();
   if (!user) redirect("/login");
 
-  if (!props.params.month) {
-    redirect("/report/" + format(new Date(), "MMMyy"));
+  if (props.params.month.length !== 5) {
+    redirect(
+      `/report/${Temporal.Now.plainDateISO()
+        .toLocaleString("en-US", {
+          month: "short",
+          year: "2-digit",
+        })
+        .replace(" ", "")}`,
+    );
   }
 
-  const date = parse(props.params.month, "MMMyy", new Date());
-  console.log(
-    "SERVER GOT DATE",
-    date,
-    format(date, "yyyy-MM-dd"),
-    Temporal.PlainDate.from(format(date, "yyyy-MM-dd")).toString(),
-  );
+  const date = parseMonthParam(props.params.month);
+
   const clients = await withUnstableCache({
     fn: getClients,
     args: [user.id],
@@ -55,9 +84,9 @@ export default async function IndexPage(props: { params: { month?: string } }) {
 
   const slotsByDate = timeslots.reduce<Record<string, Timeslot[]>>(
     (acc, slot) => {
-      const date = format(slot.date, "yyyy-MM-dd");
-      if (!acc[date]) acc[date] = [];
-      acc[date].push(slot);
+      const key = slot.date.toString();
+      if (!acc[key]) acc[key] = [];
+      acc[key].push(slot);
       return acc;
     },
     {},
@@ -122,9 +151,9 @@ export default async function IndexPage(props: { params: { month?: string } }) {
 
       <section className="flex flex-col gap-4 sm:grid md:grid-cols-2 lg:grid-cols-4">
         <CalendarAndSidePanel
-          referenceDate={date}
-          clients={clients}
-          timeslots={slotsByDate}
+          referenceDate={tson.serialize(date)}
+          clients={tson.serialize(clients)}
+          timeslots={tson.serialize(slotsByDate)}
           userCurrency={user.defaultCurrency}
           conversionRates={converter.rates}
         />
@@ -147,7 +176,7 @@ async function ClosePeriod() {
 
   return (
     <ClosePeriodSheet
-      openPeriods={openPeriods}
+      openPeriods={tson.serialize(openPeriods)}
       conversionRates={converter.rates}
       userCurrency={user.defaultCurrency}
     />
