@@ -22,7 +22,7 @@ export function Calendar(props: {
   timeslots: Record<string, Timeslot[]> | null;
 }) {
   const { timeslots } = props;
-  const [month, setMonth] = useState(props.date);
+  const [displayMonth, setDisplayMonth] = useState(props.date);
   const router = useRouter();
 
   const [_, startTransition] = useTransition();
@@ -41,27 +41,41 @@ export function Calendar(props: {
       }}
       mode="single"
       selected={toDate(props.date)}
-      month={toDate(month)}
-      onMonthChange={(month) => {
+      month={toDate(displayMonth)}
+      onMonthChange={(newMonth) => {
+        const temporal = fromDate(newMonth);
+        if (
+          temporal.year === displayMonth.year &&
+          temporal.month === displayMonth.month
+        ) {
+          return;
+        }
+
         const url = new URL(window.location.href);
-        url.pathname = `/report/${format(month, "MMMyy")}`;
+        url.pathname = `/report/${format(newMonth, "MMMyy")}`;
 
         startTransition(() => {
+          setDisplayMonth(temporal);
           router.push(url.href, { scroll: false });
-          setMonth(fromDate(month));
         });
       }}
       onSelect={(date) => {
         if (!date) return;
         const temporal = fromDate(date);
+        if (
+          temporal.year === props.date.year &&
+          temporal.month === props.date.month
+        ) {
+          props.setDate(temporal);
+          return;
+        }
 
         const url = new URL(window.location.href);
         url.pathname = `/report/${format(date, "MMMyy")}`;
         startTransition(() => {
-          router.push(url.href, { scroll: false });
-
-          setMonth(temporal);
+          setDisplayMonth(temporal);
           props.setDate(temporal);
+          router.push(url.href, { scroll: false });
         });
       }}
       components={{
