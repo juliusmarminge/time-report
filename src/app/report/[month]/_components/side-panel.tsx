@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { format } from "date-fns";
+import type { Temporal } from "@js-temporal/polyfill";
 import { toDecimal } from "dinero.js";
 
 import { NewClientSheet } from "~/app/clients/_components/new-client-form";
@@ -7,6 +7,7 @@ import type { Client, Timeslot } from "~/db/getters";
 import type { CurrencyCode } from "~/lib/currencies";
 import { formatMoney } from "~/lib/currencies";
 import { convert, slotsToDineros, sumDineros } from "~/lib/monetary";
+import { formatOrdinal } from "~/lib/temporal";
 import {
   Card,
   CardContent,
@@ -18,27 +19,12 @@ import { ReportTimeSheet } from "./report-time-form";
 import { TimeslotCard } from "./timeslot-card";
 
 export function SidePanel(props: {
-  date?: Date;
+  date: Temporal.PlainDate;
   clients: Client[];
   timeslots: Timeslot[];
   currency: CurrencyCode;
   conversionRates: Record<CurrencyCode, number>;
 }) {
-  if (!props.date) {
-    return (
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-xl">No date selected</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-sm text-muted-foreground">
-            Select a date to view timeslots.
-          </p>
-        </CardContent>
-      </Card>
-    );
-  }
-
   const totalRevenue = sumDineros({
     dineros: slotsToDineros(props.timeslots),
     converter: (d, c) => convert(d, c, props.conversionRates),
@@ -54,7 +40,10 @@ export function SidePanel(props: {
     <Card>
       <CardHeader>
         <CardTitle className="text-xl">
-          {format(props.date, "EEEE, MMMM do")}
+          {formatOrdinal(props.date, {
+            weekday: "long",
+            month: "long",
+          })}
         </CardTitle>
         <CardDescription>
           {totalHours} hours billed for a total of{" "}

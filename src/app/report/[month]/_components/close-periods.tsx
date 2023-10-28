@@ -1,13 +1,15 @@
 "use client";
 
 import { Fragment, useEffect, useState } from "react";
-import { addDays, addWeeks, endOfMonth, endOfWeek, format } from "date-fns";
 import { dinero, toDecimal } from "dinero.js";
+import type { TsonSerialized } from "tupleson";
 
 import type { Period } from "~/db/getters";
 import type { CurrencyCode } from "~/lib/currencies";
 import { currencies, formatMoney } from "~/lib/currencies";
 import { convert, slotsToDineros, sumDineros } from "~/lib/monetary";
+import { formatOrdinal, isPast } from "~/lib/temporal";
+import { tson } from "~/lib/tson";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -49,6 +51,8 @@ function PeriodCard(props: {
 }) {
   const { period } = props;
 
+  console.log(period);
+
   const nSlots = period.timeslot.length;
   const nHours = period.timeslot.reduce((acc, slot) => +slot.duration + acc, 0);
 
@@ -63,10 +67,11 @@ function PeriodCard(props: {
       <div className="flex items-center gap-2">
         <h2 className="text-lg font-bold">{period.client.name}</h2>
         <p className="text-sm text-muted-foreground">
-          {format(period.startDate, "MMM do")} to{" "}
-          {format(period.endDate, "MMM do")}
+          {formatOrdinal(period.startDate)}
+          {" to "}
+          {formatOrdinal(period.endDate)}
         </p>
-        {period.endDate < new Date() && (
+        {isPast(period.endDate) && (
           <Badge variant="destructive" className="ml-auto">
             Expired
           </Badge>
@@ -82,10 +87,12 @@ function PeriodCard(props: {
             amount: slot.chargeRate,
             currency: currencies[slot.currency],
           });
+          const slotDate = slot.date;
+
           return (
             <div key={slot.id}>
               <p className="text-sm text-muted-foreground">
-                {format(slot.date, "MMM do")}
+                {formatOrdinal(slotDate)}
                 {` - `}
                 {slot.duration}
                 {`h @ `}
@@ -102,16 +109,16 @@ function PeriodCard(props: {
 
 export function ClosePeriodConfirmationModal(props: { period: Period }) {
   const [newPeriodDialogOpen, setNewPeriodDialogOpen] = useState(false);
-  const [newPeriodStart, setNewPeriodStart] = useState<Date>(
-    addDays(props.period.endDate, 1),
+  const [newPeriodStart, setNewPeriodStart] = useState(
+    props.period.endDate.add({ days: 1 }),
   );
   const billingPeriod = props.period.client.defaultBillingPeriod;
-  const [newPeriodEnd, setNewPeriodEnd] = useState<Date>(
+  const [newPeriodEnd, setNewPeriodEnd] = useState(
     billingPeriod === "monthly"
-      ? endOfMonth(newPeriodStart)
+      ? newPeriodStart.with({ day: newPeriodStart.daysInMonth })
       : billingPeriod === "biweekly"
-      ? endOfWeek(addWeeks(newPeriodStart, 1))
-      : endOfWeek(newPeriodStart),
+      ? newPeriodStart.add({ weeks: 2 })
+      : newPeriodStart.add({ weeks: 1 }),
   );
 
   return (
@@ -161,8 +168,8 @@ export function ClosePeriodConfirmationModal(props: { period: Period }) {
               await closePeriod(props.period.id, {
                 openNewPeriod: true,
                 clientId: props.period.client.id,
-                periodStart: newPeriodStart,
-                periodEnd: newPeriodEnd,
+                periodStart: newPeriodStart.toString(),
+                periodEnd: newPeriodEnd.toString(),
               });
               setNewPeriodDialogOpen(false);
             }}
@@ -176,16 +183,18 @@ export function ClosePeriodConfirmationModal(props: { period: Period }) {
 }
 
 export function ClosePeriodSheet(props: {
-  openPeriods: Period[];
+  openPeriods: TsonSerialized<Period[]>;
   conversionRates: Record<string, number>;
   userCurrency: CurrencyCode;
 }) {
+  const openPeriods = tson.deserialize(props.openPeriods);
   const [expiredPeriodsDialogOpen, setExpiredPeriodsDialogOpen] =
     useState(false);
 
   useEffect(() => {
-    const hasExpiredPeriods = props.openPeriods.some(
-      (period) => period.endDate < new Date(),
+    console.log(openPeriods);
+    const hasExpiredPeriods = openPeriods.some((period) =>
+      isPast(period.endDate),
     );
     setExpiredPeriodsDialogOpen(hasExpiredPeriods);
   }, []);
@@ -200,18 +209,18 @@ export function ClosePeriodSheet(props: {
           <SheetHeader>
             <SheetTitle>Open Periods</SheetTitle>
             <SheetDescription>
-              {`You have ${props.openPeriods.length} open periods.`}
+              {`You have ${openPeriods.length} open periods.`}
             </SheetDescription>
           </SheetHeader>
           <div className="flex flex-col gap-4">
-            {props.openPeriods.map((period, idx) => (
+            {openPeriods.map((period, idx) => (
               <Fragment key={period.id}>
                 <PeriodCard
                   period={period}
                   conversionRates={props.conversionRates}
                   userCurrency={props.userCurrency}
                 />
-                {idx < props.openPeriods.length - 1 && <Separator />}
+                {idx < openPeriods.length - 1 && <Separator />}
               </Fragment>
             ))}
           </div>

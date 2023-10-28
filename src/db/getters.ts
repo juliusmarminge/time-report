@@ -1,4 +1,4 @@
-import { add, endOfMonth, startOfMonth, sub } from "date-fns";
+import type { Temporal } from "@js-temporal/polyfill";
 import { and, between, eq } from "drizzle-orm";
 
 import { db } from ".";
@@ -21,7 +21,7 @@ export const getClients = async (userId: string) => {
 export type Client = Awaited<ReturnType<typeof getClients>>[number];
 
 export const getTimeslots = async (
-  date: Date,
+  date: Temporal.PlainDate,
   userId: string,
   opts: { mode: "exact" | "month" },
 ) => {
@@ -47,8 +47,8 @@ export const getTimeslots = async (
               timeslot.date,
               // pad the month with a week on either side
               // to account for timeslots that start/end in the previous/next month
-              sub(startOfMonth(date), { days: 6 }),
-              add(endOfMonth(date), { days: 6 }),
+              date.subtract({ days: 6 }),
+              date.add({ days: 6 }),
             ),
       ),
     );

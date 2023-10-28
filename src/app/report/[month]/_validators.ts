@@ -1,4 +1,4 @@
-import { parse } from "date-fns";
+import { format } from "date-fns";
 import {
   coerce,
   date,
@@ -11,12 +11,14 @@ import {
   union,
 } from "valibot";
 
+const ensureDateIsString = union([
+  transform(date(), (d) => format(d, "yyyy-MM-dd")),
+  string(),
+]);
+
 export const reportTimeSchema = object({
   clientId: union([number(), coerce(number(), Number)]),
-  date: union([
-    date(),
-    transform(string(), (value) => parse(value, "yyyy-MM-dd", new Date())),
-  ]),
+  date: ensureDateIsString,
   duration: coerce(number(), Number),
   description: optional(string()),
   chargeRate: coerce(number(), Number),
@@ -36,7 +38,7 @@ export const closePeriodSchema = union([
   object({
     openNewPeriod: literal(true),
     clientId: number(),
-    periodStart: date(),
-    periodEnd: date(),
+    periodStart: ensureDateIsString,
+    periodEnd: ensureDateIsString,
   }),
 ]);

@@ -2,20 +2,23 @@
 
 import { useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { Temporal } from "@js-temporal/polyfill";
+import type { Temporal } from "@js-temporal/polyfill";
 import { format } from "date-fns";
 import { useDayRender } from "react-day-picker";
+import type { TsonSerialized } from "tupleson";
 
 import type { Client, Timeslot } from "~/db/getters";
 import { cn } from "~/lib/cn";
 import type { CurrencyCode } from "~/lib/currencies";
+import { fromDate, toDate } from "~/lib/temporal";
+import { tson } from "~/lib/tson";
 import { Button } from "~/ui/button";
 import { Calendar as CalendarCore } from "~/ui/calendar";
 import { SidePanel } from "./side-panel";
 
 export function Calendar(props: {
-  date: Date;
-  setDate: (date: Date) => void;
+  date: Temporal.PlainDate;
+  setDate: (date: Temporal.PlainDate) => void;
   timeslots: Record<string, Timeslot[]> | null;
 }) {
   const { timeslots } = props;
@@ -37,26 +40,28 @@ export function Calendar(props: {
         cell: "relative flex-1 p-0 text-sm focus-within:relative focus-within:z-20 [&:has([aria-selected])]:bg-accent",
       }}
       mode="single"
-      selected={props.date}
-      month={month}
+      selected={toDate(props.date)}
+      month={toDate(month)}
       onMonthChange={(month) => {
         const url = new URL(window.location.href);
         url.pathname = `/report/${format(month, "MMMyy")}`;
 
         startTransition(() => {
           router.push(url.href, { scroll: false });
-          setMonth(month);
+          setMonth(fromDate(month));
         });
       }}
       onSelect={(date) => {
         if (!date) return;
+        const temporal = fromDate(date);
 
         const url = new URL(window.location.href);
         url.pathname = `/report/${format(date, "MMMyy")}`;
         startTransition(() => {
           router.push(url.href, { scroll: false });
-          setMonth(date);
-          props.setDate(date);
+
+          setMonth(temporal);
+          props.setDate(temporal);
         });
       }}
       components={{
@@ -93,27 +98,25 @@ export function Calendar(props: {
 }
 
 export function CalendarAndSidePanel(props: {
-  referenceDate: Date;
-  timeslots: Record<string, Timeslot[]> | null;
-  clients: Client[];
+  referenceDate: TsonSerialized<Temporal.PlainDate>;
+  timeslots: TsonSerialized<Record<string, Timeslot[]> | null>;
+  clients: TsonSerialized<Client[]>;
   userCurrency: CurrencyCode;
   conversionRates: Record<CurrencyCode, number>;
 }) {
-  const [date, setDate] = useState(props.referenceDate);
-  console.log(
-    "CLIENT GOT DATE",
-    date,
-    format(date, "yyyy-MM-dd"),
-    Temporal.PlainDate.from(format(date, "yyyy-MM-dd")).toString(),
-  );
-  const selectedDaySlots = props.timeslots?.[format(date, "yyyy-MM-dd")] ?? [];
+  const clients = tson.deserialize(props.clients);
+  const temporal = tson.deserialize(props.referenceDate);
+  const timeslots = tson.deserialize(props.timeslots);
+
+  const [date, setDate] = useState(temporal);
+  const selectedDaySlots = timeslots?.[temporal.toString()] ?? [];
 
   return (
     <>
-      <Calendar date={date} setDate={setDate} timeslots={props.timeslots} />
+      <Calendar date={date} setDate={setDate} timeslots={timeslots} />
       <SidePanel
         date={date}
-        clients={props.clients}
+        clients={clients}
         timeslots={selectedDaySlots}
         currency={props.userCurrency}
         conversionRates={props.conversionRates}

@@ -1,6 +1,6 @@
 // import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
-import { format } from "date-fns";
+import { Temporal } from "@js-temporal/polyfill";
 
 import { auth } from "~/lib/auth";
 
@@ -31,7 +31,12 @@ export default auth((req) => {
   }
 
   if (url.pathname === "/report") {
-    url.pathname = `/report/${format(new Date(), "MMMyy")}`;
+    url.pathname = `/report/${Temporal.Now.plainDateISO()
+      .toLocaleString("en-US", {
+        month: "short",
+        year: "2-digit",
+      })
+      .replace(" ", "")}`;
     return NextResponse.redirect(url);
   }
 
