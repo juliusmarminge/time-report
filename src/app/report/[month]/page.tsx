@@ -168,11 +168,13 @@ async function ClosePeriod() {
   const user = await currentUser();
   if (!user) return null;
 
-  const openPeriods = await withUnstableCache({
-    fn: getOpenPeriods,
-    args: [user.id],
-    tags: ["periods"],
-  });
+  const openPeriods = await getOpenPeriods(user.id);
+
+  // const openPeriods = await withUnstableCache({
+  //   fn: getOpenPeriods,
+  //   args: [user.id],
+  //   tags: ["periods"],
+  // });
 
   const converter = await createConverter();
 
