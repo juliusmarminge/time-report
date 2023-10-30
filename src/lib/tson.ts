@@ -1,6 +1,6 @@
 import { Temporal } from "@js-temporal/polyfill";
 import type { TsonType } from "tupleson";
-import { createTson, tsonMap } from "tupleson";
+import { createTson, tsonDate, tsonMap } from "tupleson";
 
 const plainDate: TsonType<Temporal.PlainDate, string> = {
   deserialize: (v) => Temporal.PlainDate.from(v),
@@ -9,4 +9,4 @@ const plainDate: TsonType<Temporal.PlainDate, string> = {
   test: (v) => v instanceof Temporal.PlainDate,
 };
 
-export const tson = createTson({ types: [plainDate, tsonMap] });
+export const tson = createTson({ types: [plainDate, tsonMap, tsonDate] });

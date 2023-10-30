@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Temporal } from "@js-temporal/polyfill";
 import { CheckIcon, Pencil1Icon, TrashIcon } from "@radix-ui/react-icons";
 import { format } from "date-fns";
 import type { Dinero } from "dinero.js";
@@ -64,8 +65,8 @@ export function ClientCard(props: {
     );
   }
 
-  const sortedPeriods = client.periods.sort((a, b) =>
-    a.startDate < b.startDate ? 1 : -1,
+  const sortedPeriods = client.periods.sort(
+    (a, b) => -Temporal.PlainDate.compare(a.startDate, b.startDate),
   );
 
   const periodAmounts = sortedPeriods.map((p) =>
