@@ -4,8 +4,7 @@ import { revalidateTag } from "next/cache";
 import { Temporal } from "@js-temporal/polyfill";
 import { and, eq } from "drizzle-orm";
 import { utapi } from "uploadthing/server";
-import type { Input } from "valibot";
-import { parseAsync } from "valibot";
+import { number, object, parseAsync } from "valibot";
 
 import { db } from "~/db";
 import { client, period, timeslot } from "~/db/schema";
@@ -14,7 +13,7 @@ import type { CurrencyCode } from "../../lib/currencies";
 import { normalizeAmount } from "../../lib/currencies";
 import { createClientSchema, updateClientSchema } from "./_validators";
 
-export async function createClient(props: Input<typeof createClientSchema>) {
+export async function createClient(props: unknown) {
   const user = await currentUser();
   if (!user) return;
 
@@ -60,10 +59,7 @@ export async function createClient(props: Input<typeof createClientSchema>) {
   revalidateTag("periods");
 }
 
-export async function updateClient(
-  clientId: number,
-  props: Input<typeof updateClientSchema>,
-) {
+export async function updateClient(clientId: number, props: unknown) {
   const user = await currentUser();
   if (!user) return;
 
@@ -101,20 +97,22 @@ export async function deleteImageFromUT(imageUrl: string | null | undefined) {
   }
 }
 
-export async function deleteClient(props: { id: number }) {
+export async function deleteClient(props: unknown) {
   const user = await currentUser();
   if (!user) return;
 
+  const input = await parseAsync(object({ id: number() }), props);
+
   const existing = await db.query.client.findFirst({
     columns: { id: true, image: true },
-    where: and(eq(client.tenantId, user.id), eq(client.id, props.id)),
+    where: and(eq(client.tenantId, user.id), eq(client.id, input.id)),
   });
   if (!existing) throw new Error("Unauthorized");
 
   await Promise.all([
-    db.delete(client).where(eq(client.id, props.id)),
-    db.delete(period).where(eq(period.clientId, props.id)),
-    db.delete(timeslot).where(eq(timeslot.clientId, props.id)),
+    db.delete(client).where(eq(client.id, input.id)),
+    db.delete(period).where(eq(period.clientId, input.id)),
+    db.delete(timeslot).where(eq(timeslot.clientId, input.id)),
     deleteImageFromUT(existing.image),
   ]);
 

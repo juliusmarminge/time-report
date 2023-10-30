@@ -4,7 +4,6 @@ import { revalidateTag } from "next/cache";
 import { Temporal } from "@js-temporal/polyfill";
 import { and, eq } from "drizzle-orm";
 import { parseAsync } from "valibot";
-import type { Input } from "valibot";
 
 import { db } from "~/db";
 import { getOpenPeriods } from "~/db/getters";
@@ -18,7 +17,7 @@ import {
   updateSchema,
 } from "./_validators";
 
-export async function reportTime(props: Input<typeof reportTimeSchema>) {
+export async function reportTime(props: unknown) {
   const user = await currentUser();
   if (!user) return;
 
@@ -78,10 +77,7 @@ export async function deleteTimeslot(id: number) {
   revalidateTag("clients");
 }
 
-export async function updateTimeslot(
-  id: number,
-  props: Input<typeof updateSchema>,
-) {
+export async function updateTimeslot(id: number, props: unknown) {
   const user = await currentUser();
   if (!user) return;
 
@@ -109,10 +105,7 @@ export async function updateTimeslot(
   revalidateTag("clients");
 }
 
-export async function closePeriod(
-  id: number,
-  props: Input<typeof closePeriodSchema>,
-) {
+export async function closePeriod(id: number, props: unknown) {
   const user = await currentUser();
   if (!user) return;
 
