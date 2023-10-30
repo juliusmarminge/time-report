@@ -67,11 +67,13 @@ export default async function IndexPage(props: { params: { month: string } }) {
     tags: ["clients"],
   });
 
-  const timeslots = await withUnstableCache({
-    fn: getTimeslots,
-    args: [date, user.id, { mode: "month" }],
-    tags: ["timeslots"],
-  });
+  const timeslots = await getTimeslots(date, user.id, { mode: "month" });
+
+  // const timeslots = await withUnstableCache({
+  //   fn: getTimeslots,
+  //   args: [date, user.id, { mode: "month" }],
+  //   tags: ["timeslots"],
+  // });
 
   const monthSlots = timeslots.filter((slot) => isSameMonth(slot.date, date));
 
