@@ -47,8 +47,8 @@ export const getTimeslots = async (
               timeslot.date,
               // pad the month with a week on either side
               // to account for timeslots that start/end in the previous/next month
-              date.subtract({ days: 6 }),
-              date.add({ days: 6 }),
+              date.subtract({ days: date.day - 7 }),
+              date.add({ days: date.daysInMonth - date.day + 7 }),
             ),
       ),
     );

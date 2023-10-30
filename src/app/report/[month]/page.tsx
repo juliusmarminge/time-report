@@ -67,15 +67,17 @@ export default async function IndexPage(props: { params: { month: string } }) {
     tags: ["clients"],
   });
 
-  const timeslots = await getTimeslots(date, user.id, { mode: "month" });
+  const timeslots = await withUnstableCache({
+    fn: getTimeslots,
+    args: [date, user.id, { mode: "month" }],
+    tags: ["timeslots"],
+  });
 
-  // const timeslots = await withUnstableCache({
-  //   fn: getTimeslots,
-  //   args: [date, user.id, { mode: "month" }],
-  //   tags: ["timeslots"],
-  // });
+  console.log("timeslots", timeslots);
 
   const monthSlots = timeslots.filter((slot) => isSameMonth(slot.date, date));
+
+  console.log("monthSlots", monthSlots);
 
   const converter = await createConverter();
 
@@ -168,13 +170,11 @@ async function ClosePeriod() {
   const user = await currentUser();
   if (!user) return null;
 
-  const openPeriods = await getOpenPeriods(user.id);
-
-  // const openPeriods = await withUnstableCache({
-  //   fn: getOpenPeriods,
-  //   args: [user.id],
-  //   tags: ["periods"],
-  // });
+  const openPeriods = await withUnstableCache({
+    fn: getOpenPeriods,
+    args: [user.id],
+    tags: ["periods"],
+  });
 
   const converter = await createConverter();
 
