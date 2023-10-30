@@ -5,6 +5,7 @@ import { CheckIcon, Pencil1Icon, TrashIcon } from "@radix-ui/react-icons";
 import { format } from "date-fns";
 import type { Dinero } from "dinero.js";
 import { dinero, toDecimal } from "dinero.js";
+import type { TsonSerialized } from "tupleson";
 
 import { LoadingDots } from "~/components/loading-dots";
 import type { Client } from "~/db/getters";
@@ -12,6 +13,7 @@ import type { CurrencyCode } from "~/lib/currencies";
 import { currencies, formatMoney } from "~/lib/currencies";
 import { convert, slotsToDineros, sumDineros } from "~/lib/monetary";
 import { formatOrdinal, isPast } from "~/lib/temporal";
+import { tson } from "~/lib/tson";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -40,11 +42,12 @@ import {
 import { deleteClient, updateClient } from "../_actions";
 
 export function ClientCard(props: {
-  client: Client;
+  client: TsonSerialized<Client>;
   conversionRates: Record<string, number>;
   userCurrency: CurrencyCode;
 }) {
-  const { client } = props;
+  const client = tson.deserialize(props.client);
+
   const defaultCharge = dinero({
     amount: client.defaultCharge,
     currency: currencies[client.currency],

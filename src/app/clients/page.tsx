@@ -5,6 +5,7 @@ import { getClients } from "~/db/getters";
 import { currentUser } from "~/lib/auth";
 import { withUnstableCache } from "~/lib/cache";
 import { createConverter } from "~/lib/currencies";
+import { tson } from "~/lib/tson";
 import { ClientCard } from "./_components/client-card";
 import { NewClientSheet } from "./_components/new-client-form";
 
@@ -40,7 +41,7 @@ export default async function ClientsPage() {
       {clients.map((client) => (
         <ClientCard
           key={client.id}
-          client={client}
+          client={tson.serialize(client)}
           conversionRates={converter.rates}
           userCurrency={user.defaultCurrency}
         />
