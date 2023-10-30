@@ -44,7 +44,7 @@
     "drizzle-orm": "^0.28.5",
     "geist": "^1.0.0",
     "mysql2": "^3.6.0",
-    "next": "14.0.0",
+    "next": "14.0.1",
     "next-auth": "5.0.0-beta.3",
     "next-themes": "^0.2.1",
     "react": "18.2.0",
