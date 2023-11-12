@@ -17,6 +17,7 @@ export const uploadRouter = {
       if (!user) {
         throw new Error("You must be logged in to upload images.");
       }
+      console.log(`User ${user.id} is uploading a file`);
       return {};
     })
     .onUploadComplete((file) => {
