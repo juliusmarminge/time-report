@@ -5,7 +5,4 @@ import { uploadRouter } from "./router";
 
 export const { GET, POST } = createNextRouteHandler({
   router: uploadRouter,
-  config: {
-    callbackUrl: "https://ut-staging.ngrok.app",
-  },
 });
