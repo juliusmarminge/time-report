@@ -1,13 +1,10 @@
-// import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
-import { Temporal } from "@js-temporal/polyfill";
 
 import { auth } from "~/lib/auth";
 
-const publicRoutes = ["/", "/login(.*)", "/api(.*)"];
-
+const PUBLIC_ROUTES = ["/", "/login(.*)", "/api(.*)"];
 const isPublic = (url: URL) =>
-  publicRoutes.some((route) => new RegExp(`^${route}$`).test(url.pathname));
+  PUBLIC_ROUTES.some((route) => new RegExp(`^${route}$`).test(url.pathname));
 
 export default auth((req) => {
   const url = req.nextUrl;
@@ -31,28 +28,17 @@ export default auth((req) => {
   }
 
   if (url.pathname === "/report") {
-    url.pathname = `/report/${Temporal.Now.plainDateISO()
-      .toLocaleString("en-US", {
-        month: "short",
-        year: "2-digit",
-      })
+    url.pathname = `/report/${Intl.DateTimeFormat("en-US", {
+      month: "short",
+      year: "2-digit",
+    })
+      .format(Date.now())
       .replace(" ", "")}`;
     return NextResponse.redirect(url);
   }
 
   return NextResponse.next();
 });
-
-// Dev
-// export default function middleware(request: NextRequest) {
-//   const url = request.nextUrl;
-//   if (isPublic(url)) {
-//     // Public path, go ahead
-//     return NextResponse.next();
-//   }
-
-//   return NextResponse.next();
-// }
 
 export const config = {
   matcher: ["/((?!.*\\..*|_next).*)", "/", "/(api|trpc)(.*)"],
