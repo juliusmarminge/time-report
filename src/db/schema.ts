@@ -10,7 +10,6 @@ import {
   mysqlEnum,
   mysqlTableCreator,
   primaryKey,
-  serial,
   text,
   timestamp,
   varchar,
@@ -19,6 +18,9 @@ import {
 import type { CurrencyCode } from "~/lib/currencies";
 
 export const table = mysqlTableCreator((name) => `timeit_${name}`);
+const idColumn = bigint("id", { mode: "number", unsigned: true })
+  .primaryKey()
+  .autoincrement();
 
 const temporalDateColumn = customType<{
   data: Temporal.PlainDate;
@@ -32,7 +34,7 @@ const temporalDateColumn = customType<{
 export const client = table(
   "client",
   {
-    id: serial("id").primaryKey(),
+    id: idColumn,
     tenantId: varchar("tenant_id", { length: 255 }).notNull(),
     name: varchar("name", { length: 255 }).notNull(),
     image: varchar("image", { length: 255 }),
@@ -64,7 +66,7 @@ export const clientRelations = relations(client, ({ many }) => ({
 export const timeslot = table(
   "timeslot",
   {
-    id: serial("id").primaryKey(),
+    id: idColumn,
     clientId: bigint("client_id", { mode: "number" }).notNull(),
     tenantId: varchar("tenant_id", { length: 255 }).notNull(),
     date: temporalDateColumn("date").notNull(),
@@ -93,7 +95,7 @@ export const timeslotRelations = relations(timeslot, ({ one }) => ({
 }));
 
 export const period = table("period", {
-  id: serial("id").primaryKey(),
+  id: idColumn,
   clientId: bigint("client_id", { mode: "number" }).notNull(),
   tenantId: varchar("tenant_id", { length: 255 }).notNull(),
   startDate: temporalDateColumn("start_date").notNull(),
@@ -182,6 +184,6 @@ export const verificationTokens = table(
     expires: timestamp("expires", { mode: "date" }).notNull(),
   },
   (vt) => ({
-    compoundKey: primaryKey(vt.identifier, vt.token),
+    compoundKey: primaryKey({ columns: [vt.identifier, vt.token] }),
   }),
 );

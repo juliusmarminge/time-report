@@ -3,7 +3,7 @@
 import { revalidateTag } from "next/cache";
 import { Temporal } from "@js-temporal/polyfill";
 import { and, eq } from "drizzle-orm";
-import { utapi } from "uploadthing/server";
+import { UTApi } from "uploadthing/server";
 import { number, object, parseAsync } from "valibot";
 
 import { db } from "~/db";
@@ -50,8 +50,8 @@ export async function createClient(props: unknown) {
       input.defaultBillingPeriod === "monthly"
         ? now.with({ day: now.daysInMonth })
         : input.defaultBillingPeriod === "biweekly"
-        ? now.add({ days: 13 - now.dayOfWeek })
-        : now.add({ days: 6 - now.dayOfWeek }),
+          ? now.add({ days: 13 - now.dayOfWeek })
+          : now.add({ days: 6 - now.dayOfWeek }),
     tenantId: user.id,
   });
 
@@ -93,7 +93,7 @@ export async function deleteImageFromUT(imageUrl: string | null | undefined) {
 
   const imageKey = imageUrl?.split("/f/")[1];
   if (imageKey) {
-    await utapi.deleteFiles([imageKey]);
+    await new UTApi().deleteFiles([imageKey]);
   }
 }
 

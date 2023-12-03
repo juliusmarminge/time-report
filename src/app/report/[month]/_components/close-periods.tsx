@@ -114,8 +114,8 @@ export function ClosePeriodConfirmationModal(props: { period: Period }) {
     billingPeriod === "monthly"
       ? newPeriodStart.with({ day: newPeriodStart.daysInMonth })
       : billingPeriod === "biweekly"
-      ? newPeriodStart.add({ weeks: 2 })
-      : newPeriodStart.add({ weeks: 1 }),
+        ? newPeriodStart.add({ weeks: 2 })
+        : newPeriodStart.add({ weeks: 1 }),
   );
 
   return (

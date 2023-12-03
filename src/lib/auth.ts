@@ -35,9 +35,7 @@ const mockEmailProvider: Partial<EmailConfig> = {
 
 export const {
   handlers: { GET, POST },
-  // eslint-disable-next-line @typescript-eslint/unbound-method
   signIn,
-  // eslint-disable-next-line @typescript-eslint/unbound-method
   signOut,
   auth,
 } = NextAuth({

@@ -26,6 +26,7 @@ export function useForm<TSchema extends BaseSchema>(
 ) {
   const form = useFormHook<Input<TSchema>>({
     ...props,
+    // @ts-expect-error - FIXME: I guess some version broke stuff???
     resolver: valibotResolver(props.schema),
   });
 

@@ -2,7 +2,6 @@ import { cache } from "react";
 import * as dineroCurrencies from "@dinero.js/currencies";
 import type { Dinero } from "dinero.js";
 
-
 import type { FixerResponse } from "~/app/api/currencies/route";
 import { BASE_URL } from "./constants";
 import { convert } from "./monetary";
@@ -48,9 +47,12 @@ export const createConverter = cache(async () => {
     },
   ).then((r) => r.json() as Promise<FixerResponse["rates"]>);
 
-  const _convert = (dineroObject: Dinero<number>, newCurrency: CurrencyCode) => {
-    return convert(dineroObject, newCurrency, ratesWithEurAsBase)
+  const _convert = (
+    dineroObject: Dinero<number>,
+    newCurrency: CurrencyCode,
+  ) => {
+    return convert(dineroObject, newCurrency, ratesWithEurAsBase);
   };
 
-  return {convert: _convert, rates: ratesWithEurAsBase}
+  return { convert: _convert, rates: ratesWithEurAsBase };
 });
