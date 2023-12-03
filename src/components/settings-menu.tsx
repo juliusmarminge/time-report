@@ -8,7 +8,7 @@ import { signOut } from "next-auth/react";
 import { cn } from "~/lib/cn";
 import { setDefaultCurrency } from "~/lib/user-actions";
 import { Avatar, AvatarFallback, AvatarImage } from "~/ui/avatar";
-import { Button } from "~/ui/button";
+import { Button, buttonVariants } from "~/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -29,18 +29,17 @@ export function SettingsMenu(props: {
 
   if (!user) {
     return (
-      <Button
-        asChild
+      <Link
+        href="/signin"
         className={cn(
+          buttonVariants(),
           "justify-start gap-2 bg-popover py-6 text-popover-foreground hover:bg-zinc-300 dark:hover:bg-zinc-950",
           props.className,
         )}
       >
-        <Link href="/signin">
-          <span className="text-sm font-semibold">Sign in to get started</span>
-          <ChevronRightIcon className="ml-auto h-4 w-4" />
-        </Link>
-      </Button>
+        <span className="text-sm font-semibold">Sign in to get started</span>
+        <ChevronRightIcon className="ml-auto h-4 w-4" />
+      </Link>
     );
   }
 
