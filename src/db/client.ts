@@ -2,6 +2,7 @@ import { Client } from "@planetscale/database";
 import type { Logger } from "drizzle-orm";
 import { drizzle as pscaleDrizzle } from "drizzle-orm/planetscale-serverless";
 
+import { credentials } from "./config";
 import * as schema from "./schema";
 
 class _MyLogger implements Logger {
@@ -12,14 +13,7 @@ class _MyLogger implements Logger {
   }
 }
 
-export const db = pscaleDrizzle(
-  new Client({
-    host: "aws.connect.psdb.cloud",
-    username: process.env.DB_USERNAME,
-    password: process.env.DB_PASSWORD,
-  }).connection(),
-  {
-    schema,
-    logger: new _MyLogger(false),
-  },
-);
+export const db = pscaleDrizzle(new Client(credentials).connection(), {
+  schema,
+  logger: new _MyLogger(false),
+});

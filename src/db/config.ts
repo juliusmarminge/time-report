@@ -1,13 +1,19 @@
 import { fileURLToPath } from "url";
 import type { Config } from "drizzle-kit";
 
+export const credentials = {
+  host: "aws.connect.psdb.cloud",
+  port: 3306,
+  database: "personal",
+  user: process.env.DB_USERNAME,
+  password: process.env.DB_PASSWORD,
+};
+
+// Need to construct this ourselves since Drizzle doesn't add the SSL otherwise
 const uri = [
-  "mysql://",
-  process.env.DB_USERNAME,
-  ":",
-  process.env.DB_PASSWORD,
-  "@aws.connect.psdb.cloud:3306/",
-  process.env.DB_NAME,
+  `mysql://${credentials.user}:${credentials.password}`,
+  `@${credentials.host}:${credentials.port}`,
+  `/${credentials.database}`,
   '?ssl={"rejectUnauthorized":true}',
 ].join("");
 
