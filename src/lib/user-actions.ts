@@ -2,7 +2,7 @@
 
 import { revalidateTag } from "next/cache";
 
-import { db } from "~/db";
+import { db } from "~/db/client";
 import { users } from "~/db/schema";
 import type { CurrencyCode } from "./currencies";
 

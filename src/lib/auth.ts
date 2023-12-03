@@ -6,7 +6,7 @@ import { eq } from "drizzle-orm";
 import type { InferSelectModel } from "drizzle-orm";
 import NextAuth from "next-auth";
 
-import { db } from "~/db";
+import { db } from "~/db/client";
 import { sessions, table, users } from "~/db/schema";
 
 export type { Session } from "@auth/core/types";

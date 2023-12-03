@@ -6,7 +6,7 @@ import { and, eq } from "drizzle-orm";
 import { UTApi } from "uploadthing/server";
 import { number, object, parseAsync } from "valibot";
 
-import { db } from "~/db";
+import { db } from "~/db/client";
 import { client, period, timeslot } from "~/db/schema";
 import { currentUser } from "~/lib/auth";
 import type { CurrencyCode } from "../../lib/currencies";

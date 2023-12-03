@@ -1,7 +1,7 @@
 import type { Temporal } from "@js-temporal/polyfill";
 import { and, between, eq } from "drizzle-orm";
 
-import { db } from ".";
+import { db } from "./client";
 import { client, period, timeslot } from "./schema";
 
 export const getClients = async (userId: string) => {
