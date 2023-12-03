@@ -1,4 +1,3 @@
-import { fileURLToPath } from "url";
 import type { Config } from "drizzle-kit";
 
 export const credentials = {
@@ -20,6 +19,6 @@ const uri = [
 export default {
   dbCredentials: { uri },
   driver: "mysql2",
-  schema: fileURLToPath(new URL("./schema.ts", import.meta.url)),
+  schema: "./src/db/schema.ts",
   tablesFilter: ["timeit_*"],
 } satisfies Config;
