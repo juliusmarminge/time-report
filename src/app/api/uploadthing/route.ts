@@ -1,4 +1,3 @@
-import type { NextRequest } from "next/server";
 import { createNextRouteHandler } from "uploadthing/next";
 
 import { uploadRouter } from "./router";
