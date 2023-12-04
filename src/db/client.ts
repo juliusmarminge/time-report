@@ -5,7 +5,7 @@ import { drizzle as pscaleDrizzle } from "drizzle-orm/planetscale-serverless";
 import { credentials } from "./config";
 import * as schema from "./schema";
 
-class _MyLogger implements Logger {
+class MyLogger implements Logger {
   constructor(private enabled: boolean = false) {}
 
   logQuery(query: string, params: unknown[]): void {
@@ -15,5 +15,5 @@ class _MyLogger implements Logger {
 
 export const db = pscaleDrizzle(new Client(credentials).connection(), {
   schema,
-  logger: new _MyLogger(false),
+  logger: new MyLogger(false),
 });
