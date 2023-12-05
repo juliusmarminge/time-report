@@ -5,4 +5,5 @@ import type { UploadRouter } from "~/app/api/uploadthing/router";
 
 export const { useUploadThing } = generateReactHelpers<UploadRouter>();
 
-export const { UploadButton } = generateComponents<UploadRouter>();
+export const { UploadButton, UploadDropzone, Uploader } =
+  generateComponents<UploadRouter>();
