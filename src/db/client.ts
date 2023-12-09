@@ -1,4 +1,4 @@
-import { Client } from "@planetscale/database";
+import { connect } from "@planetscale/database";
 import type { Logger } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/planetscale-serverless";
 
@@ -13,7 +13,8 @@ class MyLogger implements Logger {
   }
 }
 
-export const db = drizzle(new Client(credentials).connection(), {
+const ps = connect(credentials);
+export const db = drizzle(ps, {
   schema,
   logger: new MyLogger(false),
 });
