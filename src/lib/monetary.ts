@@ -13,7 +13,7 @@ export const convert = (
   const baseCurrency = dineroObject.toJSON().currency.code as CurrencyCode;
   const properRates = {
     [newCurrency]: {
-      amount: Math.round((rates[newCurrency]! / rates[baseCurrency]!) * 1e6),
+      amount: Math.round((rates[newCurrency] / rates[baseCurrency]) * 1e6),
       scale: 6,
     },
   } satisfies Rates<number>;
