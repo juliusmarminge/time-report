@@ -9,7 +9,7 @@ export default [
     ignores: ["postcss.config.cjs", ".next", "pnpm-lock.yaml"],
   },
   {
-    files: ["**/*.ts", "**/*.tsx"],
+    files: ["**/*.ts", "**/*.tsx", "**/*.js"],
     languageOptions: {
       parser: tsParser,
       parserOptions: { project: true },
