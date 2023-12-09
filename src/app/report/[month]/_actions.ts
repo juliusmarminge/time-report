@@ -5,7 +5,7 @@ import { Temporal } from "@js-temporal/polyfill";
 import { and, eq } from "drizzle-orm";
 import { parseAsync } from "valibot";
 
-import { db } from "~/db";
+import { db } from "~/db/client";
 import { getOpenPeriods } from "~/db/getters";
 import { client, period, timeslot } from "~/db/schema";
 import { currentUser } from "~/lib/auth";

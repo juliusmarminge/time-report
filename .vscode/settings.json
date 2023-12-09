@@ -1,5 +1,7 @@
 {
-  "editor.codeActionsOnSave": { "source.fixAll.eslint": true },
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": true,
   "eslint.rules.customizations": [{ "rule": "*", "severity": "warn" }],
@@ -15,8 +17,5 @@
     // Prefer imports from our UI lib wrappers
     "react-hook-form/dist/index.d.ts",
     "react-day-picker/dist/index.d.ts"
-  ],
-  "[python]": {
-    "editor.defaultFormatter": "ms-python.black-formatter"
-  }
+  ]
 }
