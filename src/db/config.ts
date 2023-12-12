@@ -1,6 +1,8 @@
 import type { Config } from "drizzle-kit";
 
 export const credentials = (() => {
+  // Some extra fiddling to get the credentials right for PScale and the Proxy as well as getting it
+  // to work with Drizzle and DrizzleKit... Tedious, I know. But now we can just `PS_PROXY=1 p dev / db:push`
   const c = {
     database: process.env.DB_NAME!,
     host: "aws.connect.psdb.cloud",
