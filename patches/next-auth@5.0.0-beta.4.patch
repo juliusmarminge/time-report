@@ -1,0 +1,13 @@
+diff --git a/react.js b/react.js
+index 860adfe287666b9f4242af4080a4aed937765c39..564e85310eb103828caa970bf8b7fbc86f6686c7 100644
+--- a/react.js
++++ b/react.js
+@@ -154,7 +154,7 @@ export async function signIn(provider, options, authorizationParams) {
+             window.location.reload();
+         return;
+     }
+-    const error = new URL(data.url, baseUrl).searchParams.get("error");
++    const error = new URL(data.url).searchParams.get("error");
+     if (res.ok) {
+         await __NEXTAUTH._getSession({ event: "storage" });
+     }
