@@ -1,13 +1,17 @@
 import "./globals.css";
 
 import type { Metadata, Viewport } from "next";
-import { GeistMono, GeistSans } from "geist/font";
+import { GeistMono } from "geist/font/mono";
+import { GeistSans } from "geist/font/sans";
+import { SessionProvider } from "next-auth/react";
 
 import { DesktopSidebar } from "~/components/desktop-nav";
 import { MobileNav } from "~/components/mobile-nav";
 import { TailwindIndicator } from "~/components/tailwind-indicator";
 import { ThemeProvider } from "~/components/theme-provider";
 import { cn } from "~/lib/cn";
+import { ConverterProvider } from "~/lib/converter";
+import { createConverter } from "~/lib/currencies";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://timeit.jumr.dev"),
@@ -31,7 +35,9 @@ export const viewport: Viewport = {
   ],
 };
 
-export default function RootLayout(props: { children: React.ReactNode }) {
+export default async function RootLayout(props: { children: React.ReactNode }) {
+  const { rates } = await createConverter();
+
   return (
     <>
       <html lang="en" suppressHydrationWarning>
@@ -43,13 +49,17 @@ export default function RootLayout(props: { children: React.ReactNode }) {
           )}
         >
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-            <div className="flex min-h-screen flex-col overflow-y-hidden bg-accent lg:flex-row">
-              <DesktopSidebar className="hidden lg:flex" />
-              <MobileNav className="lg:hidden" />
-              <div className="bg-background p-4 lg:ml-72 lg:w-full lg:p-6">
-                {props.children}
-              </div>
-            </div>
+            <SessionProvider>
+              <ConverterProvider rates={rates}>
+                <div className="flex min-h-screen flex-col overflow-y-hidden bg-accent lg:flex-row">
+                  <DesktopSidebar className="hidden lg:flex" />
+                  <MobileNav className="lg:hidden" />
+                  <div className="bg-background p-4 lg:ml-72 lg:w-full lg:p-6">
+                    {props.children}
+                  </div>
+                </div>
+              </ConverterProvider>
+            </SessionProvider>
             <TailwindIndicator />
           </ThemeProvider>
         </body>

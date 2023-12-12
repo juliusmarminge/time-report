@@ -9,7 +9,6 @@ import type { TsonSerialized } from "tupleson";
 
 import type { Client, Timeslot } from "~/db/queries";
 import { cn } from "~/lib/cn";
-import type { CurrencyCode } from "~/lib/currencies";
 import { fromDate, toDate } from "~/lib/temporal";
 import { tson } from "~/lib/tson";
 import { Button } from "~/ui/button";
@@ -115,8 +114,6 @@ export function CalendarAndSidePanel(props: {
   referenceDate: TsonSerialized<Temporal.PlainDate>;
   timeslots: TsonSerialized<Record<string, Timeslot[]> | null>;
   clients: TsonSerialized<Client[]>;
-  userCurrency: CurrencyCode;
-  conversionRates: Record<CurrencyCode, number>;
 }) {
   const clients = tson.deserialize(props.clients);
   const temporal = tson.deserialize(props.referenceDate);
@@ -128,13 +125,7 @@ export function CalendarAndSidePanel(props: {
   return (
     <>
       <Calendar date={date} setDate={setDate} timeslots={timeslots} />
-      <SidePanel
-        date={date}
-        clients={clients}
-        timeslots={selectedDaySlots}
-        currency={props.userCurrency}
-        conversionRates={props.conversionRates}
-      />
+      <SidePanel date={date} clients={clients} timeslots={selectedDaySlots} />
     </>
   );
 }

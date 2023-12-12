@@ -5,9 +5,9 @@ import { dinero, toDecimal } from "dinero.js";
 import type { TsonSerialized } from "tupleson";
 
 import type { Period } from "~/db/queries";
-import type { CurrencyCode } from "~/lib/currencies";
+import { useConverter } from "~/lib/converter";
 import { currencies, formatMoney } from "~/lib/currencies";
-import { convert, slotsToDineros, sumDineros } from "~/lib/monetary";
+import { slotsToDineros, sumDineros } from "~/lib/monetary";
 import { formatOrdinal, isPast } from "~/lib/temporal";
 import { tson } from "~/lib/tson";
 import {
@@ -43,21 +43,17 @@ import {
 } from "~/ui/sheet";
 import { closePeriod } from "../_actions";
 
-function PeriodCard(props: {
-  period: Period;
-  // TODO: Maybe put into context to avoid prop drilling everywhere
-  conversionRates: Record<string, number>;
-  userCurrency: CurrencyCode;
-}) {
+function PeriodCard(props: { period: Period }) {
   const { period } = props;
 
   const nSlots = period.timeslot.length;
   const nHours = period.timeslot.reduce((acc, slot) => +slot.duration + acc, 0);
 
+  const converter = useConverter();
   const revenue = sumDineros({
     dineros: slotsToDineros(period.timeslot),
-    currency: props.userCurrency,
-    converter: (d, c) => convert(d, c, props.conversionRates),
+    currency: converter.preferredCurrency,
+    converter: converter.convert,
   });
 
   return (
@@ -181,8 +177,6 @@ export function ClosePeriodConfirmationModal(props: { period: Period }) {
 
 export function ClosePeriodSheet(props: {
   openPeriods: TsonSerialized<Period[]>;
-  conversionRates: Record<string, number>;
-  userCurrency: CurrencyCode;
 }) {
   const openPeriods = tson.deserialize(props.openPeriods);
 
@@ -210,11 +204,7 @@ export function ClosePeriodSheet(props: {
           <div className="flex flex-col gap-4">
             {openPeriods.map((period, idx) => (
               <Fragment key={period.id}>
-                <PeriodCard
-                  period={period}
-                  conversionRates={props.conversionRates}
-                  userCurrency={props.userCurrency}
-                />
+                <PeriodCard period={period} />
                 {idx < openPeriods.length - 1 && <Separator />}
               </Fragment>
             ))}

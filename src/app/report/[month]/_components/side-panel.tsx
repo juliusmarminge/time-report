@@ -6,9 +6,9 @@ import { toDecimal } from "dinero.js";
 
 import { NewClientSheet } from "~/app/clients/_components/new-client-form";
 import type { Client, Timeslot } from "~/db/queries";
-import type { CurrencyCode } from "~/lib/currencies";
+import { useConverter } from "~/lib/converter";
 import { formatMoney } from "~/lib/currencies";
-import { convert, slotsToDineros, sumDineros } from "~/lib/monetary";
+import { slotsToDineros, sumDineros } from "~/lib/monetary";
 import { formatOrdinal } from "~/lib/temporal";
 import {
   Card,
@@ -24,13 +24,13 @@ export function SidePanel(props: {
   date: Temporal.PlainDate;
   clients: Client[];
   timeslots: Timeslot[];
-  currency: CurrencyCode;
-  conversionRates: Record<CurrencyCode, number>;
 }) {
+  const converter = useConverter();
+
   const totalRevenue = sumDineros({
     dineros: slotsToDineros(props.timeslots),
-    converter: (d, c) => convert(d, c, props.conversionRates),
-    currency: props.currency,
+    currency: converter.preferredCurrency,
+    converter: converter.convert,
   });
 
   const totalHours = props.timeslots.reduce(

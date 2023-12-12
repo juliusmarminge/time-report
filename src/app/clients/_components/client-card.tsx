@@ -10,9 +10,9 @@ import type { TsonSerialized } from "tupleson";
 
 import { LoadingDots } from "~/components/loading-dots";
 import type { Client } from "~/db/queries";
-import type { CurrencyCode } from "~/lib/currencies";
+import { useConverter } from "~/lib/converter";
 import { currencies, formatMoney } from "~/lib/currencies";
-import { convert, slotsToDineros, sumDineros } from "~/lib/monetary";
+import { slotsToDineros, sumDineros } from "~/lib/monetary";
 import { formatOrdinal, isPast } from "~/lib/temporal";
 import { tson } from "~/lib/tson";
 import {
@@ -42,11 +42,7 @@ import {
 } from "~/ui/select";
 import { deleteClient, updateClient } from "../_actions";
 
-export function ClientCard(props: {
-  client: TsonSerialized<Client>;
-  conversionRates: Record<string, number>;
-  userCurrency: CurrencyCode;
-}) {
+export function ClientCard(props: { client: TsonSerialized<Client> }) {
   const client = tson.deserialize(props.client);
 
   const defaultCharge = dinero({
@@ -69,18 +65,19 @@ export function ClientCard(props: {
     (a, b) => -Temporal.PlainDate.compare(a.startDate, b.startDate),
   );
 
+  const converter = useConverter();
   const periodAmounts = sortedPeriods.map((p) =>
     sumDineros({
       dineros: slotsToDineros(p.timeslot),
-      currency: props.userCurrency,
-      converter: (d, c) => convert(d, c, props.conversionRates),
+      currency: converter.preferredCurrency,
+      converter: converter.convert,
     }),
   );
 
   const clientTotal = sumDineros({
     dineros: periodAmounts,
-    currency: props.userCurrency,
-    converter: (d, c) => convert(d, c, props.conversionRates),
+    currency: converter.preferredCurrency,
+    converter: converter.convert,
   });
 
   return (
