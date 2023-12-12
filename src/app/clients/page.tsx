@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 
 import { DashboardShell } from "~/components/dashboard-shell";
-import { getClients } from "~/db/getters";
+import { getClients } from "~/db/queries";
 import { currentUser } from "~/lib/auth";
 import { withUnstableCache } from "~/lib/cache";
 import { createConverter } from "~/lib/currencies";

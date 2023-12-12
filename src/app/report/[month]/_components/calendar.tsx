@@ -7,7 +7,7 @@ import { format } from "date-fns";
 import { useDayRender } from "react-day-picker";
 import type { TsonSerialized } from "tupleson";
 
-import type { Client, Timeslot } from "~/db/getters";
+import type { Client, Timeslot } from "~/db/queries";
 import { cn } from "~/lib/cn";
 import type { CurrencyCode } from "~/lib/currencies";
 import { fromDate, toDate } from "~/lib/temporal";

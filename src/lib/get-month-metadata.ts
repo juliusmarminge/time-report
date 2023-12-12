@@ -1,7 +1,7 @@
 import { cache } from "react";
 import { format } from "date-fns";
 
-import type { Timeslot } from "~/db/getters";
+import type { Timeslot } from "~/db/queries";
 import type { CurrencyCode } from "./currencies";
 import { createConverter } from "./currencies";
 import { slotsToDineros, sumDineros } from "./monetary";

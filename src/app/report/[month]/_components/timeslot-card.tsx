@@ -6,7 +6,7 @@ import type { Dinero } from "dinero.js";
 import { dinero, toDecimal } from "dinero.js";
 
 import { LoadingDots } from "~/components/loading-dots";
-import type { Timeslot } from "~/db/getters";
+import type { Timeslot } from "~/db/queries";
 import { currencies, formatMoney } from "~/lib/currencies";
 import {
   AlertDialog,
