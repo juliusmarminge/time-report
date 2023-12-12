@@ -4,7 +4,6 @@ import { DashboardShell } from "~/components/dashboard-shell";
 import { getClients } from "~/db/queries";
 import { currentUser } from "~/lib/auth";
 import { withUnstableCache } from "~/lib/cache";
-import { createConverter } from "~/lib/currencies";
 import { tson } from "~/lib/tson";
 import { ClientCard } from "./_components/client-card";
 import { NewClientSheet } from "./_components/new-client-form";
@@ -20,8 +19,6 @@ export default async function ClientsPage() {
     args: [user.id],
     tags: ["clients"],
   });
-
-  const converter = await createConverter();
 
   return (
     <DashboardShell
@@ -39,12 +36,7 @@ export default async function ClientsPage() {
         </div>
       )}
       {clients.map((client) => (
-        <ClientCard
-          key={client.id}
-          client={tson.serialize(client)}
-          conversionRates={converter.rates}
-          userCurrency={user.defaultCurrency}
-        />
+        <ClientCard key={client.id} client={tson.serialize(client)} />
       ))}
     </DashboardShell>
   );

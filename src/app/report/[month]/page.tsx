@@ -7,7 +7,7 @@ import type { Timeslot } from "~/db/queries";
 import { getClients, getOpenPeriods, getTimeslots } from "~/db/queries";
 import { currentUser } from "~/lib/auth";
 import { withUnstableCache } from "~/lib/cache";
-import { createConverter, formatMoney } from "~/lib/currencies";
+import { formatMoney } from "~/lib/currencies";
 import { getMonthMetadata } from "~/lib/get-month-metadata";
 import { isSameMonth } from "~/lib/temporal";
 import { tson } from "~/lib/tson";
@@ -78,8 +78,6 @@ export default async function IndexPage(props: { params: { month: string } }) {
   const monthSlots = timeslots.filter((slot) => isSameMonth(slot.date, date));
 
   console.log("monthSlots", monthSlots);
-
-  const converter = await createConverter();
 
   const { billedClients, totalHours, totalRevenue } = await getMonthMetadata(
     monthSlots,
@@ -158,8 +156,6 @@ export default async function IndexPage(props: { params: { month: string } }) {
           referenceDate={tson.serialize(date)}
           clients={tson.serialize(clients)}
           timeslots={tson.serialize(slotsByDate)}
-          userCurrency={user.defaultCurrency}
-          conversionRates={converter.rates}
         />
       </section>
     </DashboardShell>
@@ -176,13 +172,5 @@ async function ClosePeriod() {
     tags: ["periods"],
   });
 
-  const converter = await createConverter();
-
-  return (
-    <ClosePeriodSheet
-      openPeriods={tson.serialize(openPeriods)}
-      conversionRates={converter.rates}
-      userCurrency={user.defaultCurrency}
-    />
-  );
+  return <ClosePeriodSheet openPeriods={tson.serialize(openPeriods)} />;
 }
