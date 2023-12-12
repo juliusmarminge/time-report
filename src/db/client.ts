@@ -14,6 +14,7 @@ class MyLogger implements Logger {
 }
 
 const ps = connect(credentials);
+// await ps.execute("SET @@boost_cached_queries = true");
 export const db = drizzle(ps, {
   schema,
   logger: new MyLogger(false),
