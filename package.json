@@ -7,6 +7,7 @@
     "db:push": "drizzle-kit push:mysql --config src/db/config.ts",
     "db:studio": "drizzle-kit studio --config src/db/config.ts",
     "dev": "next dev",
+    "pscale-proxy": "ps-http-sim -mysql-dbname personal -mysql-no-pass",
     "build": "next build",
     "start": "next start",
     "format": "prettier . --cache --cache-location='node_modules/.cache/.prettiercache' --list-different",
@@ -42,7 +43,7 @@
     "dinero.js": "2.0.0-alpha.14",
     "drizzle-orm": "0.29.1",
     "geist": "^1.2.0",
-    "next": "^14.0.3",
+    "next": "^14.0.4",
     "next-auth": "5.0.0-beta.4",
     "next-themes": "^0.2.1",
     "react": "18.2.0",
@@ -64,9 +65,9 @@
     "@typescript-eslint/eslint-plugin": "^6.13.1",
     "@typescript-eslint/parser": "^6.13.1",
     "autoprefixer": "10.4.16",
-    "drizzle-kit": "0.20.6",
+    "drizzle-kit": "0.20.7-3bc340d",
     "eslint": "8.55.0",
-    "eslint-config-next": "^14.0.3",
+    "eslint-config-next": "^14.0.4",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-import": "^2.29.0",
     "eslint-plugin-react": "^7.33.2",
@@ -77,5 +78,10 @@
     "prettier-plugin-tailwindcss": "^0.5.7",
     "tailwindcss": "3.3.5",
     "typescript": "^5.3.2"
+  },
+  "pnpm": {
+    "patchedDependencies": {
+      "next-auth@5.0.0-beta.4": "patches/next-auth@5.0.0-beta.4.patch"
+    }
   }
 }

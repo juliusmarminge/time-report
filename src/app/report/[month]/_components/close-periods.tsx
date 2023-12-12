@@ -4,7 +4,7 @@ import { Fragment, useEffect, useState } from "react";
 import { dinero, toDecimal } from "dinero.js";
 import type { TsonSerialized } from "tupleson";
 
-import type { Period } from "~/db/getters";
+import type { Period } from "~/db/queries";
 import type { CurrencyCode } from "~/lib/currencies";
 import { currencies, formatMoney } from "~/lib/currencies";
 import { convert, slotsToDineros, sumDineros } from "~/lib/monetary";

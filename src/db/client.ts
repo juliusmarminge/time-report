@@ -1,4 +1,4 @@
-import { Client } from "@planetscale/database";
+import { connect } from "@planetscale/database";
 import type { Logger } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/planetscale-serverless";
 
@@ -13,7 +13,14 @@ class MyLogger implements Logger {
   }
 }
 
-export const db = drizzle(new Client(credentials).connection(), {
+const ps = connect(credentials);
+// If using PlanetScale Boost:
+// (async () => {
+//   if (process.env.PS_PROXY) return;
+//   await ps.execute("SET @@boost_cached_queries = true");
+// })();
+
+export const db = drizzle(ps, {
   schema,
   logger: new MyLogger(false),
 });

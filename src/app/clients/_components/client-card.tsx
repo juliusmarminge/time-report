@@ -9,7 +9,7 @@ import { dinero, toDecimal } from "dinero.js";
 import type { TsonSerialized } from "tupleson";
 
 import { LoadingDots } from "~/components/loading-dots";
-import type { Client } from "~/db/getters";
+import type { Client } from "~/db/queries";
 import type { CurrencyCode } from "~/lib/currencies";
 import { currencies, formatMoney } from "~/lib/currencies";
 import { convert, slotsToDineros, sumDineros } from "~/lib/monetary";

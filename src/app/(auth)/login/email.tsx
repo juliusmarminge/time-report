@@ -23,10 +23,11 @@ export function EmailSignIn() {
     setIsLoading(true);
 
     const email = new FormData(form).get("email") as string;
+    const cb = new URL(callbackUrl ?? "/report", window.location.href);
     await signIn("email", {
       email,
       redirect: false,
-      callbackUrl: callbackUrl ?? "/report",
+      callbackUrl: cb.href,
     });
 
     const url = new URL(window.location.href);

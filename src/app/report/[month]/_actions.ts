@@ -6,7 +6,7 @@ import { and, eq } from "drizzle-orm";
 import { parseAsync } from "valibot";
 
 import { db } from "~/db/client";
-import { getOpenPeriods } from "~/db/getters";
+import { getOpenPeriods } from "~/db/queries";
 import { client, period, timeslot } from "~/db/schema";
 import { currentUser } from "~/lib/auth";
 import type { CurrencyCode } from "~/lib/currencies";

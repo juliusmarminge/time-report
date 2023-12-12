@@ -37,15 +37,9 @@ export function normalizeAmount(
 export const createConverter = cache(async () => {
   const heads = new Map((await import("next/headers")).headers());
   heads.delete("content-length");
-  const ratesWithEurAsBase = await fetch(
-    new URL(
-      process.env.USE_OFFLINE ? "/mock.json" : "/api/currencies",
-      BASE_URL,
-    ),
-    {
-      headers: Object.fromEntries(heads),
-    },
-  ).then((r) => r.json() as Promise<FixerResponse["rates"]>);
+  const ratesWithEurAsBase = await fetch(new URL("/api/currencies", BASE_URL), {
+    headers: Object.fromEntries(heads),
+  }).then((r) => r.json() as Promise<FixerResponse["rates"]>);
 
   const _convert = (
     dineroObject: Dinero<number>,

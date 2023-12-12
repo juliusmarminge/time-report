@@ -1,6 +1,7 @@
 import { GitHubLogoIcon } from "@radix-ui/react-icons";
 
 import { signIn } from "~/lib/auth";
+import { Badge } from "~/ui/badge";
 import { Button } from "~/ui/button";
 import { EmailSignIn } from "./email";
 
@@ -30,7 +31,12 @@ export default function LoginPage() {
           </Button>
         </form>
 
-        {process.env.USE_OFFLINE && <EmailSignIn />}
+        {process.env.NODE_ENV === "development" && (
+          <div className=" relative rounded border-2 border-dashed p-2">
+            <Badge className="absolute -right-2 -top-2">DEV</Badge>
+            <EmailSignIn />
+          </div>
+        )}
       </div>
     </div>
   );

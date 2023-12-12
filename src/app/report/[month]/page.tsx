@@ -3,8 +3,8 @@ import { redirect } from "next/navigation";
 import { Temporal } from "@js-temporal/polyfill";
 import { toDecimal } from "dinero.js";
 
-import type { Timeslot } from "~/db/getters";
-import { getClients, getOpenPeriods, getTimeslots } from "~/db/getters";
+import type { Timeslot } from "~/db/queries";
+import { getClients, getOpenPeriods, getTimeslots } from "~/db/queries";
 import { currentUser } from "~/lib/auth";
 import { withUnstableCache } from "~/lib/cache";
 import { createConverter, formatMoney } from "~/lib/currencies";

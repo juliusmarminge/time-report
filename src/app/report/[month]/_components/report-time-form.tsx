@@ -5,7 +5,7 @@ import { Temporal } from "@js-temporal/polyfill";
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 
 import { LoadingDots } from "~/components/loading-dots";
-import type { Client } from "~/db/getters";
+import type { Client } from "~/db/queries";
 import { currencies } from "~/lib/currencies";
 import { isFuture } from "~/lib/temporal";
 import { useMobile } from "~/lib/use-mobile";

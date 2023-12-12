@@ -24,7 +24,7 @@ declare module "@auth/core/adapters" {
   interface AdapterUser extends InferSelectModel<typeof users> {}
 }
 
-const mockEmailProvider: Partial<EmailConfig> = {
+const mockEmail: Partial<EmailConfig> = {
   id: "email",
   type: "email",
   async sendVerificationRequest(opts) {
@@ -56,7 +56,7 @@ export const {
   },
   providers: [
     ...providers.map((p) => p.handler),
-    ...(process.env.USE_OFFLINE ? [mockEmailProvider as Provider] : []),
+    ...(process.env.NODE_ENV === "development" ? [mockEmail as Provider] : []),
   ],
   callbacks: {
     session: ({ session, user }) => {

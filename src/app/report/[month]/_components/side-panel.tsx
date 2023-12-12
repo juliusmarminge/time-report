@@ -5,7 +5,7 @@ import type { Temporal } from "@js-temporal/polyfill";
 import { toDecimal } from "dinero.js";
 
 import { NewClientSheet } from "~/app/clients/_components/new-client-form";
-import type { Client, Timeslot } from "~/db/getters";
+import type { Client, Timeslot } from "~/db/queries";
 import type { CurrencyCode } from "~/lib/currencies";
 import { formatMoney } from "~/lib/currencies";
 import { convert, slotsToDineros, sumDineros } from "~/lib/monetary";

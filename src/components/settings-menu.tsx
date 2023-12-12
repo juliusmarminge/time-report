@@ -30,7 +30,7 @@ export function SettingsMenu(props: {
   if (!user) {
     return (
       <Link
-        href="/signin"
+        href="/login"
         className={cn(
           buttonVariants(),
           "justify-start gap-2 bg-popover py-6 text-popover-foreground hover:bg-zinc-300 dark:hover:bg-zinc-950",
