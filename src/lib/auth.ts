@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import type { EmailConfig, Provider } from "@auth/core/providers";
+import type { EmailConfig } from "@auth/core/providers";
 import Github from "@auth/core/providers/github";
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import { eq } from "drizzle-orm";
@@ -24,14 +24,19 @@ declare module "@auth/core/adapters" {
   interface AdapterUser extends InferSelectModel<typeof users> {}
 }
 
-const mockEmail: Partial<EmailConfig> = {
+const mockEmail = {
   id: "email",
+  name: "Email",
   type: "email",
+  from: "mock@test.com",
+  maxAge: 86400,
+  server: "mock",
   async sendVerificationRequest(opts) {
     await new Promise((r) => setTimeout(r, 1000));
     console.log(`[EMAIL LOGIN]: ${opts.identifier} - ${opts.token}`);
   },
-};
+  options: {},
+} satisfies EmailConfig;
 
 export const {
   handlers: { GET, POST },
@@ -56,7 +61,7 @@ export const {
   },
   providers: [
     ...providers.map((p) => p.handler),
-    ...(process.env.NODE_ENV === "development" ? [mockEmail as Provider] : []),
+    ...(process.env.NODE_ENV === "development" ? [mockEmail] : []),
   ],
   callbacks: {
     session: ({ session, user }) => {
