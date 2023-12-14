@@ -8,7 +8,7 @@ import {
   index,
   int,
   mysqlEnum,
-  mysqlTableCreator,
+  mysqlTable,
   primaryKey,
   text,
   timestamp,
@@ -17,7 +17,6 @@ import {
 
 import type { CurrencyCode } from "~/lib/currencies";
 
-export const table = mysqlTableCreator((name) => `timeit_${name}`);
 const idColumn = bigint("id", { mode: "number", unsigned: true })
   .primaryKey()
   .autoincrement();
@@ -31,7 +30,7 @@ const temporalDateColumn = customType<{
   toDriver: (value) => value.toString(),
 });
 
-export const client = table(
+export const client = mysqlTable(
   "client",
   {
     id: idColumn,
@@ -63,7 +62,7 @@ export const clientRelations = relations(client, ({ many }) => ({
   periods: many(period),
 }));
 
-export const timeslot = table(
+export const timeslot = mysqlTable(
   "timeslot",
   {
     id: idColumn,
@@ -94,7 +93,7 @@ export const timeslotRelations = relations(timeslot, ({ one }) => ({
   period: one(period, { fields: [timeslot.periodId], references: [period.id] }),
 }));
 
-export const period = table("period", {
+export const period = mysqlTable("period", {
   id: idColumn,
   clientId: bigint("client_id", { mode: "number" }).notNull(),
   tenantId: varchar("tenant_id", { length: 255 }).notNull(),
@@ -112,7 +111,7 @@ export const periodRelations = relations(period, ({ one, many }) => ({
   timeslot: many(timeslot),
 }));
 
-export const users = table("user", {
+export const users = mysqlTable("user", {
   id: varchar("id", { length: 255 }).notNull().primaryKey(),
   name: varchar("name", { length: 255 }),
   email: varchar("email", { length: 255 }).notNull(),
@@ -131,7 +130,7 @@ export const usersRelations = relations(users, ({ many }) => ({
   accounts: many(accounts),
 }));
 
-export const accounts = table(
+export const accounts = mysqlTable(
   "account",
   {
     userId: varchar("userId", { length: 255 }).notNull(),
@@ -149,7 +148,9 @@ export const accounts = table(
     session_state: varchar("session_state", { length: 255 }),
   },
   (account) => ({
-    compoundKey: primaryKey(account.provider, account.providerAccountId),
+    compoundKey: primaryKey({
+      columns: [account.provider, account.providerAccountId],
+    }),
     userIdIdx: index("userId_idx").on(account.userId),
   }),
 );
@@ -158,7 +159,7 @@ export const accountsRelations = relations(accounts, ({ one }) => ({
   user: one(users, { fields: [accounts.userId], references: [users.id] }),
 }));
 
-export const sessions = table(
+export const sessions = mysqlTable(
   "session",
   {
     sessionToken: varchar("sessionToken", { length: 255 })
@@ -176,7 +177,7 @@ export const sessionsRelations = relations(sessions, ({ one }) => ({
   user: one(users, { fields: [sessions.userId], references: [users.id] }),
 }));
 
-export const verificationTokens = table(
+export const verificationTokens = mysqlTable(
   "verificationToken",
   {
     identifier: varchar("identifier", { length: 255 }).notNull(),

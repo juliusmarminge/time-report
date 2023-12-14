@@ -28,5 +28,4 @@ export default {
   dbCredentials: { uri: credentials.pushUrl },
   driver: "mysql2",
   schema: "./src/db/schema.ts",
-  tablesFilter: ["timeit_*"],
 } satisfies Config;
