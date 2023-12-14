@@ -7,7 +7,7 @@ import type { InferSelectModel } from "drizzle-orm";
 import NextAuth from "next-auth";
 
 import { db } from "~/db/client";
-import { sessions, table, users } from "~/db/schema";
+import { sessions, users } from "~/db/schema";
 
 export type { Session } from "@auth/core/types";
 
@@ -45,7 +45,7 @@ export const {
   auth,
 } = NextAuth({
   adapter: {
-    ...DrizzleAdapter(db, table),
+    ...DrizzleAdapter(db),
     async getSessionAndUser(data) {
       const sessionAndUsers = await db
         .select({
