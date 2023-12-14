@@ -31,7 +31,7 @@ export default function LoginPage() {
           </Button>
         </form>
 
-        {process.env.NODE_ENV === "development" && (
+        {process.env.VERCEL_ENV !== "production" && (
           <div className=" relative rounded border-2 border-dashed p-2">
             <Badge className="absolute -right-2 -top-2">DEV</Badge>
             <EmailSignIn />
