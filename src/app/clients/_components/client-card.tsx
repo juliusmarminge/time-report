@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { Temporal } from "@js-temporal/polyfill";
 import { CheckIcon, Pencil1Icon, TrashIcon } from "@radix-ui/react-icons";
-import { format } from "date-fns";
 import type { Dinero } from "dinero.js";
 import { dinero, toDecimal } from "dinero.js";
 import type { TsonSerialized } from "tupleson";
@@ -80,6 +79,8 @@ export function ClientCard(props: { client: TsonSerialized<Client> }) {
     converter: converter.convert,
   });
 
+  console.log("Temporal test ", { ti: client.updatedAt, dt: client.createdAt });
+
   return (
     <Card>
       <div className="flex items-start justify-between p-6">
@@ -91,7 +92,13 @@ export function ClientCard(props: { client: TsonSerialized<Client> }) {
           <div>
             <h2 className="text-xl font-bold">{client.name}</h2>
             <p className="text-sm text-muted-foreground">
-              Created: {format(client.createdAt, "MMMM do yyyy")},{" "}
+              Created:{" "}
+              {
+                formatOrdinal(client.createdAt, {
+                  month: "long",
+                  year: "numeric",
+                }) /**format(client.createdAt, "MMMM do yyyy") */
+              }{" "}
               {client.currency && client.defaultCharge && (
                 <p className="text-sm text-muted-foreground">
                   {`Invoiced `}
@@ -199,7 +206,14 @@ function EditingClientCard(props: {
               onChange={(e) => setEditingName(e.currentTarget.value)}
             />
             <p className="text-sm text-muted-foreground">
-              Created: {format(client.createdAt, "MMMM do yyyy")}
+              Created:{" "}
+              {
+                client.createdAt.toLocaleString("en-US", {
+                  month: "long",
+                  day: "numeric",
+                  year: "numeric",
+                }) /**format(client.createdAt, "MMMM do yyyy") */
+              }
             </p>
           </div>
         </CardHeader>

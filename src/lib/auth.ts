@@ -1,13 +1,12 @@
 import { redirect } from "next/navigation";
 import type { EmailConfig } from "@auth/core/providers";
 import Github from "@auth/core/providers/github";
-import { DrizzleAdapter } from "@auth/drizzle-adapter";
-import { eq } from "drizzle-orm";
 import type { InferSelectModel } from "drizzle-orm";
 import NextAuth from "next-auth";
 
+import { mySqlDrizzleAdapter } from "~/db/auth-adapter";
 import { db } from "~/db/client";
-import { sessions, users } from "~/db/schema";
+import { users } from "~/db/schema";
 
 export type { Session } from "@auth/core/types";
 
@@ -18,10 +17,6 @@ declare module "@auth/core/types" {
   interface Session {
     user: InferSelectModel<typeof users>;
   }
-}
-
-declare module "@auth/core/adapters" {
-  interface AdapterUser extends InferSelectModel<typeof users> {}
 }
 
 const mockEmail = {
@@ -44,21 +39,7 @@ export const {
   signOut,
   auth,
 } = NextAuth({
-  adapter: {
-    ...DrizzleAdapter(db),
-    async getSessionAndUser(data) {
-      const sessionAndUsers = await db
-        .select({
-          session: sessions,
-          user: users,
-        })
-        .from(sessions)
-        .where(eq(sessions.sessionToken, data))
-        .innerJoin(users, eq(users.id, sessions.userId));
-
-      return sessionAndUsers[0] ?? null;
-    },
-  },
+  adapter: mySqlDrizzleAdapter(db),
   providers: [
     ...providers.map((p) => p.handler),
     ...(process.env.NODE_ENV === "development" ? [mockEmail] : []),

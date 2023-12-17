@@ -24,11 +24,15 @@ export const isSameMonth = (a: Temporal.PlainDate, b: Temporal.PlainDate) => {
 };
 
 export const formatOrdinal = (
-  date: Temporal.PlainDate,
+  date: Temporal.PlainDate | Temporal.Instant,
   opts: Intl.DateTimeFormatOptions = {
     month: "short",
   },
 ) => {
+  date =
+    date instanceof Temporal.Instant
+      ? date.toZonedDateTimeISO("UTC").toPlainDate()
+      : date;
   // format(2021-01-01) => Jan 21st
   const nthNumber = (number: number) => {
     if (number > 3 && number < 21) return "th";
@@ -43,6 +47,19 @@ export const formatOrdinal = (
         return "th";
     }
   };
+
+  if (opts.year) {
+    return (
+      date.toLocaleString("en-US", {
+        ...opts,
+        year: undefined,
+        day: "numeric",
+      }) +
+      nthNumber(date.day) +
+      ", " +
+      date.year
+    );
+  }
 
   return (
     date.toLocaleString("en-US", { ...opts, day: "numeric" }) +
