@@ -30,6 +30,17 @@ const temporalDateColumn = customType<{
   toDriver: (value) => value.toString(),
 });
 
+const temporalInstantColumn = customType<{
+  data: Temporal.Instant;
+  driverData: string;
+  config: { fsp?: number };
+}>({
+  dataType: (config) => `timestamp(${config?.fsp ?? 3})`,
+  fromDriver: (value) =>
+    Temporal.Instant.fromEpochMilliseconds(new Date(value).getTime()),
+  toDriver: (value) => value.toString(),
+});
+
 export const client = mysqlTable(
   "client",
   {
@@ -48,9 +59,12 @@ export const client = mysqlTable(
     currency: varchar("currency", { length: 3 })
       .$type<CurrencyCode>()
       .notNull(),
-    createdAt: timestamp("created_at", { fsp: 3 })
+    createdAt: temporalInstantColumn("created_at")
       .default(sql`CURRENT_TIMESTAMP(3)`)
       .notNull(),
+    updatedAt: temporalInstantColumn("updated_at")
+      .notNull()
+      .default(sql`CURRENT_TIMESTAMP(3)`),
   },
   (client) => ({
     tenantIdIdx: index("tenantId_idx").on(client.tenantId),
@@ -75,7 +89,7 @@ export const timeslot = mysqlTable(
     currency: varchar("currency", { length: 3 })
       .$type<CurrencyCode>()
       .notNull(),
-    createdAt: timestamp("created_at", { fsp: 3 }).default(
+    createdAt: temporalInstantColumn("created_at").default(
       sql`CURRENT_TIMESTAMP(3)`,
     ),
     periodId: int("period_id"),
@@ -99,9 +113,9 @@ export const period = mysqlTable("period", {
   tenantId: varchar("tenant_id", { length: 255 }).notNull(),
   startDate: temporalDateColumn("start_date").notNull(),
   endDate: temporalDateColumn("end_date").notNull(),
-  closedAt: timestamp("closed_at", { fsp: 3, mode: "date" }),
+  closedAt: temporalInstantColumn("closed_at"),
   status: mysqlEnum("status", ["open", "closed"]).notNull().default("open"),
-  createdAt: timestamp("created_at", { fsp: 3, mode: "date" }).default(
+  createdAt: temporalInstantColumn("created_at").default(
     sql`CURRENT_TIMESTAMP(3)`,
   ),
 });
@@ -115,8 +129,7 @@ export const users = mysqlTable("user", {
   id: varchar("id", { length: 255 }).notNull().primaryKey(),
   name: varchar("name", { length: 255 }),
   email: varchar("email", { length: 255 }).notNull(),
-  emailVerified: timestamp("emailVerified", {
-    mode: "date",
+  emailVerified: temporalInstantColumn("emailVerified", {
     fsp: 3,
   }).default(sql`CURRENT_TIMESTAMP(3)`),
   image: varchar("image", { length: 255 }),
@@ -166,7 +179,7 @@ export const sessions = mysqlTable(
       .notNull()
       .primaryKey(),
     userId: varchar("userId", { length: 255 }).notNull(),
-    expires: timestamp("expires", { mode: "date" }).notNull(),
+    expires: timestamp("expires", { fsp: 3 }).notNull(),
   },
   (session) => ({
     userIdIdx: index("userId_idx").on(session.userId),
@@ -182,7 +195,7 @@ export const verificationTokens = mysqlTable(
   {
     identifier: varchar("identifier", { length: 255 }).notNull(),
     token: varchar("token", { length: 255 }).notNull(),
-    expires: timestamp("expires", { mode: "date" }).notNull(),
+    expires: timestamp("expires", { fsp: 3 }).notNull(),
   },
   (vt) => ({
     compoundKey: primaryKey({ columns: [vt.identifier, vt.token] }),

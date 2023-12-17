@@ -9,4 +9,13 @@ const plainDate = {
   test: (v) => v instanceof Temporal.PlainDate,
 } satisfies TsonType<Temporal.PlainDate, string>;
 
-export const tson = createTson({ types: [plainDate, tsonMap, tsonDate] });
+const instant = {
+  deserialize: (v) => Temporal.Instant.from(v),
+  key: "Instant",
+  serialize: (v) => v.toJSON(),
+  test: (v) => v instanceof Temporal.Instant,
+} satisfies TsonType<Temporal.Instant, string>;
+
+export const tson = createTson({
+  types: [plainDate, instant, tsonMap, tsonDate],
+});
