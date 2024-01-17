@@ -230,7 +230,7 @@ export function ReportTimeSheet(props: {
           <Header>
             <Title>Report time</Title>
           </Header>
-          <div className="p-4">
+          <div className="p-4 lg:px-0">
             <ReportTimeForm
               clients={props.clients}
               date={props.date}

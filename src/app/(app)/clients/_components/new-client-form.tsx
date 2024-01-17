@@ -272,7 +272,7 @@ export function NewClientSheet(props: {
         <Header>
           <Title>Create a new client</Title>
         </Header>
-        <div className="p-4">
+        <div className="p-4 lg:px-0">
           <NewClientForm
             afterSubmit={() => {
               setOpen(false);
