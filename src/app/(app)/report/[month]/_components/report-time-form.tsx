@@ -1,6 +1,5 @@
 "use client";
 
-import { useTransition } from "react";
 import { Temporal } from "@js-temporal/polyfill";
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 import { atom, useAtom } from "jotai";
@@ -9,7 +8,6 @@ import { LoadingDots } from "~/components/loading-dots";
 import type { Client } from "~/db/queries";
 import { currencies } from "~/lib/currencies";
 import { isFuture } from "~/lib/temporal";
-import { useIsDesktop } from "~/lib/use-media-query";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -23,12 +21,6 @@ import {
 } from "~/ui/alert-dialog";
 import { Button } from "~/ui/button";
 import {
-  Drawer,
-  DrawerContent,
-  DrawerTrigger,
-  NestedDrawer,
-} from "~/ui/drawer";
-import {
   Form,
   FormControl,
   FormDescription,
@@ -39,6 +31,7 @@ import {
   useForm,
 } from "~/ui/form";
 import { Input } from "~/ui/input";
+import { useResponsiveSheet } from "~/ui/responsive-sheet";
 import { ScrollArea } from "~/ui/scroll-area";
 import {
   Select,
@@ -47,13 +40,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/ui/select";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "~/ui/sheet";
 import { Textarea } from "~/ui/textarea";
 import { reportTime } from "../_actions";
 import { reportTimeSchema } from "../_validators";
@@ -72,7 +58,6 @@ export function ReportTimeForm(props: {
       chargeRate: props.clients[0].defaultCharge / 100,
     },
   });
-  const [pending, startTransition] = useTransition();
 
   return (
     <Form {...form}>
@@ -82,10 +67,9 @@ export function ReportTimeForm(props: {
             ...values,
             date: Temporal.PlainDate.from(values.date as string).toString(),
           });
-          startTransition(() => {
-            form.reset();
-            props.afterSubmit?.();
-          });
+
+          form.reset();
+          props.afterSubmit?.();
         })}
         className="flex flex-col gap-4"
       >
@@ -228,14 +212,11 @@ export function ReportTimeSheet(props: {
 }) {
   const [open, setOpen] = useAtom(reportTimeSheetOpen);
 
-  const isDesktop = useIsDesktop();
-  const Wrapper = isDesktop ? Sheet : NestedDrawer;
-  const Trigger = isDesktop ? SheetTrigger : DrawerTrigger;
-  const Content = isDesktop ? SheetContent : DrawerContent;
+  const { Root, Trigger, Content, Header, Title } = useResponsiveSheet();
 
   return (
     <AlertDialog>
-      <Wrapper open={open} onOpenChange={setOpen}>
+      <Root open={open} onOpenChange={setOpen}>
         {props.date && isFuture(props.date) ? (
           <AlertDialogTrigger asChild>
             <Button>Report time</Button>
@@ -246,10 +227,10 @@ export function ReportTimeSheet(props: {
           </Trigger>
         )}
         <Content>
-          <SheetHeader className="px-6 lg:px-0">
-            <SheetTitle>Report time</SheetTitle>
-          </SheetHeader>
-          <div className="px-6 py-4 lg:px-0">
+          <Header>
+            <Title>Report time</Title>
+          </Header>
+          <div className="p-4">
             <ReportTimeForm
               clients={props.clients}
               date={props.date}
@@ -257,7 +238,7 @@ export function ReportTimeSheet(props: {
             />
           </div>
         </Content>
-      </Wrapper>
+      </Root>
 
       <AlertDialogContent>
         <AlertDialogHeader>

@@ -136,7 +136,7 @@ export function CalendarAndSidePanel(props: {
   const isDesktop = useIsDesktop();
   const [drawerOpen, setDrawerOpen] = useState(false);
 
-  const Wrap = (props: { children: React.ReactNode }) => {
+  const MaybeDrawer = (props: { children: React.ReactNode }) => {
     if (isDesktop) return <Fragment>{props.children}</Fragment>;
     return (
       <Drawer open={drawerOpen} onOpenChange={setDrawerOpen}>
@@ -156,14 +156,14 @@ export function CalendarAndSidePanel(props: {
           setDrawerOpen(!!date);
         }}
       />
-      <Wrap>
+      <MaybeDrawer>
         <SidePanel
           date={date}
           clients={clients}
           timeslots={selectedDaySlots}
           className="border-none bg-background shadow-none lg:border lg:bg-card lg:shadow"
         />
-      </Wrap>
+      </MaybeDrawer>
     </>
   );
 }

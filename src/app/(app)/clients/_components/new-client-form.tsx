@@ -8,9 +8,7 @@ import { LoadingDots } from "~/components/loading-dots";
 import { cn } from "~/lib/cn";
 import { currencies } from "~/lib/currencies";
 import { useUploadThing } from "~/lib/uploadthing";
-import { useIsDesktop } from "~/lib/use-media-query";
 import { Button } from "~/ui/button";
-import { Drawer, DrawerContent, DrawerTrigger } from "~/ui/drawer";
 import {
   Form,
   FormControl,
@@ -22,6 +20,7 @@ import {
   useForm,
 } from "~/ui/form";
 import { Input } from "~/ui/input";
+import { useResponsiveSheet } from "~/ui/responsive-sheet";
 import { ScrollArea } from "~/ui/scroll-area";
 import {
   Select,
@@ -30,13 +29,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/ui/select";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "~/ui/sheet";
 import { createClient, deleteImageFromUT } from "../_actions";
 import { createClientSchema } from "../_validators";
 
@@ -263,13 +255,10 @@ export function NewClientSheet(props: {
 }) {
   const [open, setOpen] = useState(false);
 
-  const isDesktop = useIsDesktop();
-  const Wrapper = isDesktop ? Sheet : Drawer;
-  const Trigger = isDesktop ? SheetTrigger : DrawerTrigger;
-  const Content = isDesktop ? SheetContent : DrawerContent;
+  const { Root, Trigger, Content, Header, Title } = useResponsiveSheet();
 
   return (
-    <Wrapper open={open} onOpenChange={setOpen}>
+    <Root open={open} onOpenChange={setOpen}>
       <Trigger asChild>
         {props.trigger === "full" ? (
           <Button>Create a client to report time</Button>
@@ -279,14 +268,11 @@ export function NewClientSheet(props: {
           </Button>
         )}
       </Trigger>
-      <Content
-        side={isDesktop ? "right" : "bottom"}
-        onOpenAutoFocus={(e) => e.preventDefault()}
-      >
-        <SheetHeader className="px-6 lg:px-0">
-          <SheetTitle>Create a new client</SheetTitle>
-        </SheetHeader>
-        <div className="px-6 py-4 lg:px-0">
+      <Content onOpenAutoFocus={(e) => e.preventDefault()}>
+        <Header>
+          <Title>Create a new client</Title>
+        </Header>
+        <div className="p-4">
           <NewClientForm
             afterSubmit={() => {
               setOpen(false);
@@ -295,6 +281,6 @@ export function NewClientSheet(props: {
           />
         </div>
       </Content>
-    </Wrapper>
+    </Root>
   );
 }
