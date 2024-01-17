@@ -38,7 +38,7 @@ export function Calendar(props: {
         head_cell:
           "flex-1 text-left px-4 text-muted-foreground text-[0.8rem] font-normal",
         caption_label: "text-lg font-medium",
-        cell: "relative flex-1 p-0 text-sm focus-within:relative focus-within:z-20 [&:has([aria-selected])]:bg-accent",
+        cell: "relative flex-1 p-0 text-sm focus-within:relative focus-within:z-20 [&:has([aria-selected])]:bg-accent rounded-md",
       }}
       mode="single"
       selected={toDate(props.date)}
@@ -98,6 +98,7 @@ export function Calendar(props: {
               className={cn(
                 day.buttonProps.className,
                 "h-36 w-full flex-col items-start justify-start p-4 font-normal aria-selected:opacity-100",
+                fromDate(dayProps.date).equals(props.date) && "bg-primary",
               )}
               onClick={(e) => {
                 props.onDayClick?.(props.date);
