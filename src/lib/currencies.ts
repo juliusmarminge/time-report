@@ -50,11 +50,6 @@ export const getCurrencyRates = async () => {
 };
 
 export const createConverter = cache(async () => {
-  // const heads = new Map((await import("next/headers")).headers());
-  // heads.delete("content-length");
-  // const ratesWithEurAsBase = await fetch(new URL("/api/currencies", BASE_URL), {
-  //   headers: Object.fromEntries(heads),
-  // }).then((r) => r.json() as Promise<FixerResponse["rates"]>);
   const ratesWithEurAsBase = await getCurrencyRates();
 
   const _convert = (
