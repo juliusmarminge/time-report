@@ -30,7 +30,7 @@ import {
   SelectValue,
 } from "~/ui/select";
 import { createClient, deleteImageFromUT } from "../_actions";
-import { createClientSchema } from "../_validators";
+import { billingPeriods, createClientSchema } from "../_validators";
 
 export function NewClientForm(props: { afterSubmit?: () => void }) {
   const form = useForm({
@@ -96,6 +96,7 @@ export function NewClientForm(props: { afterSubmit?: () => void }) {
       <form
         className="flex flex-col gap-4"
         onSubmit={form.handleSubmit(async (data) => {
+          // await createClient(data);
           await createClient(data);
           form.reset();
           props.afterSubmit?.();
@@ -224,7 +225,7 @@ export function NewClientForm(props: { afterSubmit?: () => void }) {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {["weekly", "biweekly", "monthly"].map((period) => (
+                  {billingPeriods.map((period) => (
                     <SelectItem
                       key={period}
                       value={period}
