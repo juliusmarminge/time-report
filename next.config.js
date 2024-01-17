@@ -4,6 +4,9 @@ export default withBundleAnalyzer({
   enabled: process.env.ANALYZE === "true",
   openAnalyzer: false,
 })({
+  experimental: {
+    ppr: true,
+  },
   images: {
     remotePatterns: [
       {

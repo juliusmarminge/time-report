@@ -4,7 +4,7 @@ import { Suspense } from "react";
 import type { Temporal } from "@js-temporal/polyfill";
 import { toDecimal } from "dinero.js";
 
-import { NewClientSheet } from "~/app/clients/_components/new-client-form";
+import { NewClientSheet } from "~/app/(app)/clients/_components/new-client-form";
 import type { Client, Timeslot } from "~/db/queries";
 import { useConverter } from "~/lib/converter";
 import { formatMoney } from "~/lib/currencies";

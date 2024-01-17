@@ -2,8 +2,6 @@ import { cache } from "react";
 import * as dineroCurrencies from "@dinero.js/currencies";
 import type { Dinero } from "dinero.js";
 
-import type { FixerResponse } from "~/app/api/currencies/route";
-import { BASE_URL } from "./constants";
 import { convert } from "./monetary";
 
 // @ts-expect-error - Module Augmentation doesn't seem to work.. Want the base as number, not number | number[]
@@ -34,12 +32,30 @@ export function normalizeAmount(
   return amount * currencyInfo.base ** currencyInfo.exponent;
 }
 
+export const getCurrencyRates = async () => {
+  interface FixerResponse {
+    base: string;
+    timestamp: number;
+    date: string;
+    rates: Record<string, number>;
+  }
+
+  const res = (await (
+    await fetch(
+      `http://data.fixer.io/api/latest?access_key=${process.env.FIXER_API_KEY}`,
+      { next: { revalidate: 60 * 60 * 24 } },
+    )
+  ).json()) as FixerResponse;
+  return res.rates;
+};
+
 export const createConverter = cache(async () => {
-  const heads = new Map((await import("next/headers")).headers());
-  heads.delete("content-length");
-  const ratesWithEurAsBase = await fetch(new URL("/api/currencies", BASE_URL), {
-    headers: Object.fromEntries(heads),
-  }).then((r) => r.json() as Promise<FixerResponse["rates"]>);
+  // const heads = new Map((await import("next/headers")).headers());
+  // heads.delete("content-length");
+  // const ratesWithEurAsBase = await fetch(new URL("/api/currencies", BASE_URL), {
+  //   headers: Object.fromEntries(heads),
+  // }).then((r) => r.json() as Promise<FixerResponse["rates"]>);
+  const ratesWithEurAsBase = await getCurrencyRates();
 
   const _convert = (
     dineroObject: Dinero<number>,

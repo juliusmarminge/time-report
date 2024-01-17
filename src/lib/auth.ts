@@ -1,15 +1,15 @@
 import { redirect } from "next/navigation";
-import type { EmailConfig } from "@auth/core/providers";
-import Github from "@auth/core/providers/github";
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import { eq } from "drizzle-orm";
 import type { InferSelectModel } from "drizzle-orm";
 import NextAuth from "next-auth";
+import type { EmailConfig } from "next-auth/providers";
+import Github from "next-auth/providers/github";
 
 import { db } from "~/db/client";
 import { sessions, users } from "~/db/schema";
 
-export type { Session } from "@auth/core/types";
+export type { Session } from "next-auth";
 
 export const providers = [{ name: "github", handler: Github }] as const;
 export type OAuthProviders = (typeof providers)[number]["name"];
@@ -64,7 +64,10 @@ export const {
     ...(process.env.VERCEL_ENV !== "production" ? [mockEmail] : []),
   ],
   callbacks: {
-    session: ({ session, user }) => {
+    session: (opts) => {
+      if (!("user" in opts)) throw "unreachable for session strategy";
+      const { session, user } = opts;
+
       return {
         ...session,
         user: {

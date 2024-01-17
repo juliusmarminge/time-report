@@ -5,8 +5,6 @@ import { Badge } from "~/ui/badge";
 import { Button } from "~/ui/button";
 import { EmailSignIn } from "./email";
 
-export const runtime = "edge";
-
 export default function LoginPage() {
   return (
     <div className="relative flex h-full min-h-screen w-full flex-col items-center justify-center">

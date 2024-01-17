@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { Cross1Icon, PlusIcon } from "@radix-ui/react-icons";
-import type { FileWithPath } from "@uploadthing/react";
 import { useDropzone } from "@uploadthing/react/hooks";
 
 import { LoadingDots } from "~/components/loading-dots";
@@ -58,7 +57,7 @@ export function NewClientForm(props: { afterSubmit?: () => void }) {
   });
 
   const [imageDataUrl, setImageDataUrl] = useState<string | null>(null);
-  const onDrop = useCallback((files: FileWithPath[]) => {
+  const onDrop = useCallback((files: File[]) => {
     void startUpload(files);
     const reader = new FileReader();
     reader.onload = (event) => {

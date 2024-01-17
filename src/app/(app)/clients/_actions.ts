@@ -9,8 +9,8 @@ import { number, object, parseAsync } from "valibot";
 import { db } from "~/db/client";
 import { client, period, timeslot } from "~/db/schema";
 import { currentUser } from "~/lib/auth";
-import type { CurrencyCode } from "../../lib/currencies";
-import { normalizeAmount } from "../../lib/currencies";
+import type { CurrencyCode } from "~/lib/currencies";
+import { normalizeAmount } from "~/lib/currencies";
 import { createClientSchema, updateClientSchema } from "./_validators";
 
 export async function createClient(props: unknown) {
