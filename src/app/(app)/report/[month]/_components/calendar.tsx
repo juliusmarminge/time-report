@@ -9,10 +9,9 @@ import type { TsonSerialized } from "tupleson";
 
 import type { Client, Timeslot } from "~/db/queries";
 import { cn } from "~/lib/cn";
-import { fromDate, toDate } from "~/lib/temporal";
 import { tson } from "~/lib/tson";
 import { Button } from "~/ui/button";
-import { Calendar as CalendarCore } from "~/ui/calendar";
+import { Calendar as CalendarCore, fromDate, toDate } from "~/ui/calendar";
 import { SidePanel } from "./side-panel";
 
 export function Calendar(props: {

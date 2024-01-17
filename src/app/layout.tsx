@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     "An app for indie contractors to track time and generate invoices.",
   icons: {
     icon: "/favicon.ico",
-    shortcut: "/favicon-16x16.png",
+    shortcut: "/favicon-1e6x16.png",
     apple: "/apple-touch-icon.png",
   },
 };
@@ -32,7 +32,7 @@ export const viewport: Viewport = {
   ],
 };
 
-export default async function RootLayout(props: { children: React.ReactNode }) {
+export default function RootLayout(props: { children: React.ReactNode }) {
   return (
     <>
       <html lang="en" suppressHydrationWarning>

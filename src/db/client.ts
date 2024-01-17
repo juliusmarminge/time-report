@@ -15,8 +15,8 @@ const ps = new Client(credentials);
 export const db = drizzle(ps, {
   schema,
   logger: {
-    logQuery(query: string, params: unknown[]): void {
-      // console.log("[DRIZZLE]", { query, params });
+    logQuery(_query: string, _params: unknown[]): void {
+      // console.log("[DRIZZLE]", { query: _query, params: _params });
     },
   },
 });

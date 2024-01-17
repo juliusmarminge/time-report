@@ -1,13 +1,23 @@
 "use client";
 
 import * as React from "react";
+import { Temporal } from "@js-temporal/polyfill";
 import { ChevronLeftIcon, ChevronRightIcon } from "@radix-ui/react-icons";
+import { format, parse } from "date-fns";
 import { DayPicker } from "react-day-picker";
 
 import { cn } from "~/lib/cn";
 import { buttonVariants } from "~/ui/button";
 
 export type CalendarProps = React.ComponentProps<typeof DayPicker>;
+
+// --- NEEDED ONLY TO CONVERT FOR DATE PICKER. DON'T USE ELSEWHERE ---
+export const toDate = (date: Temporal.PlainDate) =>
+  parse(date.toString(), "yyyy-MM-dd", new Date());
+
+export const fromDate = (date: Date) =>
+  Temporal.PlainDate.from(format(date, "yyyy-MM-dd"));
+// ---
 
 function Calendar({
   className,

@@ -74,8 +74,8 @@ dependencies:
     specifier: ^0.7.0
     version: 0.7.0
   date-fns:
-    specifier: ^2.30.0
-    version: 2.30.0
+    specifier: ^3.2.0
+    version: 3.2.0
   dinero.js:
     specifier: 2.0.0-alpha.14
     version: 2.0.0-alpha.14
@@ -98,8 +98,8 @@ dependencies:
     specifier: 18.2.0
     version: 18.2.0
   react-day-picker:
-    specifier: ^8.9.1
-    version: 8.9.1(date-fns@2.30.0)(react@18.2.0)
+    specifier: ^8.10.0
+    version: 8.10.0(date-fns@3.2.0)(react@18.2.0)
   react-dom:
     specifier: 18.2.0
     version: 18.2.0(react@18.2.0)
@@ -107,8 +107,8 @@ dependencies:
     specifier: ^7.48.2
     version: 7.48.2(react@18.2.0)
   tailwind-merge:
-    specifier: ^2.1.0
-    version: 2.1.0
+    specifier: ^2.2.0
+    version: 2.2.0
   tailwindcss-animate:
     specifier: ^1.0.7
     version: 1.0.7(tailwindcss@3.4.1)
@@ -3345,14 +3345,11 @@ packages:
       }
     dev: true
 
-  /date-fns@2.30.0:
+  /date-fns@3.2.0:
     resolution:
       {
-        integrity: sha512-fnULvOpxnC5/Vg3NCiWelDsLiUc9bRwAPs/+LfTLNvetFCtCTN+yQz15C/fs4AwX1R9K5GLtLfn8QW+dWisaAw==,
+        integrity: sha512-E4KWKavANzeuusPi0jUjpuI22SURAznGkx7eZV+4i6x2A+IZxAMcajgkvuDAU1bg40+xuhW1zRdVIIM/4khuIg==,
       }
-    engines: { node: ">=0.11" }
-    dependencies:
-      "@babel/runtime": 7.23.5
     dev: false
 
   /debounce@1.2.1:
@@ -6120,16 +6117,16 @@ packages:
         integrity: sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==,
       }
 
-  /react-day-picker@8.9.1(date-fns@2.30.0)(react@18.2.0):
+  /react-day-picker@8.10.0(date-fns@3.2.0)(react@18.2.0):
     resolution:
       {
-        integrity: sha512-W0SPApKIsYq+XCtfGeMYDoU0KbsG3wfkYtlw8l+vZp6KoBXGOlhzBUp4tNx1XiwiOZwhfdGOlj7NGSCKGSlg5Q==,
+        integrity: sha512-mz+qeyrOM7++1NCb1ARXmkjMkzWVh2GL9YiPbRjKe0zHccvekk4HE+0MPOZOrosn8r8zTHIIeOUXTmXRqmkRmg==,
       }
     peerDependencies:
-      date-fns: ^2.28.0
+      date-fns: ^2.28.0 || ^3.0.0
       react: ^16.8.0 || ^17.0.0 || ^18.0.0
     dependencies:
-      date-fns: 2.30.0
+      date-fns: 3.2.0
       react: 18.2.0
     dev: false
 
@@ -6716,10 +6713,10 @@ packages:
       }
     dev: false
 
-  /tailwind-merge@2.1.0:
+  /tailwind-merge@2.2.0:
     resolution:
       {
-        integrity: sha512-l11VvI4nSwW7MtLSLYT4ldidDEUwQAMWuSHk7l4zcXZDgnCRa0V3OdCwFfM7DCzakVXMNRwAeje9maFFXT71dQ==,
+        integrity: sha512-SqqhhaL0T06SW59+JVNfAqKdqLs0497esifRrZ7jOaefP3o64fdFNDMrAQWZFMxTLJPiHVjRLUywT8uFz1xNWQ==,
       }
     dependencies:
       "@babel/runtime": 7.23.5

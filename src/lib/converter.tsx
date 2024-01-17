@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import type { Dinero } from "dinero.js";
-import { Session } from "next-auth";
+import type { Session } from "next-auth";
 
 import type { CurrencyCode } from "./currencies";
 import { convert } from "./monetary";

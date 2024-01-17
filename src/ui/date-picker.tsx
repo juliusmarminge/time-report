@@ -6,9 +6,8 @@ import { CalendarIcon } from "@radix-ui/react-icons";
 import { format } from "date-fns";
 
 import { cn } from "~/lib/cn";
-import { fromDate, toDate } from "~/lib/temporal";
 import { Button } from "~/ui/button";
-import { Calendar } from "~/ui/calendar";
+import { Calendar, fromDate, toDate } from "~/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "~/ui/popover";
 
 export function DatePicker<TRequired extends boolean>(
