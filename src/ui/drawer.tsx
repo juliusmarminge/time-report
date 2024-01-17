@@ -43,11 +43,6 @@ const DrawerContent = React.forwardRef<
   <DrawerPortal>
     <DrawerOverlay />
     <DrawerPrimitive.Content
-      onOpenAutoFocus={(e) => {
-        // prevent focus on input elements when drawer is opened
-        e.preventDefault();
-        props.onOpenAutoFocus?.(e);
-      }}
       ref={ref}
       className={cn(
         "fixed inset-x-0 bottom-0 z-50 mt-24 flex h-auto flex-col rounded-t-[10px] border bg-background",
