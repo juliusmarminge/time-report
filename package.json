@@ -42,6 +42,7 @@
     "dinero.js": "2.0.0-alpha.14",
     "drizzle-orm": "0.29.3",
     "geist": "^1.2.1",
+    "jotai": "^2.6.2",
     "next": "14.0.5-canary.60",
     "next-auth": "5.0.0-beta.5",
     "next-themes": "^0.2.1",

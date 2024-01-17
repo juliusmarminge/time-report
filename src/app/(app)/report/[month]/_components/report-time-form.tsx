@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useTransition } from "react";
 import { Temporal } from "@js-temporal/polyfill";
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
+import { atom, useAtom } from "jotai";
 
 import { LoadingDots } from "~/components/loading-dots";
 import type { Client } from "~/db/queries";
@@ -220,11 +221,12 @@ export function ReportTimeForm(props: {
   );
 }
 
+export const reportTimeSheetOpen = atom(false);
 export function ReportTimeSheet(props: {
   date: Temporal.PlainDate;
   clients: Client[];
 }) {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useAtom(reportTimeSheetOpen);
 
   const isDesktop = useIsDesktop();
   const Wrapper = isDesktop ? Sheet : NestedDrawer;

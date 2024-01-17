@@ -3,6 +3,7 @@
 import { Suspense } from "react";
 import type { Temporal } from "@js-temporal/polyfill";
 import { toDecimal } from "dinero.js";
+import { useSetAtom } from "jotai";
 
 import { NewClientSheet } from "~/app/(app)/clients/_components/new-client-form";
 import type { Client, Timeslot } from "~/db/queries";
@@ -17,7 +18,7 @@ import {
   CardHeader,
   CardTitle,
 } from "~/ui/card";
-import { ReportTimeSheet } from "./report-time-form";
+import { ReportTimeSheet, reportTimeSheetOpen } from "./report-time-form";
 import { TimeslotCard } from "./timeslot-card";
 
 export function SidePanel(props: {
@@ -38,6 +39,8 @@ export function SidePanel(props: {
     (acc, slot) => acc + +slot.duration,
     0,
   );
+
+  const setReportTimeSheetOpen = useSetAtom(reportTimeSheetOpen);
 
   return (
     <Card className={props.className}>
@@ -64,7 +67,12 @@ export function SidePanel(props: {
         ))}
         <Suspense>
           {props.clients.length === 0 ? (
-            <NewClientSheet trigger="full" />
+            <NewClientSheet
+              trigger="full"
+              afterSubmit={() => {
+                setReportTimeSheetOpen(true);
+              }}
+            />
           ) : (
             <ReportTimeSheet date={props.date} clients={props.clients} />
           )}

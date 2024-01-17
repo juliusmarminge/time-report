@@ -10,6 +10,7 @@ import { currencies, formatMoney } from "~/lib/currencies";
 import { slotsToDineros, sumDineros } from "~/lib/monetary";
 import { formatOrdinal, isPast } from "~/lib/temporal";
 import { tson } from "~/lib/tson";
+import { useIsDesktop } from "~/lib/use-media-query";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -31,6 +32,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "~/ui/dialog";
+import { Drawer, DrawerContent, DrawerTrigger } from "~/ui/drawer";
 import { Label } from "~/ui/label";
 import { Separator } from "~/ui/separator";
 import {
@@ -188,20 +190,25 @@ export function ClosePeriodSheet(props: {
     setDialogOpen(hasExpiredPeriods);
   }, []);
 
+  const isDesktop = useIsDesktop();
+  const Wrapper = isDesktop ? Sheet : Drawer;
+  const Trigger = isDesktop ? SheetTrigger : DrawerTrigger;
+  const Content = isDesktop ? SheetContent : DrawerContent;
+
   return (
-    <Sheet>
-      <SheetTrigger asChild>
+    <Wrapper>
+      <Trigger asChild>
         <Button>Periods</Button>
-      </SheetTrigger>
-      <SheetContent>
+      </Trigger>
+      <Content>
         <div className="flex flex-col gap-4">
-          <SheetHeader>
+          <SheetHeader className="px-6 lg:px-0">
             <SheetTitle>Open Periods</SheetTitle>
             <SheetDescription>
               {`You have ${openPeriods.length} open periods.`}
             </SheetDescription>
           </SheetHeader>
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-4 px-6 py-4 lg:px-0">
             {openPeriods.map((period, idx) => (
               <Fragment key={period.id}>
                 <PeriodCard period={period} />
@@ -210,7 +217,7 @@ export function ClosePeriodSheet(props: {
             ))}
           </div>
         </div>
-      </SheetContent>
+      </Content>
 
       <AlertDialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <AlertDialogContent>
@@ -228,6 +235,6 @@ export function ClosePeriodSheet(props: {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </Sheet>
+    </Wrapper>
   );
 }

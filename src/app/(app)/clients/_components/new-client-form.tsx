@@ -10,6 +10,7 @@ import { currencies } from "~/lib/currencies";
 import { useUploadThing } from "~/lib/uploadthing";
 import { useIsDesktop } from "~/lib/use-media-query";
 import { Button } from "~/ui/button";
+import { Drawer, DrawerContent, DrawerTrigger } from "~/ui/drawer";
 import {
   Form,
   FormControl,
@@ -256,14 +257,20 @@ export function NewClientForm(props: { afterSubmit?: () => void }) {
   );
 }
 
-export function NewClientSheet(props: { trigger: "full" | "icon" }) {
+export function NewClientSheet(props: {
+  trigger: "full" | "icon";
+  afterSubmit?: () => void;
+}) {
   const [open, setOpen] = useState(false);
 
   const isDesktop = useIsDesktop();
+  const Wrapper = isDesktop ? Sheet : Drawer;
+  const Trigger = isDesktop ? SheetTrigger : DrawerTrigger;
+  const Content = isDesktop ? SheetContent : DrawerContent;
 
   return (
-    <Sheet open={open} onOpenChange={setOpen}>
-      <SheetTrigger asChild>
+    <Wrapper open={open} onOpenChange={setOpen}>
+      <Trigger asChild>
         {props.trigger === "full" ? (
           <Button>Create a client to report time</Button>
         ) : (
@@ -271,18 +278,23 @@ export function NewClientSheet(props: { trigger: "full" | "icon" }) {
             <PlusIcon className="h-5 w-5" />
           </Button>
         )}
-      </SheetTrigger>
-      <SheetContent
+      </Trigger>
+      <Content
         side={isDesktop ? "right" : "bottom"}
         onOpenAutoFocus={(e) => e.preventDefault()}
       >
-        <SheetHeader>
+        <SheetHeader className="px-6 lg:px-0">
           <SheetTitle>Create a new client</SheetTitle>
         </SheetHeader>
-        <div className="py-4">
-          <NewClientForm afterSubmit={() => setOpen(false)} />
+        <div className="px-6 py-4 lg:px-0">
+          <NewClientForm
+            afterSubmit={() => {
+              setOpen(false);
+              props.afterSubmit?.();
+            }}
+          />
         </div>
-      </SheetContent>
-    </Sheet>
+      </Content>
+    </Wrapper>
   );
 }
