@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { Temporal } from "@js-temporal/polyfill";
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 
@@ -21,6 +21,12 @@ import {
   AlertDialogTrigger,
 } from "~/ui/alert-dialog";
 import { Button } from "~/ui/button";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerTrigger,
+  NestedDrawer,
+} from "~/ui/drawer";
 import {
   Form,
   FormControl,
@@ -65,6 +71,7 @@ export function ReportTimeForm(props: {
       chargeRate: props.clients[0].defaultCharge / 100,
     },
   });
+  const [pending, startTransition] = useTransition();
 
   return (
     <Form {...form}>
@@ -74,8 +81,10 @@ export function ReportTimeForm(props: {
             ...values,
             date: Temporal.PlainDate.from(values.date as string).toString(),
           });
-          form.reset();
-          props.afterSubmit?.();
+          startTransition(() => {
+            form.reset();
+            props.afterSubmit?.();
+          });
         })}
         className="flex flex-col gap-4"
       >
@@ -215,34 +224,38 @@ export function ReportTimeSheet(props: {
   date: Temporal.PlainDate;
   clients: Client[];
 }) {
-  const isDesktop = useIsDesktop();
   const [open, setOpen] = useState(false);
+
+  const isDesktop = useIsDesktop();
+  const Wrapper = isDesktop ? Sheet : NestedDrawer;
+  const Trigger = isDesktop ? SheetTrigger : DrawerTrigger;
+  const Content = isDesktop ? SheetContent : DrawerContent;
 
   return (
     <AlertDialog>
-      <Sheet open={open} onOpenChange={setOpen}>
+      <Wrapper open={open} onOpenChange={setOpen}>
         {props.date && isFuture(props.date) ? (
           <AlertDialogTrigger asChild>
             <Button>Report time</Button>
           </AlertDialogTrigger>
         ) : (
-          <SheetTrigger asChild>
+          <Trigger asChild>
             <Button>Report time</Button>
-          </SheetTrigger>
+          </Trigger>
         )}
-        <SheetContent side={isDesktop ? "right" : "bottom"}>
-          <SheetHeader>
+        <Content>
+          <SheetHeader className="px-6 lg:px-0">
             <SheetTitle>Report time</SheetTitle>
           </SheetHeader>
-          <div className="py-4">
+          <div className="px-6 py-4 lg:px-0">
             <ReportTimeForm
               clients={props.clients}
               date={props.date}
               afterSubmit={() => setOpen(false)}
             />
           </div>
-        </SheetContent>
-      </Sheet>
+        </Content>
+      </Wrapper>
 
       <AlertDialogContent>
         <AlertDialogHeader>
