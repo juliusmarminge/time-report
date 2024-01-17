@@ -7,6 +7,7 @@ import { format } from "date-fns";
 import type { Dinero } from "dinero.js";
 import { dinero, toDecimal } from "dinero.js";
 import type { TsonSerialized } from "tupleson";
+import * as v from "valibot";
 
 import { LoadingDots } from "~/components/loading-dots";
 import type { Client } from "~/db/queries";
@@ -30,8 +31,15 @@ import { Avatar, AvatarFallback, AvatarImage } from "~/ui/avatar";
 import { Badge } from "~/ui/badge";
 import { Button } from "~/ui/button";
 import { Card, CardContent, CardHeader } from "~/ui/card";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  useForm,
+} from "~/ui/form";
 import { Input } from "~/ui/input";
-import { Label } from "~/ui/label";
 import { ScrollArea } from "~/ui/scroll-area";
 import {
   Select,
@@ -61,8 +69,8 @@ export function ClientCard(props: { client: TsonSerialized<Client> }) {
     );
   }
 
-  const sortedPeriods = client.periods.sort(
-    (a, b) => -Temporal.PlainDate.compare(a.startDate, b.startDate),
+  const sortedPeriods = client.periods.sort((a, b) =>
+    Temporal.PlainDate.compare(b.startDate, a.startDate),
   );
 
   const converter = useConverter();
@@ -160,143 +168,179 @@ function EditingClientCard(props: {
   defaultCharge: Dinero<number>;
 }) {
   const { client } = props;
-  const [updating, setUpdating] = useState(false);
 
-  const [editingName, setEditingName] = useState(client.name);
-  const [editingChargeRate, setEditingChargeRate] = useState(
-    toDecimal(props.defaultCharge),
-  );
-  const [editingDefaultPeriod, setEditingDefaultPeriod] = useState(
-    client.defaultBillingPeriod,
-  );
-  const [editingCurrency, setEditingCurrency] = useState<string>(
-    client.currency,
-  );
-
-  const updateClientInfo = async () => {
-    setUpdating(true);
-    await updateClient(props.client.id, {
-      name: editingName,
-      currency: editingCurrency,
-      defaultCharge: editingChargeRate,
-      defaultBillingPeriod: editingDefaultPeriod,
-    });
-    setUpdating(false);
-    props.setIsEditing(false);
-  };
+  const form = useForm({
+    schema: v.object({
+      name: v.string(),
+      chargeRate: v.string(),
+      currency: v.string(),
+      period: v.string(),
+    }),
+    defaultValues: {
+      name: client.name,
+      chargeRate: toDecimal(props.defaultCharge),
+      currency: client.currency,
+      period: client.defaultBillingPeriod,
+    },
+  });
 
   return (
     <Card>
-      <div className="flex items-start gap-2 p-6">
-        <CardHeader className="flex-row items-center gap-4 p-0">
-          <Avatar className="h-12 w-12 rounded-sm">
-            {client.image && <AvatarImage src={client.image} alt="" />}
-            <AvatarFallback>{client.name[0]}</AvatarFallback>
-          </Avatar>
-          <div>
-            <Input
-              value={editingName}
-              onChange={(e) => setEditingName(e.currentTarget.value)}
-            />
-            <p className="text-sm text-muted-foreground">
-              Created: {format(client.createdAt, "MMMM do yyyy")}
-            </p>
-          </div>
-        </CardHeader>
-        <Button
-          variant="ghost"
-          size="icon"
-          type="submit"
-          className="ml-auto"
-          onClick={updateClientInfo}
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(async (data) => {
+            await updateClient(props.client.id, {
+              name: data.name,
+              currency: data.currency,
+              defaultCharge: data.chargeRate,
+              defaultBillingPeriod: data.period,
+            });
+            props.setIsEditing(false);
+          })}
         >
-          {updating ? (
-            <LoadingDots className="h-5 w-5" />
-          ) : (
-            <CheckIcon className="h-5 w-5" />
-          )}
-        </Button>
-        <AlertDialog>
-          <AlertDialogTrigger asChild>
-            <Button variant="destructive">
-              <TrashIcon className="mr-2 h-4 w-4" />
-              Delete
-            </Button>
-          </AlertDialogTrigger>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Delete client</AlertDialogTitle>
-              <AlertDialogDescription>
-                {`Are you sure you want to delete the client "${client.name}"? `}
-                {`This will also delete all timeslots for this client.`}
-              </AlertDialogDescription>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction
-                  asChild
-                  onClick={async () => {
-                    await deleteClient({ id: client.id });
-                  }}
-                >
-                  <Button variant="destructive">Yes, Delete</Button>
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogHeader>
-          </AlertDialogContent>
-        </AlertDialog>
-      </div>
-      <CardContent className="flex flex-col gap-4 p-6 pt-0">
-        {client.currency && client.defaultCharge && (
-          <Label>
-            <span className="text-sm font-medium text-muted-foreground">
-              Charge rate
-            </span>
-            <div className="flex gap-1">
-              <Select
-                onValueChange={setEditingCurrency}
-                value={editingCurrency}
-              >
-                <SelectTrigger className="w-max">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <ScrollArea className="h-64">
-                    {Object.entries(currencies).map(([code, value]) => (
-                      <SelectItem key={code} value={code}>
-                        {value.code}
-                      </SelectItem>
-                    ))}
-                  </ScrollArea>
-                </SelectContent>
-              </Select>
-              <Input
-                value={editingChargeRate}
-                onChange={(e) => setEditingChargeRate(e.currentTarget.value)}
+          <div className="flex items-start gap-2 p-6">
+            <CardHeader className="flex-row items-center gap-4 p-0">
+              <Avatar className="h-12 w-12 rounded-sm">
+                {client.image && <AvatarImage src={client.image} alt="" />}
+                <AvatarFallback>{client.name[0]}</AvatarFallback>
+              </Avatar>
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <p className="text-sm text-muted-foreground">
+                      Created: {format(client.createdAt, "MMMM do yyyy")}
+                    </p>
+                  </FormItem>
+                )}
               />
-            </div>
-          </Label>
-        )}
-        <Label>
-          <span className="text-sm font-medium text-muted-foreground">
-            Default billing period
-          </span>
-          <Select
-            onValueChange={(val) => setEditingDefaultPeriod(val as "weekly")}
-            value={editingDefaultPeriod}
-          >
-            <SelectTrigger className="capitalize">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {["weekly", "biweekly", "monthly"].map((period) => (
-                <SelectItem key={period} value={period} className="capitalize">
-                  {period}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </Label>
-      </CardContent>
+            </CardHeader>
+            <Button
+              variant="ghost"
+              size="icon"
+              type="submit"
+              className="ml-auto"
+            >
+              {form.formState.isSubmitting ? (
+                <LoadingDots className="h-5 w-5" />
+              ) : (
+                <CheckIcon className="h-5 w-5" />
+              )}
+            </Button>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button variant="destructive">
+                  <TrashIcon className="mr-2 h-4 w-4" />
+                  Delete
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Delete client</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    {`Are you sure you want to delete the client "${client.name}"? `}
+                    {`This will also delete all timeslots for this client.`}
+                  </AlertDialogDescription>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction
+                      asChild
+                      onClick={async () => {
+                        await deleteClient({ id: client.id });
+                      }}
+                    >
+                      <Button variant="destructive">Yes, Delete</Button>
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogHeader>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
+          <CardContent className="flex flex-col gap-4 p-6 pt-0">
+            {client.currency && client.defaultCharge && (
+              <FormField
+                control={form.control}
+                name="chargeRate"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-muted-foreground">
+                      Charge rate
+                    </FormLabel>
+                    <div className="flex gap-1">
+                      <FormField
+                        control={form.control}
+                        name="currency"
+                        render={({ field }) => (
+                          <Select
+                            onValueChange={field.onChange}
+                            value={field.value}
+                          >
+                            <FormControl>
+                              <SelectTrigger className="w-max">
+                                <SelectValue />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <ScrollArea className="h-64">
+                                {Object.entries(currencies).map(
+                                  ([code, value]) => (
+                                    <SelectItem key={code} value={code}>
+                                      {value.code}
+                                    </SelectItem>
+                                  ),
+                                )}
+                              </ScrollArea>
+                            </SelectContent>
+                          </Select>
+                        )}
+                      />
+
+                      <FormItem className="w-full">
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                      </FormItem>
+                    </div>
+                  </FormItem>
+                )}
+              />
+            )}
+            <FormField
+              control={form.control}
+              name="period"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-muted-foreground">
+                    Default billing period
+                  </FormLabel>
+                  <FormControl>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <SelectTrigger className="capitalize">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {["weekly", "biweekly", "monthly"].map((period) => (
+                          <SelectItem
+                            key={period}
+                            value={period}
+                            className="capitalize"
+                          >
+                            {period}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+          </CardContent>
+        </form>
+      </Form>
     </Card>
   );
 }

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { CheckIcon, Pencil1Icon, TrashIcon } from "@radix-ui/react-icons";
 import type { Dinero } from "dinero.js";
 import { dinero, toDecimal } from "dinero.js";
+import * as v from "valibot";
 
 import { LoadingDots } from "~/components/loading-dots";
 import type { Timeslot } from "~/db/queries";
@@ -21,8 +22,15 @@ import {
 } from "~/ui/alert-dialog";
 import { Button } from "~/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "~/ui/card";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  useForm,
+} from "~/ui/form";
 import { Input } from "~/ui/input";
-import { Label } from "~/ui/label";
 import { ScrollArea } from "~/ui/scroll-area";
 import {
   Select,
@@ -82,116 +90,146 @@ function EditingTimeslotCard(props: {
   setIsEditing: (value: boolean) => void;
   chargeRate: Dinero<number>;
 }) {
-  const [editingDuration, setEditingDuration] = useState(props.slot.duration);
-  const [editingChargeRate, setEditingChargeRate] = useState(
-    toDecimal(props.chargeRate),
-  );
-  const [editingCurrency, setEditingCurrency] = useState<string>(
-    props.slot.currency,
-  );
+  const form = useForm({
+    schema: v.object({
+      duration: v.string(),
+      chargeRate: v.string(),
+      currency: v.string(),
+    }),
+    defaultValues: {
+      duration: props.slot.duration,
+      chargeRate: toDecimal(props.chargeRate),
+      currency: props.slot.currency,
+    },
+  });
 
-  const [updating, setUpdating] = useState(false);
   const [deleting, setDeleting] = useState(false);
-
-  const updateSlot = async () => {
-    setUpdating(true);
-    await updateTimeslot(props.slot.id, {
-      duration: editingDuration,
-      chargeRate: editingChargeRate,
-      currency: editingCurrency,
-    });
-    setUpdating(false);
-    props.setIsEditing(false);
-  };
 
   return (
     <Card>
-      <div className="flex items-start gap-2 p-6">
-        <CardHeader className="p-0">
-          <CardTitle>{props.slot.clientName}</CardTitle>
-          <Label>
-            <span className="text-sm font-medium text-muted-foreground">
-              Duration
-            </span>
-            <Input
-              value={editingDuration}
-              onChange={(e) => setEditingDuration(e.currentTarget.value)}
-            />
-          </Label>
-          <Label>
-            <span className="text-sm font-medium text-muted-foreground">
-              Charge rate
-            </span>
-            <div className="flex gap-1">
-              <Select
-                onValueChange={setEditingCurrency}
-                value={editingCurrency}
-              >
-                <SelectTrigger className="w-max">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <ScrollArea className="h-64">
-                    {Object.entries(currencies).map(([code, value]) => (
-                      <SelectItem key={code} value={code}>
-                        {value.code}
-                      </SelectItem>
-                    ))}
-                  </ScrollArea>
-                </SelectContent>
-              </Select>
-              <Input
-                value={editingChargeRate}
-                onChange={(e) => setEditingChargeRate(e.currentTarget.value)}
-              />
-            </div>
-          </Label>
-        </CardHeader>
-        <Button
-          variant="ghost"
-          size="icon"
-          type="submit"
-          className="ml-auto"
-          onClick={updateSlot}
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(async (data) => {
+            await updateTimeslot(props.slot.id, {
+              duration: data.duration,
+              chargeRate: data.chargeRate,
+              currency: data.currency,
+            });
+            props.setIsEditing(false);
+          })}
         >
-          {updating ? (
-            <LoadingDots className="h-4 w-4" />
-          ) : (
-            <CheckIcon className="h-4 w-4" />
-          )}
-        </Button>
-        <AlertDialog>
-          <AlertDialogTrigger asChild>
-            <Button variant="destructive" size="icon">
-              <TrashIcon className="h-4 w-4" />
+          <div className="flex items-start gap-2 p-6">
+            <CardHeader className="p-0">
+              <CardTitle>{props.slot.clientName}</CardTitle>
+              <FormField
+                control={form.control}
+                name="duration"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-muted-foreground">
+                      Duration
+                    </FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="chargeRate"
+                render={({ field }) => (
+                  <FormItem className="flex">
+                    <FormLabel className="text-muted-foreground">
+                      Charge rate
+                    </FormLabel>
+                    <div className="flex gap-1">
+                      <FormField
+                        control={form.control}
+                        name="currency"
+                        render={({ field }) => (
+                          <Select
+                            onValueChange={field.onChange}
+                            value={field.value}
+                          >
+                            <FormControl>
+                              <SelectTrigger className="w-24">
+                                <SelectValue />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <ScrollArea className="h-64">
+                                {Object.entries(currencies).map(
+                                  ([code, value]) => (
+                                    <SelectItem key={code} value={code}>
+                                      {value.code}
+                                    </SelectItem>
+                                  ),
+                                )}
+                              </ScrollArea>
+                            </SelectContent>
+                          </Select>
+                        )}
+                      />
+
+                      <FormItem className="flex-1">
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                      </FormItem>
+                    </div>
+                  </FormItem>
+                )}
+              />
+            </CardHeader>
+            <Button
+              variant="ghost"
+              size="icon"
+              type="submit"
+              className="ml-auto"
+            >
+              {form.formState.isSubmitting ? (
+                <LoadingDots className="h-4 w-4" />
+              ) : (
+                <CheckIcon className="h-4 w-4" />
+              )}
             </Button>
-          </AlertDialogTrigger>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Delete timeslot</AlertDialogTitle>
-              <AlertDialogDescription>
-                {`Are you sure you want to delete the timeslot for "${props.slot.clientName}"?`}
-              </AlertDialogDescription>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction
-                  asChild
-                  onClick={async () => {
-                    setDeleting(true);
-                    await deleteTimeslot(props.slot.id);
-                    setDeleting(false);
-                  }}
-                >
-                  <Button variant="destructive">
-                    {deleting && <LoadingDots className="mr-2 h-4 w-4" />}
-                    Yes, Delete
-                  </Button>
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogHeader>
-          </AlertDialogContent>
-        </AlertDialog>
-      </div>
+
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button variant="destructive" size="icon">
+                  <TrashIcon className="h-4 w-4" />
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Delete timeslot</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    {`Are you sure you want to delete the timeslot for "${props.slot.clientName}"?`}
+                  </AlertDialogDescription>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction
+                      asChild
+                      onClick={async () => {
+                        setDeleting(true);
+                        await deleteTimeslot(props.slot.id);
+                        setDeleting(false);
+                      }}
+                    >
+                      <Button variant="destructive">
+                        {deleting && <LoadingDots className="mr-2 h-4 w-4" />}
+                        Yes, Delete
+                      </Button>
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogHeader>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
+        </form>
+      </Form>
     </Card>
   );
 }
