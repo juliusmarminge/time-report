@@ -1,8 +1,8 @@
 "use client";
 
 import * as React from "react";
-import { Dinero } from "dinero.js";
-import { useSession } from "next-auth/react";
+import type { Dinero } from "dinero.js";
+import { Session } from "next-auth";
 
 import type { CurrencyCode } from "./currencies";
 import { convert } from "./monetary";
@@ -28,12 +28,14 @@ export const useConverter = () => {
 
 export const ConverterProvider = (props: {
   children: React.ReactNode;
-  rates: Record<string, number>;
+  rates: Promise<Record<string, number>>;
+  user: Promise<Session["user"] | null>;
 }) => {
-  const { data } = useSession();
+  const rates = React.use(props.rates);
+  const curr = React.use(props.user)?.defaultCurrency;
 
   const _convert = React.useCallback(
-    (d: Dinero<number>, c: CurrencyCode) => convert(d, c, props.rates),
+    (d: Dinero<number>, c: CurrencyCode) => convert(d, c, rates),
     [props.rates],
   );
 
@@ -41,7 +43,7 @@ export const ConverterProvider = (props: {
     <ConvertedContext.Provider
       value={{
         convert: _convert,
-        preferredCurrency: data?.user.defaultCurrency ?? "USD",
+        preferredCurrency: curr ?? "USD",
       }}
     >
       {props.children}

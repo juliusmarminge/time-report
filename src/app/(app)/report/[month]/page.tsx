@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { Temporal } from "@js-temporal/polyfill";
 import { toDecimal } from "dinero.js";
 
+import { DashboardShell } from "~/components/dashboard-shell";
 import type { Timeslot } from "~/db/queries";
 import { getClients, getOpenPeriods, getTimeslots } from "~/db/queries";
 import { currentUser } from "~/lib/auth";
@@ -12,7 +13,6 @@ import { getMonthMetadata } from "~/lib/get-month-metadata";
 import { isSameMonth } from "~/lib/temporal";
 import { tson } from "~/lib/tson";
 import { Card, CardContent, CardHeader, CardTitle } from "~/ui/card";
-import { DashboardShell } from "../../../components/dashboard-shell";
 import { CalendarAndSidePanel } from "./_components/calendar";
 import { ClosePeriodSheet } from "./_components/close-periods";
 
