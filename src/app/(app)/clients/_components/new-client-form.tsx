@@ -8,7 +8,6 @@ import { LoadingDots } from "~/components/loading-dots";
 import { cn } from "~/lib/cn";
 import { currencies } from "~/lib/currencies";
 import { useUploadThing } from "~/lib/uploadthing";
-import { useMobile } from "~/lib/use-mobile";
 import { Button } from "~/ui/button";
 import {
   Form,
@@ -21,6 +20,7 @@ import {
   useForm,
 } from "~/ui/form";
 import { Input } from "~/ui/input";
+import { useResponsiveSheet } from "~/ui/responsive-sheet";
 import { ScrollArea } from "~/ui/scroll-area";
 import {
   Select,
@@ -29,13 +29,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/ui/select";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "~/ui/sheet";
 import { createClient, deleteImageFromUT } from "../_actions";
 import { createClientSchema } from "../_validators";
 
@@ -256,13 +249,17 @@ export function NewClientForm(props: { afterSubmit?: () => void }) {
   );
 }
 
-export function NewClientSheet(props: { trigger: "full" | "icon" }) {
+export function NewClientSheet(props: {
+  trigger: "full" | "icon";
+  afterSubmit?: () => void;
+}) {
   const [open, setOpen] = useState(false);
-  const isMobile = useMobile();
+
+  const { Root, Trigger, Content, Header, Title } = useResponsiveSheet();
 
   return (
-    <Sheet open={open} onOpenChange={setOpen}>
-      <SheetTrigger asChild>
+    <Root open={open} onOpenChange={setOpen}>
+      <Trigger asChild>
         {props.trigger === "full" ? (
           <Button>Create a client to report time</Button>
         ) : (
@@ -270,18 +267,18 @@ export function NewClientSheet(props: { trigger: "full" | "icon" }) {
             <PlusIcon className="h-5 w-5" />
           </Button>
         )}
-      </SheetTrigger>
-      <SheetContent
-        side={isMobile ? "bottom" : "right"}
-        onOpenAutoFocus={(e) => e.preventDefault()}
-      >
-        <SheetHeader>
-          <SheetTitle>Create a new client</SheetTitle>
-        </SheetHeader>
-        <div className="py-4">
-          <NewClientForm afterSubmit={() => setOpen(false)} />
-        </div>
-      </SheetContent>
-    </Sheet>
+      </Trigger>
+      <Content onOpenAutoFocus={(e) => e.preventDefault()}>
+        <Header className="mb-4">
+          <Title>Create a new client</Title>
+        </Header>
+        <NewClientForm
+          afterSubmit={() => {
+            setOpen(false);
+            props.afterSubmit?.();
+          }}
+        />
+      </Content>
+    </Root>
   );
 }

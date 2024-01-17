@@ -16,6 +16,7 @@
 
     // Prefer imports from our UI lib wrappers
     "react-hook-form/dist/index.d.ts",
-    "react-day-picker/dist/index.d.ts"
+    "react-day-picker/dist/index.d.ts",
+    "vaul/dist/index.d.ts"
   ]
 }

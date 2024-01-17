@@ -42,6 +42,7 @@
     "dinero.js": "2.0.0-alpha.14",
     "drizzle-orm": "0.29.3",
     "geist": "^1.2.1",
+    "jotai": "^2.6.2",
     "next": "14.0.5-canary.60",
     "next-auth": "5.0.0-beta.5",
     "next-themes": "^0.2.1",
@@ -53,7 +54,8 @@
     "tailwindcss-animate": "^1.0.7",
     "tupleson": "^0.23.1",
     "uploadthing": "6.1.2-canary.8a52f6e",
-    "valibot": "^0.22.0"
+    "valibot": "^0.22.0",
+    "vaul": "^0.8.0"
   },
   "devDependencies": {
     "@ianvs/prettier-plugin-sort-imports": "^4.1.1",

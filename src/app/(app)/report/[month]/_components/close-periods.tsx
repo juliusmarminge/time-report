@@ -32,15 +32,8 @@ import {
   DialogTrigger,
 } from "~/ui/dialog";
 import { Label } from "~/ui/label";
+import { useResponsiveSheet } from "~/ui/responsive-sheet";
 import { Separator } from "~/ui/separator";
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "~/ui/sheet";
 import { closePeriod } from "../_actions";
 
 function PeriodCard(props: { period: Period }) {
@@ -188,29 +181,30 @@ export function ClosePeriodSheet(props: {
     setDialogOpen(hasExpiredPeriods);
   }, []);
 
+  const { Root, Trigger, Content, Header, Title, Description } =
+    useResponsiveSheet();
+
   return (
-    <Sheet>
-      <SheetTrigger asChild>
+    <Root>
+      <Trigger asChild>
         <Button>Periods</Button>
-      </SheetTrigger>
-      <SheetContent>
-        <div className="flex flex-col gap-4">
-          <SheetHeader>
-            <SheetTitle>Open Periods</SheetTitle>
-            <SheetDescription>
-              {`You have ${openPeriods.length} open periods.`}
-            </SheetDescription>
-          </SheetHeader>
-          <div className="flex flex-col gap-4">
-            {openPeriods.map((period, idx) => (
-              <Fragment key={period.id}>
-                <PeriodCard period={period} />
-                {idx < openPeriods.length - 1 && <Separator />}
-              </Fragment>
-            ))}
-          </div>
+      </Trigger>
+      <Content>
+        <Header>
+          <Title>Open Periods</Title>
+          <Description>
+            {`You have ${openPeriods.length} open periods.`}
+          </Description>
+        </Header>
+        <div className="flex flex-col gap-4 pt-4">
+          {openPeriods.map((period, idx) => (
+            <Fragment key={period.id}>
+              <PeriodCard period={period} />
+              {idx < openPeriods.length - 1 && <Separator />}
+            </Fragment>
+          ))}
         </div>
-      </SheetContent>
+      </Content>
 
       <AlertDialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <AlertDialogContent>
@@ -221,13 +215,13 @@ export function ClosePeriodSheet(props: {
           <AlertDialogFooter>
             <AlertDialogCancel>Remind me later</AlertDialogCancel>
             <AlertDialogAction asChild>
-              <SheetTrigger asChild>
+              <Trigger asChild>
                 <Button variant="secondary">Manage</Button>
-              </SheetTrigger>
+              </Trigger>
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </Sheet>
+    </Root>
   );
 }

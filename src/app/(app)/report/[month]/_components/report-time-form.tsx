@@ -1,14 +1,13 @@
 "use client";
 
-import { useState } from "react";
 import { Temporal } from "@js-temporal/polyfill";
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
+import { atom, useAtom } from "jotai";
 
 import { LoadingDots } from "~/components/loading-dots";
 import type { Client } from "~/db/queries";
 import { currencies } from "~/lib/currencies";
 import { isFuture } from "~/lib/temporal";
-import { useMobile } from "~/lib/use-mobile";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -32,6 +31,7 @@ import {
   useForm,
 } from "~/ui/form";
 import { Input } from "~/ui/input";
+import { useResponsiveSheet } from "~/ui/responsive-sheet";
 import { ScrollArea } from "~/ui/scroll-area";
 import {
   Select,
@@ -40,13 +40,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/ui/select";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "~/ui/sheet";
 import { Textarea } from "~/ui/textarea";
 import { reportTime } from "../_actions";
 import { reportTimeSchema } from "../_validators";
@@ -74,6 +67,7 @@ export function ReportTimeForm(props: {
             ...values,
             date: Temporal.PlainDate.from(values.date as string).toString(),
           });
+
           form.reset();
           props.afterSubmit?.();
         })}
@@ -211,38 +205,38 @@ export function ReportTimeForm(props: {
   );
 }
 
+export const reportTimeSheetOpen = atom(false);
 export function ReportTimeSheet(props: {
   date: Temporal.PlainDate;
   clients: Client[];
 }) {
-  const isMobile = useMobile();
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useAtom(reportTimeSheetOpen);
+
+  const { Root, Trigger, Content, Header, Title } = useResponsiveSheet();
 
   return (
     <AlertDialog>
-      <Sheet open={open} onOpenChange={setOpen}>
+      <Root open={open} onOpenChange={setOpen}>
         {props.date && isFuture(props.date) ? (
           <AlertDialogTrigger asChild>
             <Button>Report time</Button>
           </AlertDialogTrigger>
         ) : (
-          <SheetTrigger asChild>
+          <Trigger asChild>
             <Button>Report time</Button>
-          </SheetTrigger>
+          </Trigger>
         )}
-        <SheetContent side={isMobile ? "bottom" : "right"}>
-          <SheetHeader>
-            <SheetTitle>Report time</SheetTitle>
-          </SheetHeader>
-          <div className="py-4">
-            <ReportTimeForm
-              clients={props.clients}
-              date={props.date}
-              afterSubmit={() => setOpen(false)}
-            />
-          </div>
-        </SheetContent>
-      </Sheet>
+        <Content>
+          <Header>
+            <Title>Report time</Title>
+          </Header>
+          <ReportTimeForm
+            clients={props.clients}
+            date={props.date}
+            afterSubmit={() => setOpen(false)}
+          />
+        </Content>
+      </Root>
 
       <AlertDialogContent>
         <AlertDialogHeader>

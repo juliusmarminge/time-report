@@ -32,6 +32,7 @@ const mockEmail = {
   from: "mock@test.com",
   maxAge: 86400,
   server: "mock",
+  generateVerificationToken: () => "supersecret",
   async sendVerificationRequest(opts) {
     await new Promise((r) => setTimeout(r, 1000));
     console.log(`[EMAIL LOGIN]: ${opts.identifier} - ${opts.token}`);
