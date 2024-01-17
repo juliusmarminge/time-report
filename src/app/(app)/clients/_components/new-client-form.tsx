@@ -8,7 +8,7 @@ import { LoadingDots } from "~/components/loading-dots";
 import { cn } from "~/lib/cn";
 import { currencies } from "~/lib/currencies";
 import { useUploadThing } from "~/lib/uploadthing";
-import { useMobile } from "~/lib/use-mobile";
+import { useIsDesktop } from "~/lib/use-media-query";
 import { Button } from "~/ui/button";
 import {
   Form,
@@ -258,7 +258,8 @@ export function NewClientForm(props: { afterSubmit?: () => void }) {
 
 export function NewClientSheet(props: { trigger: "full" | "icon" }) {
   const [open, setOpen] = useState(false);
-  const isMobile = useMobile();
+
+  const isDesktop = useIsDesktop();
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -272,7 +273,7 @@ export function NewClientSheet(props: { trigger: "full" | "icon" }) {
         )}
       </SheetTrigger>
       <SheetContent
-        side={isMobile ? "bottom" : "right"}
+        side={isDesktop ? "right" : "bottom"}
         onOpenAutoFocus={(e) => e.preventDefault()}
       >
         <SheetHeader>

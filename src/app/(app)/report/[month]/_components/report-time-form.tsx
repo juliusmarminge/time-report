@@ -8,7 +8,7 @@ import { LoadingDots } from "~/components/loading-dots";
 import type { Client } from "~/db/queries";
 import { currencies } from "~/lib/currencies";
 import { isFuture } from "~/lib/temporal";
-import { useMobile } from "~/lib/use-mobile";
+import { useIsDesktop } from "~/lib/use-media-query";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -215,7 +215,7 @@ export function ReportTimeSheet(props: {
   date: Temporal.PlainDate;
   clients: Client[];
 }) {
-  const isMobile = useMobile();
+  const isDesktop = useIsDesktop();
   const [open, setOpen] = useState(false);
 
   return (
@@ -230,7 +230,7 @@ export function ReportTimeSheet(props: {
             <Button>Report time</Button>
           </SheetTrigger>
         )}
-        <SheetContent side={isMobile ? "bottom" : "right"}>
+        <SheetContent side={isDesktop ? "right" : "bottom"}>
           <SheetHeader>
             <SheetTitle>Report time</SheetTitle>
           </SheetHeader>

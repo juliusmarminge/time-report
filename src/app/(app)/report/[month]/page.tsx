@@ -37,11 +37,16 @@ const parseMonthParam = (month: string) => {
       "dec",
     ].indexOf(monthCode.toLowerCase()) + 1;
 
-  return Temporal.PlainDate.from({
+  const today = Temporal.Now.plainDateISO();
+  const temporal = Temporal.PlainDate.from({
     year: 2000 + +yearNr,
     month: monthNr,
     day: 1,
   });
+  if (temporal.year === today.year && temporal.month === today.month) {
+    return today;
+  }
+  return temporal;
 };
 
 export default async function IndexPage(props: { params: { month: string } }) {
@@ -73,11 +78,7 @@ export default async function IndexPage(props: { params: { month: string } }) {
     tags: ["timeslots"],
   });
 
-  console.log("timeslots", timeslots);
-
   const monthSlots = timeslots.filter((slot) => isSameMonth(slot.date, date));
-
-  console.log("monthSlots", monthSlots);
 
   const { billedClients, totalHours, totalRevenue } = await getMonthMetadata(
     monthSlots,
@@ -151,7 +152,7 @@ export default async function IndexPage(props: { params: { month: string } }) {
         </Card>
       </section>
 
-      <section className="flex flex-col gap-4 sm:grid md:grid-cols-2 lg:grid-cols-4">
+      <section className="flex flex-col gap-4 md:grid md:grid-cols-2 lg:grid-cols-4">
         <CalendarAndSidePanel
           referenceDate={tson.serialize(date)}
           clients={tson.serialize(clients)}

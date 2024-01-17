@@ -24,6 +24,7 @@ export function SidePanel(props: {
   date: Temporal.PlainDate;
   clients: Client[];
   timeslots: Timeslot[];
+  className?: string;
 }) {
   const converter = useConverter();
 
@@ -39,7 +40,7 @@ export function SidePanel(props: {
   );
 
   return (
-    <Card>
+    <Card className={props.className}>
       <CardHeader>
         <CardTitle className="text-xl">
           {formatOrdinal(props.date, {

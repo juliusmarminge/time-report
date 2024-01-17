@@ -121,6 +121,9 @@ dependencies:
   valibot:
     specifier: ^0.22.0
     version: 0.22.0
+  vaul:
+    specifier: ^0.8.0
+    version: 0.8.0(@types/react-dom@18.2.18)(@types/react@18.2.48)(react-dom@18.2.0)(react@18.2.0)
 
 devDependencies:
   "@ianvs/prettier-plugin-sort-imports":
@@ -7181,6 +7184,23 @@ packages:
       {
         integrity: sha512-tINTvsrvSaN6wN4Hxes1KG7VMM7nysk4zD0Q7CjE8Id7Zx1tKKaF3eGGP84N6nkhqiv0fgyArUeDoRNF0JO4ng==,
       }
+    dev: false
+
+  /vaul@0.8.0(@types/react-dom@18.2.18)(@types/react@18.2.48)(react-dom@18.2.0)(react@18.2.0):
+    resolution:
+      {
+        integrity: sha512-9nUU2jIObJvJZxeQU1oVr/syKo5XqbRoOMoTEt0hHlWify4QZFlqTh6QSN/yxoKzNrMeEQzxbc3XC/vkPLOIqw==,
+      }
+    peerDependencies:
+      react: ^16.8 || ^17.0 || ^18.0
+      react-dom: ^16.8 || ^17.0 || ^18.0
+    dependencies:
+      "@radix-ui/react-dialog": 1.0.5(@types/react-dom@18.2.18)(@types/react@18.2.48)(react-dom@18.2.0)(react@18.2.0)
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+    transitivePeerDependencies:
+      - "@types/react"
+      - "@types/react-dom"
     dev: false
 
   /webpack-bundle-analyzer@4.10.1:

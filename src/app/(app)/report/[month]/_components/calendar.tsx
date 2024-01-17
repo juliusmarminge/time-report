@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useTransition } from "react";
+import { Fragment, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import type { Temporal } from "@js-temporal/polyfill";
 import { format } from "date-fns";
@@ -10,13 +10,16 @@ import type { TsonSerialized } from "tupleson";
 import type { Client, Timeslot } from "~/db/queries";
 import { cn } from "~/lib/cn";
 import { tson } from "~/lib/tson";
+import { useIsDesktop } from "~/lib/use-media-query";
 import { Button } from "~/ui/button";
 import { Calendar as CalendarCore, fromDate, toDate } from "~/ui/calendar";
+import { Drawer, DrawerContent } from "~/ui/drawer";
 import { SidePanel } from "./side-panel";
 
 export function Calendar(props: {
   date: Temporal.PlainDate;
   setDate: (date: Temporal.PlainDate) => void;
+  onDayClick?: (date: Temporal.PlainDate | null) => void;
   timeslots: Record<string, Timeslot[]> | null;
 }) {
   const { timeslots } = props;
@@ -77,11 +80,15 @@ export function Calendar(props: {
         });
       }}
       components={{
-        Day: (props) => {
+        Day: (dayProps) => {
           const buttonRef = useRef<HTMLButtonElement>(null);
-          const day = useDayRender(props.date, props.displayMonth, buttonRef);
+          const day = useDayRender(
+            dayProps.date,
+            dayProps.displayMonth,
+            buttonRef,
+          );
 
-          const slots = timeslots?.[format(props.date, "yyyy-MM-dd")];
+          const slots = timeslots?.[format(dayProps.date, "yyyy-MM-dd")];
 
           return (
             <Button
@@ -92,9 +99,14 @@ export function Calendar(props: {
                 day.buttonProps.className,
                 "h-36 w-full flex-col items-start justify-start p-4 font-normal aria-selected:opacity-100",
               )}
+              onClick={(e) => {
+                props.onDayClick?.(props.date);
+
+                day.buttonProps.onClick?.(e);
+              }}
             >
               <span className="text-lg font-bold">
-                {format(props.date, "d")}
+                {format(dayProps.date, "d")}
               </span>
               {slots?.map((slot) => (
                 <div className="text-xs" key={slot.id}>
@@ -121,10 +133,37 @@ export function CalendarAndSidePanel(props: {
   const [date, setDate] = useState(temporal);
   const selectedDaySlots = timeslots?.[date.toString()] ?? [];
 
+  const isDesktop = useIsDesktop();
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
+  const Wrap = (props: { children: React.ReactNode }) => {
+    if (isDesktop) return <Fragment>{props.children}</Fragment>;
+    return (
+      <Drawer open={drawerOpen} onOpenChange={setDrawerOpen}>
+        <DrawerContent>{props.children}</DrawerContent>
+      </Drawer>
+    );
+  };
+
   return (
     <>
-      <Calendar date={date} setDate={setDate} timeslots={timeslots} />
-      <SidePanel date={date} clients={clients} timeslots={selectedDaySlots} />
+      <Calendar
+        date={date}
+        setDate={setDate}
+        timeslots={timeslots}
+        onDayClick={(date) => {
+          if (isDesktop) return;
+          setDrawerOpen(!!date);
+        }}
+      />
+      <Wrap>
+        <SidePanel
+          date={date}
+          clients={clients}
+          timeslots={selectedDaySlots}
+          className="border-none bg-background shadow-none lg:border lg:bg-card lg:shadow"
+        />
+      </Wrap>
     </>
   );
 }
