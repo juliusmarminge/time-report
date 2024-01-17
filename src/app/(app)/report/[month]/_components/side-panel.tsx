@@ -44,7 +44,7 @@ export function SidePanel(props: {
 
   return (
     <Card className={props.className}>
-      <CardHeader>
+      <CardHeader className="px-0 pt-0 lg:p-6">
         <CardTitle className="text-xl">
           {formatOrdinal(props.date, {
             weekday: "long",
@@ -56,7 +56,7 @@ export function SidePanel(props: {
           {toDecimal(totalRevenue, formatMoney)}
         </CardDescription>
       </CardHeader>
-      <CardContent className="flex flex-col gap-4">
+      <CardContent className="flex flex-col gap-4 p-0 lg:px-6">
         {props.timeslots.length === 0 && (
           <p className="text-sm text-muted-foreground">
             No timeslots for this date.

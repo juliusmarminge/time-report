@@ -269,7 +269,7 @@ export function NewClientSheet(props: {
         )}
       </Trigger>
       <Content onOpenAutoFocus={(e) => e.preventDefault()}>
-        <Header>
+        <Header className="mb-4">
           <Title>Create a new client</Title>
         </Header>
         <NewClientForm

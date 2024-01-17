@@ -190,21 +190,19 @@ export function ClosePeriodSheet(props: {
         <Button>Periods</Button>
       </Trigger>
       <Content>
-        <div className="flex flex-col gap-4">
-          <Header className="px-6 lg:px-0">
-            <Title>Open Periods</Title>
-            <Description>
-              {`You have ${openPeriods.length} open periods.`}
-            </Description>
-          </Header>
-          <div className="flex flex-col gap-4 px-6 py-4 lg:px-0">
-            {openPeriods.map((period, idx) => (
-              <Fragment key={period.id}>
-                <PeriodCard period={period} />
-                {idx < openPeriods.length - 1 && <Separator />}
-              </Fragment>
-            ))}
-          </div>
+        <Header>
+          <Title>Open Periods</Title>
+          <Description>
+            {`You have ${openPeriods.length} open periods.`}
+          </Description>
+        </Header>
+        <div className="flex flex-col gap-4 pt-4">
+          {openPeriods.map((period, idx) => (
+            <Fragment key={period.id}>
+              <PeriodCard period={period} />
+              {idx < openPeriods.length - 1 && <Separator />}
+            </Fragment>
+          ))}
         </div>
       </Content>
 
