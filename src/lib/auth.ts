@@ -1,3 +1,4 @@
+import * as React from "react";
 import { redirect } from "next/navigation";
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import { eq } from "drizzle-orm";
@@ -84,11 +85,14 @@ export const {
   },
 });
 
-export async function currentUser(opts?: { redirect?: boolean }) {
-  const session = await auth();
-  if (!session?.user) {
-    if (opts?.redirect) redirect("/login");
-    return null;
-  }
-  return session.user;
-}
+export const currentUser = React.cache?.(
+  // optional chaining is here cause cache is not defined in middleware
+  async (opts?: { redirect?: boolean }) => {
+    const session = await auth();
+    if (!session?.user) {
+      if (opts?.redirect) redirect("/login");
+      return null;
+    }
+    return session.user;
+  },
+);
