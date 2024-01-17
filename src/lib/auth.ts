@@ -61,7 +61,7 @@ export const {
   },
   providers: [
     ...providers.map((p) => p.handler),
-    ...(process.env.NODE_ENV === "development" ? [mockEmail] : []),
+    ...(process.env.VERCEL_ENV !== "production" ? [mockEmail] : []),
   ],
   callbacks: {
     session: (opts) => {
