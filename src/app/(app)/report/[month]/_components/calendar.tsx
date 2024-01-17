@@ -1,6 +1,6 @@
 "use client";
 
-import { Fragment, useRef, useState, useTransition } from "react";
+import { useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import type { Temporal } from "@js-temporal/polyfill";
 import { format } from "date-fns";
@@ -137,7 +137,7 @@ export function CalendarAndSidePanel(props: {
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   const MaybeDrawer = (props: { children: React.ReactNode }) => {
-    if (isDesktop) return <Fragment>{props.children}</Fragment>;
+    if (isDesktop) return props.children;
     return (
       <Drawer open={drawerOpen} onOpenChange={setDrawerOpen}>
         <DrawerContent>{props.children}</DrawerContent>
