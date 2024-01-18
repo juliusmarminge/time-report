@@ -110,10 +110,13 @@ function EditingTimeslotCard(props: {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(async (data) => {
-            await updateTimeslot(props.slot.id, {
-              duration: data.duration,
-              chargeRate: data.chargeRate,
+            await updateTimeslot({
+              id: props.slot.id,
               currency: data.currency,
+              // @ts-expect-error unsure how to get input_in working with Valibot
+              duration: data.duration,
+              // @ts-expect-error unsure how to get input_in working with Valibot
+              chargeRate: data.chargeRate,
             });
             props.setIsEditing(false);
           })}

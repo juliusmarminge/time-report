@@ -49,6 +49,7 @@ import {
   SelectValue,
 } from "~/ui/select";
 import { deleteClient, updateClient } from "../_actions";
+import { billingPeriods } from "../_validators";
 
 export function ClientCard(props: { client: TsonSerialized<Client> }) {
   const client = tson.deserialize(props.client);
@@ -100,16 +101,16 @@ export function ClientCard(props: { client: TsonSerialized<Client> }) {
             <h2 className="text-xl font-bold">{client.name}</h2>
             <p className="text-sm text-muted-foreground">
               Created: {format(client.createdAt, "MMMM do yyyy")},{" "}
-              {client.currency && client.defaultCharge && (
-                <p className="text-sm text-muted-foreground">
-                  {`Invoiced `}
-                  {client.defaultBillingPeriod}
-                  {` at `}
-                  {toDecimal(defaultCharge, (money) => formatMoney(money))}
-                  {` an hour `}
-                </p>
-              )}
             </p>
+            {client.currency && client.defaultCharge && (
+              <p className="text-sm text-muted-foreground">
+                {`Invoiced `}
+                {client.defaultBillingPeriod}
+                {` at `}
+                {toDecimal(defaultCharge, (money) => formatMoney(money))}
+                {` an hour `}
+              </p>
+            )}
           </div>
         </CardHeader>
         <Button
@@ -189,10 +190,13 @@ function EditingClientCard(props: {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(async (data) => {
-            await updateClient(props.client.id, {
+            await updateClient({
+              id: props.client.id,
               name: data.name,
               currency: data.currency,
+              // @ts-expect-error unsure how to get input_in working with Valibot
               defaultCharge: data.chargeRate,
+              // @ts-expect-error unsure how to get input_in working with Valibot
               defaultBillingPeriod: data.period,
             });
             props.setIsEditing(false);
@@ -323,7 +327,7 @@ function EditingClientCard(props: {
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        {["weekly", "biweekly", "monthly"].map((period) => (
+                        {billingPeriods.map((period) => (
                           <SelectItem
                             key={period}
                             value={period}

@@ -143,7 +143,7 @@ export function ClosePeriodConfirmationModal(props: { period: Period }) {
           <Button
             variant="secondary"
             onClick={async () => {
-              await closePeriod(props.period.id, { openNewPeriod: false });
+              await closePeriod({ id: props.period.id, openNewPeriod: false });
               setNewPeriodDialogOpen(false);
             }}
           >
@@ -151,7 +151,8 @@ export function ClosePeriodConfirmationModal(props: { period: Period }) {
           </Button>
           <Button
             onClick={async () => {
-              await closePeriod(props.period.id, {
+              await closePeriod({
+                id: props.period.id,
                 openNewPeriod: true,
                 clientId: props.period.client.id,
                 periodStart: newPeriodStart.toString(),

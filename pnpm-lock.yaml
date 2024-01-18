@@ -67,6 +67,15 @@ dependencies:
   '@radix-ui/react-slot':
     specifier: ^1.0.2
     version: 1.0.2(@types/react@18.2.48)(react@18.2.0)
+  '@trpc/client':
+    specifier: 11.0.0-alpha-tmp-opt-peers.204
+    version: 11.0.0-alpha-tmp-opt-peers.204
+  '@trpc/next':
+    specifier: 11.0.0-alpha-tmp-opt-peers.204
+    version: 11.0.0-alpha-tmp-opt-peers.204(@trpc/client@11.0.0-alpha-tmp-opt-peers.204)(next@14.0.5-canary.60)(react-dom@18.2.0)(react@18.2.0)
+  '@trpc/server':
+    specifier: 11.0.0-alpha-tmp-opt-peers.204
+    version: 11.0.0-alpha-tmp-opt-peers.204
   '@uploadthing/react':
     specifier: 6.1.1-canary.8a52f6e
     version: 6.1.1-canary.8a52f6e(next@14.0.5-canary.60)(react@18.2.0)(uploadthing@6.1.2-canary.8a52f6e)
@@ -1940,6 +1949,44 @@ packages:
     resolution: {integrity: sha512-E4KcWTpoLHqwPHLxidpOqQbcrZVgi0rsmmZXUle1jXmJfuIf/UWpczUJ7MZZ5tlxytgJXyp0w4PGkkeLiuIdZw==}
     dependencies:
       tslib: 2.6.2
+    dev: false
+
+  /@trpc/client@11.0.0-alpha-tmp-opt-peers.204:
+    resolution: {integrity: sha512-TkNOlKtVvLTORm7S0syEITrakNBR5x47FAvDKxyxEGC0M96TbfaK2L1U4x6+TQN8RidBQiZmPVHrhDCDrvjrgg==}
+    dependencies:
+      '@trpc/core': 11.0.0-alpha-tmp-opt-peers.204
+    dev: false
+
+  /@trpc/core@11.0.0-alpha-tmp-opt-peers.204:
+    resolution: {integrity: sha512-lA1kkK6c6QtWxJ0f0L5fg6zdfcmOjx3iiBrKNH/x5JMoNm+i2M8dle22WaEUraP6uLHT9bMqVOURJBneXTR4pg==}
+    dev: false
+
+  /@trpc/next@11.0.0-alpha-tmp-opt-peers.204(@trpc/client@11.0.0-alpha-tmp-opt-peers.204)(next@14.0.5-canary.60)(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-abWWaKd3cqrwurrgUBVAGfpGbB1mDRqWXalwuwB9XW5SPTsWH422zBbqRsDGb0zGxW9CB+/QVK+J2mUQCDy75g==}
+    peerDependencies:
+      '@tanstack/react-query': ^5.0.0
+      '@trpc/client': 11.0.0-alpha-tmp-opt-peers.204+febd6b2c2
+      '@trpc/react-query': 11.0.0-alpha-tmp-opt-peers.204+febd6b2c2
+      next: '*'
+      react: '>=16.8.0'
+      react-dom: '>=16.8.0'
+    peerDependenciesMeta:
+      '@tanstack/react-query':
+        optional: true
+      '@trpc/react-query':
+        optional: true
+    dependencies:
+      '@trpc/client': 11.0.0-alpha-tmp-opt-peers.204
+      '@trpc/core': 11.0.0-alpha-tmp-opt-peers.204
+      next: 14.0.5-canary.60(@babel/core@7.23.5)(react-dom@18.2.0)(react@18.2.0)
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+    dev: false
+
+  /@trpc/server@11.0.0-alpha-tmp-opt-peers.204:
+    resolution: {integrity: sha512-L0Yq8aJl/kwbJIKvTMXVHD42z+B5QLHAlZ1x7UtgbSGWf9lshK2niTgRqUSey+1t2ihHAOiwdIeEXlC0U420Qw==}
+    dependencies:
+      '@trpc/core': 11.0.0-alpha-tmp-opt-peers.204
     dev: false
 
   /@types/cookie@0.6.0:

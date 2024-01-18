@@ -26,6 +26,7 @@ export const reportTimeSchema = object({
 });
 
 export const updateSchema = object({
+  id: number(),
   duration: transform(string(), Number),
   currency: string(),
   chargeRate: transform(string(), Number),
@@ -33,9 +34,11 @@ export const updateSchema = object({
 
 export const closePeriodSchema = union([
   object({
+    id: number(),
     openNewPeriod: literal(false),
   }),
   object({
+    id: number(),
     openNewPeriod: literal(true),
     clientId: number(),
     periodStart: ensureDateIsString,
