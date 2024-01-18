@@ -191,7 +191,7 @@ export function ClosePeriodSheet(props: {
         <Button>Periods</Button>
       </Trigger>
       <Content>
-        <Header>
+        <Header className="mb-4">
           <Title>Open Periods</Title>
           <Description>
             {`You have ${openPeriods.length} open periods.`}

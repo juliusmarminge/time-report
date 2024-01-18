@@ -18,6 +18,7 @@ import {
   CardHeader,
   CardTitle,
 } from "~/ui/card";
+import { ScrollArea } from "~/ui/scroll-area";
 import { ReportTimeSheet, reportTimeSheetOpen } from "./report-time-form";
 import { TimeslotCard } from "./timeslot-card";
 
@@ -62,9 +63,13 @@ export function SidePanel(props: {
             No timeslots for this date.
           </p>
         )}
-        {props.timeslots.map((slot) => (
-          <TimeslotCard key={slot.id} slot={slot} />
-        ))}
+        <ScrollArea className="h-[65dvh]">
+          <div className="flex flex-col gap-4">
+            {props.timeslots.map((slot) => (
+              <TimeslotCard key={slot.id} slot={slot} />
+            ))}
+          </div>
+        </ScrollArea>
         <Suspense>
           {props.clients.length === 0 ? (
             <NewClientSheet

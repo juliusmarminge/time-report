@@ -227,14 +227,16 @@ export function ReportTimeSheet(props: {
           </Trigger>
         )}
         <Content>
-          <Header>
+          <Header className="mb-4">
             <Title>Report time</Title>
           </Header>
-          <ReportTimeForm
-            clients={props.clients}
-            date={props.date}
-            afterSubmit={() => setOpen(false)}
-          />
+          <ScrollArea className="h-[65dvh]">
+            <ReportTimeForm
+              clients={props.clients}
+              date={props.date}
+              afterSubmit={() => setOpen(false)}
+            />
+          </ScrollArea>
         </Content>
       </Root>
 
