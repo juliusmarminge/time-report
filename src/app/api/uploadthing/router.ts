@@ -3,14 +3,19 @@ import { createUploadthing } from "uploadthing/next";
 
 import { currentUser } from "~/lib/auth";
 
-const f = createUploadthing();
+const f = createUploadthing({
+  errorFormatter: (err) => {
+    console.log("Error", err);
+    return { message: err.message };
+  },
+});
 
 export const uploadRouter = {
   clientImage: f({
     image: {
       maxFileCount: 1,
       maxFileSize: "2MB",
-      acl: "public-read"
+      acl: "public-read",
     },
   })
     .middleware(async () => {

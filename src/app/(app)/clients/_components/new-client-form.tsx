@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { Cross1Icon, PlusIcon } from "@radix-ui/react-icons";
 import { useDropzone } from "@uploadthing/react/hooks";
+import { toast } from "sonner";
 
 import { LoadingDots } from "~/components/loading-dots";
 import { cn } from "~/lib/cn";
@@ -47,6 +48,11 @@ export function NewClientForm(props: { afterSubmit?: () => void }) {
       if (!file) return;
       form.setValue("image", file[0].url);
     },
+    onUploadError: (err) => {
+      console.error(err);
+      toast.error("File upload failed. Please try again.");
+      form.setValue("image", undefined);
+    },
   });
 
   const [imageDataUrl, setImageDataUrl] = useState<string | null>(null);
@@ -86,9 +92,9 @@ export function NewClientForm(props: { afterSubmit?: () => void }) {
 
   async function handleImageDelete(e: React.MouseEvent<HTMLButtonElement>) {
     e.stopPropagation();
-    await deleteImageFromUT(form.getValues("image"));
     setImageDataUrl(null);
     form.setValue("image", undefined);
+    await deleteImageFromUT(form.getValues("image"));
   }
 
   return (
@@ -138,6 +144,7 @@ export function NewClientForm(props: { afterSubmit?: () => void }) {
                   <>
                     <Button
                       onClick={handleImageDelete}
+                      type="button"
                       size="icon"
                       className={cn(
                         "absolute right-2 top-2",

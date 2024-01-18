@@ -9,6 +9,7 @@ import { MobileNav } from "~/components/mobile-nav";
 import { TailwindIndicator } from "~/components/tailwind-indicator";
 import { ThemeProvider } from "~/components/theme-provider";
 import { cn } from "~/lib/cn";
+import { Toaster } from "~/ui/sonner";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://timeit.jumr.dev"),
@@ -53,6 +54,7 @@ export default function RootLayout(props: { children: React.ReactNode }) {
             </div>
 
             <TailwindIndicator />
+            <Toaster />
           </ThemeProvider>
         </body>
       </html>
