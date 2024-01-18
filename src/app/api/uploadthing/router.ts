@@ -10,6 +10,7 @@ export const uploadRouter = {
     image: {
       maxFileCount: 1,
       maxFileSize: "2MB",
+      acl: "public-read"
     },
   })
     .middleware(async () => {
