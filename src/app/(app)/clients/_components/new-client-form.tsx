@@ -183,7 +183,7 @@ export function NewClientForm(props: { afterSubmit?: () => void }) {
               </FormDescription>
 
               <InputField
-                field={field}
+                {...field}
                 leading={
                   <FormField
                     control={form.control}

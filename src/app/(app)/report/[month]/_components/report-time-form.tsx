@@ -127,7 +127,7 @@ export function ReportTimeForm(props: {
                 Your hourly charge for this session.
               </FormDescription>
               <InputField
-                field={field}
+                {...field}
                 leading={
                   <FormField
                     control={form.control}

@@ -1,5 +1,4 @@
 import * as React from "react";
-import type { ControllerRenderProps } from "react-hook-form";
 
 import { cn } from "~/lib/cn";
 
@@ -24,8 +23,6 @@ Input.displayName = "Input";
 
 type InputFieldProps = {
   className?: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  field?: ControllerRenderProps<any, any>;
 } & (
   | {
       /** append a dropdown/select before the input */
@@ -40,29 +37,25 @@ type InputFieldProps = {
 );
 
 const InputField = React.forwardRef<HTMLInputElement, InputFieldProps>(
-  (props, ref) => {
+  ({ className, leading, trailing, ...props }, ref) => {
     return (
       <div className="group relative mb-1 flex items-center rounded-md focus-within:outline-none focus-within:ring-1 focus-within:ring-ring">
-        {props.leading && (
-          <Addon className="rounded-l-md">{props.leading}</Addon>
-        )}
+        {leading && <Addon className="rounded-l-md">{leading}</Addon>}
 
         <Input
           ref={ref}
           type="text"
           className={cn(
             "focus-visible:ring-0",
-            props.leading && "rounded-l-none border-l-0",
-            props.trailing && "rounded-r-none border-r-0",
-            props.className,
+            leading && "rounded-l-none border-l-0",
+            trailing && "rounded-r-none border-r-0",
+            className,
           )}
           {...props}
-          {...props.field}
+          {...props}
         />
 
-        {props.trailing && (
-          <Addon className="rounded-r-md">{props.trailing}</Addon>
-        )}
+        {trailing && <Addon className="rounded-r-md">{trailing}</Addon>}
       </div>
     );
   },

@@ -149,7 +149,7 @@ function EditingTimeslotCard(props: {
                       Charge rate
                     </FormLabel>
                     <InputField
-                      field={field}
+                      {...field}
                       leading={
                         <FormField
                           control={form.control}
