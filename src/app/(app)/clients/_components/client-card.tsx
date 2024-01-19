@@ -37,9 +37,10 @@ import {
   FormField,
   FormItem,
   FormLabel,
+  FormMessage,
   useForm,
 } from "~/ui/form";
-import { Input } from "~/ui/input";
+import { Input, InputField } from "~/ui/input";
 import { ScrollArea } from "~/ui/scroll-area";
 import {
   Select,
@@ -274,41 +275,39 @@ function EditingClientCard(props: {
                     <FormLabel className="text-muted-foreground">
                       Charge rate
                     </FormLabel>
-                    <div className="flex gap-1">
-                      <FormField
-                        control={form.control}
-                        name="currency"
-                        render={({ field }) => (
-                          <Select
-                            onValueChange={field.onChange}
-                            value={field.value}
-                          >
-                            <FormControl>
-                              <SelectTrigger className="w-max">
-                                <SelectValue />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              <ScrollArea className="h-64">
-                                {Object.entries(currencies).map(
-                                  ([code, value]) => (
-                                    <SelectItem key={code} value={code}>
-                                      {value.code}
-                                    </SelectItem>
-                                  ),
-                                )}
-                              </ScrollArea>
-                            </SelectContent>
-                          </Select>
-                        )}
-                      />
-
-                      <FormItem className="w-full">
-                        <FormControl>
-                          <Input {...field} />
-                        </FormControl>
-                      </FormItem>
-                    </div>
+                    <InputField
+                      field={field}
+                      leading={
+                        <FormField
+                          control={form.control}
+                          name="currency"
+                          render={({ field }) => (
+                            <Select
+                              onValueChange={field.onChange}
+                              value={field.value}
+                            >
+                              <FormControl>
+                                <SelectTrigger className="w-max rounded-none border-none bg-muted px-3 font-mono">
+                                  <SelectValue />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                <ScrollArea className="h-64">
+                                  {Object.entries(currencies).map(
+                                    ([code, value]) => (
+                                      <SelectItem key={code} value={code}>
+                                        {value.code}
+                                      </SelectItem>
+                                    ),
+                                  )}
+                                </ScrollArea>
+                              </SelectContent>
+                            </Select>
+                          )}
+                        />
+                      }
+                    />
+                    <FormMessage />
                   </FormItem>
                 )}
               />

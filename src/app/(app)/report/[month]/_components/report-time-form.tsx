@@ -30,7 +30,7 @@ import {
   FormMessage,
   useForm,
 } from "~/ui/form";
-import { Input } from "~/ui/input";
+import { Input, InputField } from "~/ui/input";
 import { useResponsiveSheet } from "~/ui/responsive-sheet";
 import { ScrollArea } from "~/ui/scroll-area";
 import {
@@ -126,37 +126,36 @@ export function ReportTimeForm(props: {
               <FormDescription>
                 Your hourly charge for this session.
               </FormDescription>
-              <div className="flex gap-1">
-                <FormField
-                  control={form.control}
-                  name="currency"
-                  render={({ field }) => (
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <FormControl>
-                        <SelectTrigger className="w-24">
-                          <SelectValue />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <ScrollArea className="h-64">
-                          {Object.entries(currencies).map(([code, value]) => (
-                            <SelectItem key={code} value={code}>
-                              {value.code}
-                            </SelectItem>
-                          ))}
-                        </ScrollArea>
-                      </SelectContent>
-                    </Select>
-                  )}
-                />
-
-                <FormItem className="flex-1">
-                  <FormControl>
-                    <Input {...field} type="number" className="flex-1" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              </div>
+              <InputField
+                field={field}
+                leading={
+                  <FormField
+                    control={form.control}
+                    name="currency"
+                    render={({ field }) => (
+                      <Select
+                        onValueChange={field.onChange}
+                        value={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger className="w-max rounded-none border-none bg-muted px-3 font-mono">
+                            <SelectValue />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <ScrollArea className="h-64">
+                            {Object.entries(currencies).map(([code, value]) => (
+                              <SelectItem key={code} value={code}>
+                                {value.code}
+                              </SelectItem>
+                            ))}
+                          </ScrollArea>
+                        </SelectContent>
+                      </Select>
+                    )}
+                  />
+                }
+              />
               <FormMessage />
             </FormItem>
           )}

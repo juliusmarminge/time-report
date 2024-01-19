@@ -1,4 +1,5 @@
 import * as React from "react";
+import type { ControllerRenderProps } from "react-hook-form";
 
 import { cn } from "~/lib/cn";
 
@@ -21,4 +22,86 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
 );
 Input.displayName = "Input";
 
-export { Input };
+type InputFieldProps = {
+  className?: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  field?: ControllerRenderProps<any, any>;
+} & (
+  | {
+      /** append a dropdown/select before the input */
+      leading: React.ReactNode;
+      trailing?: never;
+    }
+  | {
+      /** append a dropdown/select after the input */
+      trailing: React.ReactNode;
+      leading?: never;
+    }
+);
+
+const InputField = React.forwardRef<HTMLInputElement, InputFieldProps>(
+  (props, ref) => {
+    return (
+      <div className="group relative mb-1 flex items-center rounded-md focus-within:outline-none focus-within:ring-1 focus-within:ring-ring">
+        {props.leading && (
+          <Addon className="rounded-l-md">{props.leading}</Addon>
+        )}
+
+        <Input
+          ref={ref}
+          type="text"
+          className={cn(
+            "focus-visible:ring-0",
+            props.leading && "rounded-l-none border-l-0",
+            props.trailing && "rounded-r-none border-r-0",
+            props.className,
+          )}
+          {...props}
+          {...props.field}
+        />
+
+        {props.trailing && (
+          <Addon className="rounded-r-md">{props.trailing}</Addon>
+        )}
+      </div>
+    );
+  },
+);
+InputField.displayName = "InputField";
+
+export { Input, InputField };
+
+interface AddonProps {
+  children: React.ReactNode;
+  isFilled?: boolean;
+  className?: string;
+  error?: boolean;
+  onClickAddon?: () => void;
+}
+
+const Addon = ({
+  isFilled,
+  children,
+  className,
+  error,
+  onClickAddon,
+}: AddonProps) => (
+  <div
+    onClick={onClickAddon && onClickAddon}
+    className={cn(
+      "addon-wrapper [&:has(+_input:hover)]:border-emphasis [&:has(+_input:hover)]:border-r-default h-9 overflow-hidden border [input:hover_+_&]:border [input:hover_+_&]:border-l",
+      isFilled && "bg-muted",
+      onClickAddon && "cursor-pointer disabled:hover:cursor-not-allowed",
+      className,
+    )}
+  >
+    <div
+      className={cn(
+        "flex min-h-9 flex-col justify-center text-sm leading-7",
+        error ? "text-error" : "text-default",
+      )}
+    >
+      <span className="flex whitespace-nowrap">{children}</span>
+    </div>
+  </div>
+);
