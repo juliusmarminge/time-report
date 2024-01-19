@@ -1,0 +1,16 @@
+diff --git a/dist/index.js b/dist/index.js
+index d5270dba8c0fde1a69851c80823a1719451e21e2..ed525f71d0c3e6476dd10086fc1ebe3ae904e5d1 100644
+--- a/dist/index.js
++++ b/dist/index.js
+@@ -602,8 +602,9 @@ function tracing(options) {
+   return experimental_standaloneMiddleware().create(async (opts) => {
+     return tracer.startActiveSpan(`TRPC ${opts.type}`, async (span) => {
+       const result = await opts.next();
+-      if (options.collectInput && typeof opts.rawInput === "object") {
+-        span.setAttributes(flatten({ input: opts.rawInput }));
++      const rawInput = "rawInput" in opts ? opts.rawInput : await opts.getRawInput();
++      if (options.collectInput && typeof rawInput === "object") {
++        span.setAttributes(flatten({ input: rawInput }));
+       }
+       const meta = { path: opts.path, type: opts.type, ok: result.ok };
+       span.setAttributes(meta);

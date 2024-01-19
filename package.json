@@ -89,6 +89,9 @@
   "pnpm": {
     "overrides": {
       "@auth/core": "0.21.0"
+    },
+    "patchedDependencies": {
+      "@baselime/node-opentelemetry@0.3.0": "patches/@baselime__node-opentelemetry@0.3.0.patch"
     }
   }
 }

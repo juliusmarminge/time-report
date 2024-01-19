@@ -7,6 +7,11 @@ settings:
 overrides:
   '@auth/core': 0.21.0
 
+patchedDependencies:
+  '@baselime/node-opentelemetry@0.3.0':
+    hash: s3iyxp3zyrbqf3xpnm6gqedfyi
+    path: patches/@baselime__node-opentelemetry@0.3.0.patch
+
 dependencies:
   '@auth/core':
     specifier: 0.21.0
@@ -16,7 +21,7 @@ dependencies:
     version: 0.3.15
   '@baselime/node-opentelemetry':
     specifier: ^0.3.0
-    version: 0.3.0(@trpc/server@11.0.0-alpha-tmp-opt-peers.204)
+    version: 0.3.0(patch_hash=s3iyxp3zyrbqf3xpnm6gqedfyi)(@trpc/server@11.0.0-alpha-tmp-opt-peers.204)
   '@dinero.js/currencies':
     specifier: 2.0.0-alpha.14
     version: 2.0.0-alpha.14
@@ -428,7 +433,7 @@ packages:
       '@babel/helper-validator-identifier': 7.22.20
       to-fast-properties: 2.0.0
 
-  /@baselime/node-opentelemetry@0.3.0(@trpc/server@11.0.0-alpha-tmp-opt-peers.204):
+  /@baselime/node-opentelemetry@0.3.0(patch_hash=s3iyxp3zyrbqf3xpnm6gqedfyi)(@trpc/server@11.0.0-alpha-tmp-opt-peers.204):
     resolution: {integrity: sha512-rPQqbaiucDdrGUVzXvPM7gSHiTJVZOYKTCSacUqcOV8cSgZPjkUuuZyGN7+EHFTktQUPF+PxKiDXlkCSV/d+jQ==}
     peerDependencies:
       '@trpc/server': ^10.0.0
@@ -450,6 +455,7 @@ packages:
       - debug
       - supports-color
     dev: false
+    patched: true
 
   /@dinero.js/calculator-number@2.0.0-alpha.14:
     resolution: {integrity: sha512-Vmlu6eXNtkFU2cqlrpqfq8KQP9onALf8Es2d34liVa3k3RHjuhizgFUU3V3/tsjOu5WekZq+gYPOr58XVTkB7A==}
