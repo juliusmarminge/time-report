@@ -6,8 +6,6 @@ settings:
 
 overrides:
   '@auth/core': 0.21.0
-  '@uploadthing/dropzone': 0.1.1-canary.8a52f6e
-  '@uploadthing/shared': 6.0.4-canary.8a52f6e
 
 dependencies:
   '@auth/core':
@@ -77,8 +75,8 @@ dependencies:
     specifier: 11.0.0-alpha-tmp-opt-peers.204
     version: 11.0.0-alpha-tmp-opt-peers.204
   '@uploadthing/react':
-    specifier: 6.1.1-canary.8a52f6e
-    version: 6.1.1-canary.8a52f6e(next@14.1.1-canary.1)(react@18.2.0)(uploadthing@6.1.2-canary.8a52f6e)
+    specifier: ^6.2.0
+    version: 6.2.0(next@14.1.1-canary.1)(react@18.2.0)(uploadthing@6.2.0)
   class-variance-authority:
     specifier: ^0.7.0
     version: 0.7.0
@@ -131,8 +129,8 @@ dependencies:
     specifier: ^0.23.1
     version: 0.23.1
   uploadthing:
-    specifier: 6.1.2-canary.8a52f6e
-    version: 6.1.2-canary.8a52f6e
+    specifier: ^6.2.0
+    version: 6.2.0
   valibot:
     specifier: ^0.22.0
     version: 0.22.0
@@ -2197,8 +2195,8 @@ packages:
     resolution: {integrity: sha512-zuVdFrMJiuCDQUMCzQaD6KL28MjnqqN8XnAqiEq9PNm/hCPTSGfrXCOfwj1ow4LFb/tNymJPwsNbVePc1xFqrQ==}
     dev: true
 
-  /@uploadthing/dropzone@0.1.1-canary.8a52f6e:
-    resolution: {integrity: sha512-l4rKGzPxBU3J8SIdFCTRF7MaJtMBAPZtCanI1WtFsXNtqhIGsP37OlfC8CrUCCw0+MfNAEYfPqvF95/WwdfG/w==}
+  /@uploadthing/dropzone@0.1.1:
+    resolution: {integrity: sha512-ohlnFQfNr/UmImfipVo4uiBj1HQL7dp/sWBD96iAajc6RaQuYnHATGaSaISpCjZTeoLkksuu4/LR8vU9nSzpvQ==}
     dependencies:
       attr-accept: 2.2.2
       file-selector: 0.6.0
@@ -2208,8 +2206,8 @@ packages:
     resolution: {integrity: sha512-ZUo1JHOPPMZDsUw1mOhhVDIvJGlsjj6T0xJ/YJtulyJwL43S9B5pxg1cHcRuTEgjaxj7B55jiqQ6r9mDrrjH9A==}
     dev: false
 
-  /@uploadthing/react@6.1.1-canary.8a52f6e(next@14.1.1-canary.1)(react@18.2.0)(uploadthing@6.1.2-canary.8a52f6e):
-    resolution: {integrity: sha512-4pytsVzM6fkQVfXn2WoUp+NslXw9nn8TcfUnd85Vzmn8Cc/uCNH9FNh2kU/fSVT9zFS/1iOtKslN8DUtszjceg==}
+  /@uploadthing/react@6.2.0(next@14.1.1-canary.1)(react@18.2.0)(uploadthing@6.2.0):
+    resolution: {integrity: sha512-DTD4R9OaVH/UDbs+J/s2UFMjNVQfHA+FCjAUEoa1JgTXQUfP8HvpOl8pCMcLqWx555e98bZrSgw50LjsOWGS0A==}
     peerDependencies:
       next: '*'
       react: ^17.0.2 || ^18.0.0
@@ -2218,20 +2216,20 @@ packages:
       next:
         optional: true
     dependencies:
-      '@uploadthing/dropzone': 0.1.1-canary.8a52f6e
-      '@uploadthing/shared': 6.0.4-canary.8a52f6e(@uploadthing/mime-types@0.2.2)
+      '@uploadthing/dropzone': 0.1.1
+      '@uploadthing/shared': 6.1.0(@uploadthing/mime-types@0.2.2)
       attr-accept: 2.2.2
       file-selector: 0.6.0
       next: 14.1.1-canary.1(@babel/core@7.23.5)(react-dom@18.2.0)(react@18.2.0)
       react: 18.2.0
       tailwind-merge: 1.14.0
-      uploadthing: 6.1.2-canary.8a52f6e
+      uploadthing: 6.2.0
     transitivePeerDependencies:
       - '@uploadthing/mime-types'
     dev: false
 
-  /@uploadthing/shared@6.0.4-canary.8a52f6e(@uploadthing/mime-types@0.2.2):
-    resolution: {integrity: sha512-S9QZImOPUveDIDNs0mcTyF4weBXnPLrebz1pth6qzCgxSsRP5/IjOL+BVo290BAoZ/whHG5cnvuH3XKrhUkvnA==}
+  /@uploadthing/shared@6.1.0(@uploadthing/mime-types@0.2.2):
+    resolution: {integrity: sha512-pZNTqq/3QbAnLF6wRKAa9lM7MxdP057z3W3E6vZiHnhmwmdMllJpaVs3TWqe0wbSy6jcDDRLhDCuU/Vvr2KsZw==}
     peerDependencies:
       '@uploadthing/mime-types': ^0.2.2
     peerDependenciesMeta:
@@ -5502,12 +5500,12 @@ packages:
       escalade: 3.1.1
       picocolors: 1.0.0
 
-  /uploadthing@6.1.2-canary.8a52f6e:
-    resolution: {integrity: sha512-uD7NedC4V5+8KXkKA1YTWlKb2dwXRdVJks+uz+rk4yKK9BwGcUWlTfntsWihih9S1CMd2oS7ZHFwiUwtQ6PSvQ==}
+  /uploadthing@6.2.0:
+    resolution: {integrity: sha512-QP32VguzERaa/xeu8swvkBTUz6am7118zRXcK0rA/k+E8O7kNEdPKI43vMxDWMQMNwm0YVjsHWZLsBsj6Z6Xig==}
     engines: {node: '>=18.13.0'}
     dependencies:
       '@uploadthing/mime-types': 0.2.2
-      '@uploadthing/shared': 6.0.4-canary.8a52f6e(@uploadthing/mime-types@0.2.2)
+      '@uploadthing/shared': 6.1.0(@uploadthing/mime-types@0.2.2)
       consola: 3.2.3
     dev: false
 

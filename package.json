@@ -39,7 +39,7 @@
     "@trpc/client": "11.0.0-alpha-tmp-opt-peers.204",
     "@trpc/next": "11.0.0-alpha-tmp-opt-peers.204",
     "@trpc/server": "11.0.0-alpha-tmp-opt-peers.204",
-    "@uploadthing/react": "6.1.1-canary.8a52f6e",
+    "@uploadthing/react": "^6.2.0",
     "class-variance-authority": "^0.7.0",
     "date-fns": "^3.2.0",
     "dinero.js": "2.0.0-alpha.14",
@@ -57,7 +57,7 @@
     "tailwind-merge": "^2.2.0",
     "tailwindcss-animate": "^1.0.7",
     "tupleson": "^0.23.1",
-    "uploadthing": "6.1.2-canary.8a52f6e",
+    "uploadthing": "^6.2.0",
     "valibot": "^0.22.0",
     "vaul": "^0.8.0"
   },
@@ -86,9 +86,7 @@
   },
   "pnpm": {
     "overrides": {
-      "@auth/core": "0.21.0",
-      "@uploadthing/dropzone": "0.1.1-canary.8a52f6e",
-      "@uploadthing/shared": "6.0.4-canary.8a52f6e"
+      "@auth/core": "0.21.0"
     }
   }
 }
