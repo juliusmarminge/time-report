@@ -15,7 +15,7 @@ import {
   varchar,
 } from "drizzle-orm/mysql-core";
 
-import type { CurrencyCode } from "~/lib/currencies";
+import type { CurrencyCode } from "~/lib/monetary";
 
 const idColumn = bigint("id", { mode: "number", unsigned: true })
   .primaryKey()

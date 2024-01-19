@@ -1,3 +1,5 @@
+import "server-only";
+
 import { cache } from "react";
 import { experimental_createServerActionHandler } from "@trpc/next/app-dir/server";
 import { initTRPC } from "@trpc/server";

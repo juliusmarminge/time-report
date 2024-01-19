@@ -6,7 +6,7 @@ import { useDropzone } from "@uploadthing/react/hooks";
 import { toast } from "sonner";
 
 import { cn } from "~/lib/cn";
-import { currencies } from "~/lib/currencies";
+import { currencies } from "~/lib/monetary";
 import { useUploadThing } from "~/lib/uploadthing";
 import { Button } from "~/ui/button";
 import {

@@ -7,7 +7,7 @@ import { dinero, toDecimal } from "dinero.js";
 import * as v from "valibot";
 
 import type { Timeslot } from "~/db/queries";
-import { currencies, formatMoney } from "~/lib/currencies";
+import { currencies, formatMoney } from "~/lib/monetary";
 import {
   AlertDialog,
   AlertDialogAction,

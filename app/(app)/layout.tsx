@@ -1,6 +1,6 @@
 import { currentUser } from "~/lib/auth";
 import { ConverterProvider } from "~/lib/converter";
-import { getCurrencyRates } from "~/lib/currencies";
+import { getCurrencyRates } from "~/lib/monetary.server";
 
 /**
  * FIXME: This indirection shouldn't be needed.

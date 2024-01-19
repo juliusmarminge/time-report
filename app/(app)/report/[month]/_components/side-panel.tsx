@@ -8,8 +8,7 @@ import { useSetAtom } from "jotai";
 import { NewClientSheet } from "~/app/(app)/clients/_components/new-client-form";
 import type { Client, Timeslot } from "~/db/queries";
 import { useConverter } from "~/lib/converter";
-import { formatMoney } from "~/lib/currencies";
-import { slotsToDineros, sumDineros } from "~/lib/monetary";
+import { formatMoney, slotsToDineros, sumDineros } from "~/lib/monetary";
 import { formatOrdinal } from "~/lib/temporal";
 import {
   Card,

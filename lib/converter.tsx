@@ -4,8 +4,8 @@ import * as React from "react";
 import type { Dinero } from "dinero.js";
 import type { Session } from "next-auth";
 
-import type { CurrencyCode } from "./currencies";
 import { convert } from "./monetary";
+import type { CurrencyCode } from "./monetary";
 
 /**
  * Context that allows the server to pass the exchange rates once, and then

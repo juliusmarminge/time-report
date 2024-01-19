@@ -1,9 +1,11 @@
+import "server-only";
+
 import { cache } from "react";
 
 import type { Timeslot } from "~/db/queries";
-import type { CurrencyCode } from "./currencies";
-import { createConverter } from "./currencies";
 import { slotsToDineros, sumDineros } from "./monetary";
+import type { CurrencyCode } from "./monetary";
+import { createConverter } from "./monetary.server";
 
 export const getMonthMetadata = cache(
   async (slots: Timeslot[], currency: CurrencyCode) => {

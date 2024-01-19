@@ -8,8 +8,8 @@ import * as v from "valibot";
 import { db } from "~/db/client";
 import { getOpenPeriods } from "~/db/queries";
 import { client, period, timeslot } from "~/db/schema";
-import type { CurrencyCode } from "~/lib/currencies";
-import { normalizeAmount } from "~/lib/currencies";
+import type { CurrencyCode } from "~/lib/monetary";
+import { normalizeAmount } from "~/lib/monetary";
 import { createAction, protectedProcedure } from "~/lib/trpc";
 import {
   closePeriodSchema,

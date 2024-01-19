@@ -1,8 +1,34 @@
+import * as dineroCurrencies from "@dinero.js/currencies";
 import { add, convert as convertCore, dinero, multiply } from "dinero.js";
 import type { Dinero, Rates } from "dinero.js";
 
-import { currencies } from "./currencies";
-import type { CurrencyCode } from "./currencies";
+// @ts-expect-error - Module Augmentation doesn't seem to work.. Want the base as number, not number | number[]
+export const currencies: Record<CurrencyCode, Currency> = dineroCurrencies;
+
+export function formatMoney(opts: {
+  value: string;
+  currency: { code: string };
+}) {
+  return Number(opts.value).toLocaleString("en-US", {
+    style: "currency",
+    currency: opts.currency.code,
+  });
+}
+
+export type CurrencyCode = keyof typeof dineroCurrencies;
+export interface Currency {
+  readonly code: CurrencyCode;
+  readonly base: number;
+  readonly exponent: number;
+}
+
+export function normalizeAmount(
+  amount: number,
+  currency: CurrencyCode = "USD",
+) {
+  const currencyInfo = currencies[currency];
+  return amount * currencyInfo.base ** currencyInfo.exponent;
+}
 
 export const convert = (
   dineroObject: Dinero<number>,
