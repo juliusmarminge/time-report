@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { GitHubLogoIcon } from "@radix-ui/react-icons";
 
 import { signIn } from "~/lib/auth";
@@ -32,7 +33,9 @@ export default function LoginPage() {
         {process.env.VERCEL_ENV !== "production" && (
           <div className=" relative rounded border-2 border-dashed p-2">
             <Badge className="absolute -right-2 -top-2">DEV</Badge>
-            <EmailSignIn />
+            <Suspense>
+              <EmailSignIn />
+            </Suspense>
           </div>
         )}
       </div>

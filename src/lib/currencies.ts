@@ -34,19 +34,20 @@ export function normalizeAmount(
 
 export const getCurrencyRates = async () => {
   interface FixerResponse {
-    base: string;
     timestamp: number;
     date: string;
-    rates: Record<string, number>;
+    base_code: string;
+    conversion_rates: Record<string, number>;
   }
 
   const res = (await (
     await fetch(
-      `http://data.fixer.io/api/latest?access_key=${process.env.FIXER_API_KEY}`,
+      `https://v6.exchangerate-api.com/v6/${process.env.EXCHANGE_RATE_API_KEY}/latest/EUR`,
+      // `http://data.fixer.io/api/latest?access_key=${process.env.FIXER_API_KEY}`,
       { next: { revalidate: 60 * 60 * 24 } },
     )
   ).json()) as FixerResponse;
-  return res.rates;
+  return res.conversion_rates;
 };
 
 export const createConverter = cache(async () => {
