@@ -1,6 +1,7 @@
 import "server-only";
 
 import { cache } from "react";
+import { trpcTracingMiddleware } from "@baselime/node-opentelemetry";
 import { experimental_createServerActionHandler } from "@trpc/next/app-dir/server";
 import { initTRPC } from "@trpc/server";
 
@@ -13,7 +14,9 @@ const createContext = cache(async () => {
 
 const t = initTRPC.context<typeof createContext>().create();
 
-export const protectedProcedure = t.procedure.use((opts) => {
+const baselime = trpcTracingMiddleware({ collectInput: true });
+
+export const protectedProcedure = t.procedure.use(baselime).use((opts) => {
   if (!opts.ctx.user) {
     throw new Error("Unauthorized");
   }

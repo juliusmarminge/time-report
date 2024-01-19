@@ -8,8 +8,6 @@ import { tson } from "~/lib/tson";
 import { ClientCard } from "./_components/client-card";
 import { NewClientSheet } from "./_components/new-client-form";
 
-export const runtime = "edge";
-
 export default async function ClientsPage() {
   const user = await currentUser();
   if (!user) redirect("/login");

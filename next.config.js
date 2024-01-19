@@ -6,6 +6,7 @@ export default withBundleAnalyzer({
 })({
   experimental: {
     ppr: true,
+    instrumentationHook: true,
   },
   logging: {
     fetches: {

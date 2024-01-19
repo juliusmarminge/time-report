@@ -16,8 +16,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "~/ui/card";
 import { CalendarAndSidePanel } from "./_components/calendar";
 import { ClosePeriodSheet } from "./_components/close-periods";
 
-export const runtime = "edge";
-
 const parseMonthParam = (month: string) => {
   // MMMyy => jan23 for example, parse it to a Temporal.PlainDate { 2023-01-01 }
   const [monthCode, yearNr] = month.match(/\d+|\D+/g) as string[];
