@@ -4,9 +4,9 @@ import * as React from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
 
-import { LoadingDots } from "~/components/loading-dots";
 import { Button } from "~/ui/button";
 import { Input } from "~/ui/input";
+import { LoadingDots } from "~/ui/loading-dots";
 
 export function EmailSignIn() {
   const [isLoading, setIsLoading] = React.useState(false);

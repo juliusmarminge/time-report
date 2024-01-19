@@ -9,7 +9,6 @@ import { dinero, toDecimal } from "dinero.js";
 import type { TsonSerialized } from "tupleson";
 import * as v from "valibot";
 
-import { LoadingDots } from "~/components/loading-dots";
 import type { Client } from "~/db/queries";
 import { useConverter } from "~/lib/converter";
 import { currencies, formatMoney } from "~/lib/currencies";
@@ -41,6 +40,7 @@ import {
   useForm,
 } from "~/ui/form";
 import { Input, InputField } from "~/ui/input";
+import { LoadingDots } from "~/ui/loading-dots";
 import { ScrollArea } from "~/ui/scroll-area";
 import {
   Select,

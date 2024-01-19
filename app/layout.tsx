@@ -1,15 +1,14 @@
 import "./globals.css";
 
 import type { Metadata, Viewport } from "next";
+import { ThemeProvider } from "@juliusmarminge/next-themes";
 import { GeistMono } from "geist/font/mono";
 import { GeistSans } from "geist/font/sans";
 
-import { DesktopSidebar } from "~/components/desktop-nav";
-import { MobileNav } from "~/components/mobile-nav";
-import { TailwindIndicator } from "~/components/tailwind-indicator";
-import { ThemeProvider } from "~/components/theme-provider";
+import { DesktopSidebar, MobileNav } from "~/app/_components/nav";
 import { cn } from "~/lib/cn";
 import { Toaster } from "~/ui/sonner";
+import { TailwindIndicator } from "~/ui/tailwind-indicator";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://timeit.jumr.dev"),

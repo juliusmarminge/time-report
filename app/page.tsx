@@ -1,4 +1,4 @@
-import { DashboardShell } from "~/components/dashboard-shell";
+import { DashboardShell } from "~/app/_components/dashboard-shell";
 
 export default function Page() {
   return (

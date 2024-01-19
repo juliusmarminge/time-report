@@ -6,7 +6,6 @@ import type { Dinero } from "dinero.js";
 import { dinero, toDecimal } from "dinero.js";
 import * as v from "valibot";
 
-import { LoadingDots } from "~/components/loading-dots";
 import type { Timeslot } from "~/db/queries";
 import { currencies, formatMoney } from "~/lib/currencies";
 import {
@@ -32,6 +31,7 @@ import {
   useForm,
 } from "~/ui/form";
 import { Input, InputField } from "~/ui/input";
+import { LoadingDots } from "~/ui/loading-dots";
 import { ScrollArea } from "~/ui/scroll-area";
 import {
   Select,

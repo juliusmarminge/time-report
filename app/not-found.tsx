@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { DashboardShell } from "~/components/dashboard-shell";
+import { DashboardShell } from "~/app/_components/dashboard-shell";
 import { buttonVariants } from "~/ui/button";
 
 export default function NotFound() {

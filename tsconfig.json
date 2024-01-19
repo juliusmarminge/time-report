@@ -26,9 +26,15 @@
     /* Path Aliases */
     "baseUrl": ".",
     "paths": {
-      "~/*": ["./src/*"]
+      "~/*": ["./*"]
     }
   },
-  "include": ["next-env.d.ts", "src", "*.ts", "*.js", ".next/types/**/*.ts"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "*.js",
+    ".next/types/**/*.ts"
+  ],
   "exclude": ["node_modules"]
 }

@@ -27,5 +27,5 @@ export const credentials = (() => {
 export default {
   dbCredentials: { uri: credentials.pushUrl },
   driver: "mysql2",
-  schema: "./src/db/schema.ts",
+  schema: "./db/schema.ts",
 } satisfies Config;

@@ -1,5 +1,6 @@
 "use client";
 
+import { use } from "react";
 import Link from "next/link";
 import { ChevronRightIcon, ExitIcon } from "@radix-ui/react-icons";
 import type { Session } from "next-auth";
@@ -21,11 +22,11 @@ import {
   DropdownMenuTrigger,
 } from "~/ui/dropdown-menu";
 
-export function SettingsMenu(props: {
+export function UserButton(props: {
   className?: string;
-  user: Session["user"] | null;
+  user: Promise<Session["user"] | null>;
 }) {
-  const { user } = props;
+  const user = use(props.user);
 
   if (!user) {
     return (

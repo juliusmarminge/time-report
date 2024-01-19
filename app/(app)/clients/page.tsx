@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 
-import { DashboardShell } from "~/components/dashboard-shell";
+import { DashboardShell } from "~/app/_components/dashboard-shell";
 import { getClients } from "~/db/queries";
 import { currentUser } from "~/lib/auth";
 import { withUnstableCache } from "~/lib/cache";

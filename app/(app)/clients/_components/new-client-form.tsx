@@ -5,7 +5,6 @@ import { Cross1Icon, PlusIcon } from "@radix-ui/react-icons";
 import { useDropzone } from "@uploadthing/react/hooks";
 import { toast } from "sonner";
 
-import { LoadingDots } from "~/components/loading-dots";
 import { cn } from "~/lib/cn";
 import { currencies } from "~/lib/currencies";
 import { useUploadThing } from "~/lib/uploadthing";
@@ -21,6 +20,7 @@ import {
   useForm,
 } from "~/ui/form";
 import { Input, InputField } from "~/ui/input";
+import { LoadingDots } from "~/ui/loading-dots";
 import { useResponsiveSheet } from "~/ui/responsive-sheet";
 import { ScrollArea } from "~/ui/scroll-area";
 import {

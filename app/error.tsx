@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 
-import { DashboardShell } from "~/components/dashboard-shell";
+import { DashboardShell } from "~/app/_components/dashboard-shell";
 import { Button } from "~/ui/button";
 
 export default function Error(props: { error: Error; reset: () => void }) {

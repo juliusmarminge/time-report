@@ -4,7 +4,6 @@ import { Temporal } from "@js-temporal/polyfill";
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 import { atom, useAtom } from "jotai";
 
-import { LoadingDots } from "~/components/loading-dots";
 import type { Client } from "~/db/queries";
 import { currencies } from "~/lib/currencies";
 import { isFuture } from "~/lib/temporal";
@@ -31,6 +30,7 @@ import {
   useForm,
 } from "~/ui/form";
 import { Input, InputField } from "~/ui/input";
+import { LoadingDots } from "~/ui/loading-dots";
 import { useResponsiveSheet } from "~/ui/responsive-sheet";
 import { ScrollArea } from "~/ui/scroll-area";
 import {

@@ -23,6 +23,9 @@ dependencies:
   '@js-temporal/polyfill':
     specifier: ^0.4.4
     version: 0.4.4
+  '@juliusmarminge/next-themes':
+    specifier: ^0.3.0
+    version: 0.3.0(react-dom@18.2.0)(react@18.2.0)
   '@next/bundle-analyzer':
     specifier: 14.1.1-canary.1
     version: 14.1.1-canary.1
@@ -101,9 +104,6 @@ dependencies:
   next-auth:
     specifier: 5.0.0-beta.5
     version: 5.0.0-beta.5(next@14.1.1-canary.1)(react@18.2.0)
-  next-themes:
-    specifier: ^0.2.1
-    version: 0.2.1(next@14.1.1-canary.1)(react-dom@18.2.0)(react@18.2.0)
   react:
     specifier: 18.2.0
     version: 18.2.0
@@ -1019,6 +1019,16 @@ packages:
     dependencies:
       jsbi: 4.3.0
       tslib: 2.6.2
+    dev: false
+
+  /@juliusmarminge/next-themes@0.3.0(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-AyfqKLyN1+A709q54F7RXgzdH5bVlrBZdKHBM2RTXjfgqCbs0P474B7261daLW4XcabPqzl6K0jRxuTWHxit6w==}
+    peerDependencies:
+      react: ^16.8 || ^17 || ^18
+      react-dom: ^16.8 || ^17 || ^18
+    dependencies:
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
     dev: false
 
   /@next/bundle-analyzer@14.1.1-canary.1:
@@ -4343,18 +4353,6 @@ packages:
       '@auth/core': 0.21.0
       next: 14.1.1-canary.1(@babel/core@7.23.5)(react-dom@18.2.0)(react@18.2.0)
       react: 18.2.0
-    dev: false
-
-  /next-themes@0.2.1(next@14.1.1-canary.1)(react-dom@18.2.0)(react@18.2.0):
-    resolution: {integrity: sha512-B+AKNfYNIzh0vqQQKqQItTS8evEouKD7H5Hj3kmuPERwddR2TxvDSFZuTj6T7Jfn1oyeUyJMydPl1Bkxkh0W7A==}
-    peerDependencies:
-      next: '*'
-      react: '*'
-      react-dom: '*'
-    dependencies:
-      next: 14.1.1-canary.1(@babel/core@7.23.5)(react-dom@18.2.0)(react@18.2.0)
-      react: 18.2.0
-      react-dom: 18.2.0(react@18.2.0)
     dev: false
 
   /next-tick@1.1.0:
