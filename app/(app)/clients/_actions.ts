@@ -8,6 +8,7 @@ import * as v from "valibot";
 
 import { db } from "~/db/client";
 import { client, period, timeslot } from "~/db/schema";
+import { CACHE_TAGS } from "~/lib/cache";
 import type { CurrencyCode } from "~/lib/monetary";
 import { normalizeAmount } from "~/lib/monetary";
 import { createAction, protectedProcedure } from "~/lib/trpc";
@@ -46,8 +47,8 @@ export const createClient = createAction(
         tenantId: ctx.user.id,
       });
 
-      revalidateTag("clients");
-      revalidateTag("periods");
+      revalidateTag(CACHE_TAGS.CLIENTS);
+      revalidateTag(CACHE_TAGS.PERIODS);
     }),
 );
 
@@ -74,7 +75,7 @@ export const updateClient = createAction(
         })
         .where(eq(client.id, input.id));
 
-      revalidateTag("clients");
+      revalidateTag(CACHE_TAGS.CLIENTS);
     }),
 );
 
@@ -110,6 +111,6 @@ export const deleteClient = createAction(
         deleteImageIfExists(existing.image),
       ]);
 
-      revalidateTag("clients");
+      revalidateTag(CACHE_TAGS.CLIENTS);
     }),
 );

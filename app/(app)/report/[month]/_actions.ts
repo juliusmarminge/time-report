@@ -8,6 +8,7 @@ import * as v from "valibot";
 import { db } from "~/db/client";
 import { getOpenPeriods } from "~/db/queries";
 import { client, period, timeslot } from "~/db/schema";
+import { CACHE_TAGS } from "~/lib/cache";
 import type { CurrencyCode } from "~/lib/monetary";
 import { normalizeAmount } from "~/lib/monetary";
 import { createAction, protectedProcedure } from "~/lib/trpc";
@@ -57,9 +58,9 @@ export const reportTime = createAction(
         periodId: slotPeriod.id,
       });
 
-      revalidateTag("timeslots");
-      revalidateTag("periods");
-      revalidateTag("clients");
+      revalidateTag(CACHE_TAGS.TIMESLOTS);
+      revalidateTag(CACHE_TAGS.PERIODS);
+      revalidateTag(CACHE_TAGS.CLIENTS);
     }),
 );
 
@@ -74,9 +75,9 @@ export const deleteTimeslot = createAction(
 
       await db.delete(timeslot).where(eq(timeslot.id, input));
 
-      revalidateTag("timeslots");
-      revalidateTag("periods");
-      revalidateTag("clients");
+      revalidateTag(CACHE_TAGS.TIMESLOTS);
+      revalidateTag(CACHE_TAGS.PERIODS);
+      revalidateTag(CACHE_TAGS.CLIENTS);
     }),
 );
 
@@ -104,9 +105,9 @@ export const updateTimeslot = createAction(
         })
         .where(eq(timeslot.id, input.id));
 
-      revalidateTag("timeslots");
-      revalidateTag("periods");
-      revalidateTag("clients");
+      revalidateTag(CACHE_TAGS.TIMESLOTS);
+      revalidateTag(CACHE_TAGS.PERIODS);
+      revalidateTag(CACHE_TAGS.CLIENTS);
     }),
 );
 
@@ -133,7 +134,7 @@ export const closePeriod = createAction(
         });
       }
 
-      revalidateTag("periods");
-      revalidateTag("clients");
+      revalidateTag(CACHE_TAGS.PERIODS);
+      revalidateTag(CACHE_TAGS.CLIENTS);
     }),
 );
