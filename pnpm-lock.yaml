@@ -21,7 +21,7 @@ dependencies:
     version: 0.3.15
   "@baselime/node-opentelemetry":
     specifier: ^0.3.0
-    version: 0.3.0(patch_hash=zfcomfsw5jpsvlszpgm7rjgjee)(@trpc/server@11.0.0-alpha-tmp-opt-peers.204)
+    version: 0.3.0(patch_hash=zfcomfsw5jpsvlszpgm7rjgjee)(@trpc/server@11.0.0-next-beta.222)
   "@dinero.js/currencies":
     specifier: 2.0.0-alpha.14
     version: 2.0.0-alpha.14
@@ -77,14 +77,14 @@ dependencies:
     specifier: ^1.0.2
     version: 1.0.2(@types/react@18.2.48)(react@18.2.0)
   "@trpc/client":
-    specifier: 11.0.0-alpha-tmp-opt-peers.204
-    version: 11.0.0-alpha-tmp-opt-peers.204
+    specifier: 11.0.0-next-beta.222
+    version: 11.0.0-next-beta.222(@trpc/server@11.0.0-next-beta.222)
   "@trpc/next":
-    specifier: 11.0.0-alpha-tmp-opt-peers.204
-    version: 11.0.0-alpha-tmp-opt-peers.204(@trpc/client@11.0.0-alpha-tmp-opt-peers.204)(next@14.1.1-canary.1)(react-dom@18.2.0)(react@18.2.0)
+    specifier: 11.0.0-next-beta.222
+    version: 11.0.0-next-beta.222(@trpc/client@11.0.0-next-beta.222)(@trpc/server@11.0.0-next-beta.222)(next@14.1.1-canary.1)(react-dom@18.2.0)(react@18.2.0)
   "@trpc/server":
-    specifier: 11.0.0-alpha-tmp-opt-peers.204
-    version: 11.0.0-alpha-tmp-opt-peers.204
+    specifier: 11.0.0-next-beta.222
+    version: 11.0.0-next-beta.222
   "@uploadthing/react":
     specifier: ^6.2.0
     version: 6.2.0(next@14.1.1-canary.1)(react@18.2.0)(uploadthing@6.2.0)
@@ -513,7 +513,7 @@ packages:
       "@babel/helper-validator-identifier": 7.22.20
       to-fast-properties: 2.0.0
 
-  /@baselime/node-opentelemetry@0.3.0(patch_hash=zfcomfsw5jpsvlszpgm7rjgjee)(@trpc/server@11.0.0-alpha-tmp-opt-peers.204):
+  /@baselime/node-opentelemetry@0.3.0(patch_hash=zfcomfsw5jpsvlszpgm7rjgjee)(@trpc/server@11.0.0-next-beta.222):
     resolution:
       {
         integrity: sha512-rPQqbaiucDdrGUVzXvPM7gSHiTJVZOYKTCSacUqcOV8cSgZPjkUuuZyGN7+EHFTktQUPF+PxKiDXlkCSV/d+jQ==,
@@ -529,7 +529,7 @@ packages:
       "@opentelemetry/resources": 1.20.0(@opentelemetry/api@1.7.0)
       "@opentelemetry/sdk-node": 0.45.1(@opentelemetry/api@1.7.0)
       "@opentelemetry/sdk-trace-node": 1.20.0(@opentelemetry/api@1.7.0)
-      "@trpc/server": 11.0.0-alpha-tmp-opt-peers.204
+      "@trpc/server": 11.0.0-next-beta.222
       axios: 1.6.5
       flat: 6.0.1
       shimmer: 1.2.1
@@ -3075,31 +3075,27 @@ packages:
       tslib: 2.6.2
     dev: false
 
-  /@trpc/client@11.0.0-alpha-tmp-opt-peers.204:
+  /@trpc/client@11.0.0-next-beta.222(@trpc/server@11.0.0-next-beta.222):
     resolution:
       {
-        integrity: sha512-TkNOlKtVvLTORm7S0syEITrakNBR5x47FAvDKxyxEGC0M96TbfaK2L1U4x6+TQN8RidBQiZmPVHrhDCDrvjrgg==,
+        integrity: sha512-PPeU1JjnrAGlmZg7zNBZ1Ywc4M8CoW1wMVKe59J7wPE1Kv6S7C7WDv+9NMF5ZNBqLiPESU0PUc/oLmxFDQRPkQ==,
       }
+    peerDependencies:
+      "@trpc/server": 11.0.0-next-beta.222+3c3fb2a38
     dependencies:
-      "@trpc/core": 11.0.0-alpha-tmp-opt-peers.204
+      "@trpc/server": 11.0.0-next-beta.222
     dev: false
 
-  /@trpc/core@11.0.0-alpha-tmp-opt-peers.204:
+  /@trpc/next@11.0.0-next-beta.222(@trpc/client@11.0.0-next-beta.222)(@trpc/server@11.0.0-next-beta.222)(next@14.1.1-canary.1)(react-dom@18.2.0)(react@18.2.0):
     resolution:
       {
-        integrity: sha512-lA1kkK6c6QtWxJ0f0L5fg6zdfcmOjx3iiBrKNH/x5JMoNm+i2M8dle22WaEUraP6uLHT9bMqVOURJBneXTR4pg==,
-      }
-    dev: false
-
-  /@trpc/next@11.0.0-alpha-tmp-opt-peers.204(@trpc/client@11.0.0-alpha-tmp-opt-peers.204)(next@14.1.1-canary.1)(react-dom@18.2.0)(react@18.2.0):
-    resolution:
-      {
-        integrity: sha512-abWWaKd3cqrwurrgUBVAGfpGbB1mDRqWXalwuwB9XW5SPTsWH422zBbqRsDGb0zGxW9CB+/QVK+J2mUQCDy75g==,
+        integrity: sha512-l1H11pFGJVPU4Xz9kb3mpDVjtlyb+mOgDXmhv3XwfW1ZBVZG/cYSvTAyYKuoXiq283RGmt7kH0gQ9qOAZDLAPA==,
       }
     peerDependencies:
       "@tanstack/react-query": ^5.0.0
-      "@trpc/client": 11.0.0-alpha-tmp-opt-peers.204+febd6b2c2
-      "@trpc/react-query": 11.0.0-alpha-tmp-opt-peers.204+febd6b2c2
+      "@trpc/client": 11.0.0-next-beta.222+3c3fb2a38
+      "@trpc/react-query": 11.0.0-next-beta.222+3c3fb2a38
+      "@trpc/server": 11.0.0-next-beta.222+3c3fb2a38
       next: "*"
       react: ">=16.8.0"
       react-dom: ">=16.8.0"
@@ -3109,20 +3105,18 @@ packages:
       "@trpc/react-query":
         optional: true
     dependencies:
-      "@trpc/client": 11.0.0-alpha-tmp-opt-peers.204
-      "@trpc/core": 11.0.0-alpha-tmp-opt-peers.204
+      "@trpc/client": 11.0.0-next-beta.222(@trpc/server@11.0.0-next-beta.222)
+      "@trpc/server": 11.0.0-next-beta.222
       next: 14.1.1-canary.1(@babel/core@7.23.5)(@opentelemetry/api@1.7.0)(react-dom@18.2.0)(react@18.2.0)
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
     dev: false
 
-  /@trpc/server@11.0.0-alpha-tmp-opt-peers.204:
+  /@trpc/server@11.0.0-next-beta.222:
     resolution:
       {
-        integrity: sha512-L0Yq8aJl/kwbJIKvTMXVHD42z+B5QLHAlZ1x7UtgbSGWf9lshK2niTgRqUSey+1t2ihHAOiwdIeEXlC0U420Qw==,
+        integrity: sha512-+JThZHMOrHhuJZyV42Jbzv4evGU5DXcK3hyzmFYGoaAfO6l4AJ7L6jnPdp0wDy9p+CcoppQaZ3+FwZc0gxtd0g==,
       }
-    dependencies:
-      "@trpc/core": 11.0.0-alpha-tmp-opt-peers.204
     dev: false
 
   /@types/cookie@0.6.0:
