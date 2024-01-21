@@ -1,12 +1,16 @@
 import { Suspense } from "react";
+import { redirect } from "next/navigation";
 import { GitHubLogoIcon } from "@radix-ui/react-icons";
 
-import { signIn } from "~/lib/auth";
+import { currentUser, signIn } from "~/lib/auth";
 import { Badge } from "~/ui/badge";
 import { Button } from "~/ui/button";
 import { EmailSignIn } from "./email";
 
-export default function LoginPage() {
+export default async function LoginPage() {
+  const user = await currentUser();
+  if (user) redirect("/");
+
   return (
     <div className="relative flex h-full min-h-screen w-full flex-col items-center justify-center">
       <div className="z-50 flex w-full max-w-md flex-col gap-4 rounded-3xl bg-muted/60 p-12 shadow-lg">

@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 import { auth } from "~/lib/auth";
 
@@ -6,20 +6,9 @@ const PUBLIC_ROUTES = ["/", "/login(.*)", "/api(.*)"];
 const isPublic = (url: URL) =>
   PUBLIC_ROUTES.some((route) => new RegExp(`^${route}$`).test(url.pathname));
 
-export default auth((req) => {
+const authMiddleware = auth((req) => {
   const url = req.nextUrl;
   const auth = req.auth;
-
-  if (url.pathname === "/login" && auth?.user) {
-    // User is already signed in, redirect to app
-    url.pathname = "/";
-    return NextResponse.redirect(url);
-  }
-
-  if (isPublic(url)) {
-    // Public path, go ahead
-    return NextResponse.next();
-  }
 
   if (!auth?.user) {
     // Protected path and user is not signed in, redirect to signin
@@ -39,6 +28,13 @@ export default auth((req) => {
 
   return NextResponse.next();
 });
+
+export default (req: NextRequest) => {
+  if (isPublic(req.nextUrl)) {
+    return NextResponse.next();
+  }
+  return authMiddleware(req, {});
+};
 
 export const config = {
   matcher: ["/((?!.*\\..*|_next).*)", "/", "/(api|trpc)(.*)"],
