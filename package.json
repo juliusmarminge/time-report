@@ -6,7 +6,7 @@
   "scripts": {
     "db:push": "drizzle-kit push:mysql --config db/config.ts",
     "db:studio": "drizzle-kit studio --config db/config.ts",
-    "dev": "next dev --turbo",
+    "dev": "next dev",
     "ps-proxy": "ps-http-sim -mysql-dbname time-report -mysql-no-pass",
     "build": "next build",
     "start": "next start",

@@ -1,14 +1,32 @@
+diff --git a/dist/index.cjs b/dist/index.cjs
+index 5a791404c9fd269173612d3b1bb70d0ce4cb01c0..3d0fed80dc85ad034c87f7fa0cf564cb0dfffeca 100644
+--- a/dist/index.cjs
++++ b/dist/index.cjs
+@@ -636,8 +636,10 @@ function tracing(options) {
+   return (0, import_server.experimental_standaloneMiddleware)().create(async (opts) => {
+     return tracer.startActiveSpan(`TRPC ${opts.type}`, async (span) => {
+       const result = await opts.next();
+-      if (options.collectInput && typeof opts.rawInput === "object") {
+-        span.setAttributes(flatten({ input: opts.rawInput }));
++      const rawInput = "rawInput" in opts ? opts.rawInput : await opts.getRawInput();
++      console.log("rawInput", rawInput)
++      if (options.collectInput && typeof rawInput === "object") {
++        span.setAttributes(flatten({ input: rawInput }));
+       }
+       const meta = { path: opts.path, type: opts.type, ok: result.ok };
+       span.setAttributes(meta);
 diff --git a/dist/index.js b/dist/index.js
-index d5270dba8c0fde1a69851c80823a1719451e21e2..ed525f71d0c3e6476dd10086fc1ebe3ae904e5d1 100644
+index d5270dba8c0fde1a69851c80823a1719451e21e2..05048a752d37eda50d381438f8b1b28eaf251356 100644
 --- a/dist/index.js
 +++ b/dist/index.js
-@@ -602,8 +602,9 @@ function tracing(options) {
+@@ -602,8 +602,10 @@ function tracing(options) {
    return experimental_standaloneMiddleware().create(async (opts) => {
      return tracer.startActiveSpan(`TRPC ${opts.type}`, async (span) => {
        const result = await opts.next();
 -      if (options.collectInput && typeof opts.rawInput === "object") {
 -        span.setAttributes(flatten({ input: opts.rawInput }));
 +      const rawInput = "rawInput" in opts ? opts.rawInput : await opts.getRawInput();
++      console.log("rawInput", rawInput)
 +      if (options.collectInput && typeof rawInput === "object") {
 +        span.setAttributes(flatten({ input: rawInput }));
        }
