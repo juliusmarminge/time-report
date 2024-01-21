@@ -6,6 +6,12 @@ export default withBundleAnalyzer({
 })({
   experimental: {
     ppr: true,
+    instrumentationHook: true,
+  },
+  logging: {
+    fetches: {
+      fullUrl: true,
+    },
   },
   images: {
     remotePatterns: [

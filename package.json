@@ -4,9 +4,9 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "db:push": "drizzle-kit push:mysql --config src/db/config.ts",
-    "db:studio": "drizzle-kit studio --config src/db/config.ts",
-    "dev": "next dev --turbo",
+    "db:push": "drizzle-kit push:mysql --config db/config.ts",
+    "db:studio": "drizzle-kit studio --config db/config.ts",
+    "dev": "next dev",
     "ps-proxy": "ps-http-sim -mysql-dbname time-report -mysql-no-pass",
     "build": "next build",
     "start": "next start",
@@ -19,10 +19,12 @@
   "dependencies": {
     "@auth/core": "^0.21.0",
     "@auth/drizzle-adapter": "^0.3.15",
+    "@baselime/node-opentelemetry": "^0.3.0",
     "@dinero.js/currencies": "2.0.0-alpha.14",
     "@hookform/resolvers": "^3.3.2",
     "@js-temporal/polyfill": "^0.4.4",
-    "@next/bundle-analyzer": "14.0.5-canary.60",
+    "@juliusmarminge/next-themes": "^0.3.0",
+    "@next/bundle-analyzer": "14.1.1-canary.1",
     "@planetscale/database": "^1.13.0",
     "@radix-ui/react-alert-dialog": "^1.0.5",
     "@radix-ui/react-avatar": "^1.0.4",
@@ -39,25 +41,25 @@
     "@trpc/client": "11.0.0-alpha-tmp-opt-peers.204",
     "@trpc/next": "11.0.0-alpha-tmp-opt-peers.204",
     "@trpc/server": "11.0.0-alpha-tmp-opt-peers.204",
-    "@uploadthing/react": "6.1.1-canary.8a52f6e",
+    "@uploadthing/react": "^6.2.0",
     "class-variance-authority": "^0.7.0",
     "date-fns": "^3.2.0",
     "dinero.js": "2.0.0-alpha.14",
     "drizzle-orm": "0.29.3",
     "geist": "^1.2.1",
     "jotai": "^2.6.2",
-    "next": "14.0.5-canary.60",
+    "next": "14.1.1-canary.1",
     "next-auth": "5.0.0-beta.5",
-    "next-themes": "^0.2.1",
     "react": "18.2.0",
     "react-day-picker": "^8.10.0",
     "react-dom": "18.2.0",
     "react-hook-form": "^7.48.2",
+    "server-only": "^0.0.1",
     "sonner": "^1.3.1",
     "tailwind-merge": "^2.2.0",
     "tailwindcss-animate": "^1.0.7",
     "tupleson": "^0.23.1",
-    "uploadthing": "6.1.2-canary.8a52f6e",
+    "uploadthing": "^6.2.0",
     "valibot": "^0.22.0",
     "vaul": "^0.8.0"
   },
@@ -72,7 +74,7 @@
     "autoprefixer": "10.4.16",
     "drizzle-kit": "0.20.13",
     "eslint": "8.55.0",
-    "eslint-config-next": "^14.0.4",
+    "eslint-config-next": "^14.1.1-canary.1",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-import": "^2.29.0",
     "eslint-plugin-react": "^7.33.2",
@@ -86,9 +88,10 @@
   },
   "pnpm": {
     "overrides": {
-      "@auth/core": "0.21.0",
-      "@uploadthing/dropzone": "0.1.1-canary.8a52f6e",
-      "@uploadthing/shared": "6.0.4-canary.8a52f6e"
+      "@auth/core": "0.21.0"
+    },
+    "patchedDependencies": {
+      "@baselime/node-opentelemetry@0.3.0": "patches/@baselime__node-opentelemetry@0.3.0.patch"
     }
   }
 }
