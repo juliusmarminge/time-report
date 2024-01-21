@@ -10,7 +10,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
       <input
         type={type}
         className={cn(
-          "flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50",
+          "flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
           className,
         )}
         ref={ref}
@@ -66,33 +66,19 @@ export { Input, InputField };
 
 interface AddonProps {
   children: React.ReactNode;
-  isFilled?: boolean;
   className?: string;
-  error?: boolean;
-  onClickAddon?: () => void;
 }
 
-const Addon = ({
-  isFilled,
-  children,
-  className,
-  error,
-  onClickAddon,
-}: AddonProps) => (
+const Addon = ({ children, className }: AddonProps) => (
   <div
-    onClick={onClickAddon && onClickAddon}
     className={cn(
       "addon-wrapper [&:has(+_input:hover)]:border-emphasis [&:has(+_input:hover)]:border-r-default h-9 overflow-hidden border [input:hover_+_&]:border [input:hover_+_&]:border-l",
-      isFilled && "bg-muted",
-      onClickAddon && "cursor-pointer disabled:hover:cursor-not-allowed",
+
       className,
     )}
   >
     <div
-      className={cn(
-        "flex min-h-9 flex-col justify-center text-sm leading-7",
-        error ? "text-error" : "text-default",
-      )}
+      className={cn("flex min-h-9 flex-col justify-center text-sm leading-7")}
     >
       <span className="flex whitespace-nowrap">{children}</span>
     </div>
