@@ -283,12 +283,14 @@ export function NewClientSheet(props: {
         <Header className="mb-4">
           <Title>Create a new client</Title>
         </Header>
-        <NewClientForm
-          afterSubmit={() => {
-            setOpen(false);
-            props.afterSubmit?.();
-          }}
-        />
+        <ScrollArea className="h-[65dvh]">
+          <NewClientForm
+            afterSubmit={() => {
+              setOpen(false);
+              props.afterSubmit?.();
+            }}
+          />
+        </ScrollArea>
       </Content>
     </Root>
   );
