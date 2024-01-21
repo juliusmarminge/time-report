@@ -17,6 +17,7 @@ export default {
     "^[../]",
     "^[./]",
   ],
+  tailwindFunctions: ["cva"],
   importOrderParserPlugins: ["typescript", "jsx", "decorators-legacy"],
   importOrderTypeScriptVersion: "4.4.0",
 };
