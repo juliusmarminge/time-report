@@ -73,7 +73,6 @@ const Addon = ({ children, className }: AddonProps) => (
   <div
     className={cn(
       "addon-wrapper [&:has(+_input:hover)]:border-emphasis [&:has(+_input:hover)]:border-r-default h-9 overflow-hidden border [input:hover_+_&]:border [input:hover_+_&]:border-l",
-
       className,
     )}
   >
