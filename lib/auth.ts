@@ -66,6 +66,24 @@ export const {
     ...(process.env.VERCEL_ENV !== "production" ? [mockEmail] : []),
   ],
   callbacks: {
+    authorized({ request, auth }) {
+      const url = request.nextUrl;
+
+      if (!auth?.user) {
+        url.pathname = "/login";
+        return Response.redirect(url);
+      }
+
+      if (url.pathname === "/report") {
+        url.pathname = `/report/${Intl.DateTimeFormat("en-US", {
+          month: "short",
+          year: "2-digit",
+        })
+          .format(Date.now())
+          .replace(" ", "")}`;
+        return Response.redirect(url);
+      }
+    },
     session: (opts) => {
       if (!("user" in opts)) throw "unreachable for session strategy";
       const { session, user } = opts;

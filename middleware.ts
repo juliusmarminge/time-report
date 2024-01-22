@@ -6,36 +6,17 @@ const PUBLIC_ROUTES = ["/", "/login(.*)", "/api(.*)"];
 const isPublic = (url: URL) =>
   PUBLIC_ROUTES.some((route) => new RegExp(`^${route}$`).test(url.pathname));
 
-const authMiddleware = auth((req) => {
-  const url = req.nextUrl;
-  const auth = req.auth;
-
-  if (!auth?.user) {
-    // Protected path and user is not signed in, redirect to signin
-    url.pathname = "/login";
-    return NextResponse.redirect(url);
-  }
-
-  if (url.pathname === "/report") {
-    url.pathname = `/report/${Intl.DateTimeFormat("en-US", {
-      month: "short",
-      year: "2-digit",
-    })
-      .format(Date.now())
-      .replace(" ", "")}`;
-    return NextResponse.redirect(url);
-  }
-
-  return NextResponse.next();
-});
-
 export default (req: NextRequest) => {
   if (isPublic(req.nextUrl)) {
     return NextResponse.next();
   }
-  return authMiddleware(req, {});
+  // Run auth middleware for route protection, session management, etc.
+  return auth(() => NextResponse.next())(req, {});
 };
 
 export const config = {
-  matcher: ["/((?!.*\\..*|_next).*)", "/", "/(api|trpc)(.*)"],
+  matcher: [
+    // Omit API routes and static files
+    "/((?!api|_next/static|_next/image|favicon.ico).*)",
+  ],
 };
