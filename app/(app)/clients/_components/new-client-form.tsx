@@ -1,8 +1,8 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
 import { Cross1Icon, PlusIcon } from "@radix-ui/react-icons";
 import { useDropzone } from "@uploadthing/react/hooks";
+import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 
 import { cn } from "~/lib/cn";
@@ -58,14 +58,17 @@ export function NewClientForm(props: { afterSubmit?: () => void }) {
   });
 
   const [imageDataUrl, setImageDataUrl] = useState<string | null>(null);
-  const onDrop = useCallback((files: File[]) => {
-    void startUpload(files);
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      setImageDataUrl(event.target?.result as string);
-    };
-    reader.readAsDataURL(files[0]);
-  }, []);
+  const onDrop = useCallback(
+    (files: File[]) => {
+      void startUpload(files);
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        setImageDataUrl(event.target?.result as string);
+      };
+      reader.readAsDataURL(files[0]);
+    },
+    [startUpload],
+  );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
@@ -149,22 +152,26 @@ export function NewClientForm(props: { afterSubmit?: () => void }) {
                       type="button"
                       size="icon"
                       className={cn(
-                        "absolute right-2 top-2",
+                        "absolute top-2 right-2",
                         isUploading && "hidden",
                       )}
                       variant="destructive"
                     >
                       <Cross1Icon className="h-2 w-2" />
                     </Button>
-                    <img src={imageDataUrl} className="aspect-auto h-32" />
+                    <img
+                      src={imageDataUrl}
+                      className="aspect-auto h-32"
+                      alt="Preview of the uploaded file"
+                    />
                   </>
                 ) : (
-                  <span className="flex h-32 items-center justify-center text-sm text-muted-foreground">
+                  <span className="flex h-32 items-center justify-center text-muted-foreground text-sm">
                     Drop or paste an image here, or click to select.
                   </span>
                 )}
                 {isUploading && (
-                  <LoadingDots className="absolute bottom-2 right-2" />
+                  <LoadingDots className="absolute right-2 bottom-2" />
                 )}
               </div>
               <FormMessage />

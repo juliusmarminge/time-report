@@ -1,22 +1,25 @@
 {
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": "explicit"
+    "quickfix.biome": "explicit",
+    "source.organizeImports.biome": "explicit"
   },
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.defaultFormatter": "biomejs.biome",
   "editor.formatOnSave": true,
-  "eslint.rules.customizations": [{ "rule": "*", "severity": "warn" }],
-  "typescript.enablePromptUseWorkspaceTsdk": true,
-  "typescript.surveys.enabled": false,
   "tailwindCSS.experimental.configFile": "./tailwind.config.ts",
-  "typescript.tsdk": "node_modules/typescript/lib",
+  "tailwindCSS.experimental.classRegex": [
+    ["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"],
+    ["cn\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"],
+    ["cx\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"]
+  ],
+  "typescript.enablePromptUseWorkspaceTsdk": true,
   "typescript.preferences.autoImportFileExcludePatterns": [
-    // useRouter should be imported from `next/navigation`
+    "@radix-ui/**",
     "next/router.d.ts",
     "next/dist/client/router.d.ts",
-
-    // Prefer imports from our UI lib wrappers
-    "react-hook-form/dist/index.d.ts",
-    "react-day-picker/dist/index.d.ts",
-    "vaul/dist/index.d.ts"
-  ]
+    "react-hook-form/**",
+    "react-day-picker/**",
+    "vaul/**"
+  ],
+  "typescript.surveys.enabled": false,
+  "typescript.tsdk": "node_modules/typescript/lib"
 }

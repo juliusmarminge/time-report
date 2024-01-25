@@ -246,9 +246,9 @@ export function ReportTimeSheet(props: {
             Warning
           </AlertDialogTitle>
           <AlertDialogDescription>
-            {`You're about to report time for a future date `}
+            {"You're about to report time for a future date "}
             <b>({props.date.toString()})</b>.
-            {` Are you sure you want to continue?`}
+            {" Are you sure you want to continue?"}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

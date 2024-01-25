@@ -27,7 +27,7 @@ export default async function ClientsPage() {
     >
       {clients.length === 0 && (
         <div className="flex h-[600px] flex-col items-center justify-center gap-4 rounded-lg border border-dashed">
-          <h2 className="text-xl font-bold">{`No clients found`}</h2>
+          <h2 className="font-bold text-xl">{"No clients found"}</h2>
           <p className="max-w-sm text-base text-muted-foreground">
             {`It appears you don't have any clients registered yet. Get started by adding your first client.`}
           </p>

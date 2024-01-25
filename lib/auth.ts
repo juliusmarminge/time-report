@@ -1,11 +1,11 @@
-import * as React from "react";
-import { redirect } from "next/navigation";
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import { eq } from "drizzle-orm";
 import type { InferSelectModel } from "drizzle-orm";
 import NextAuth from "next-auth";
 import type { EmailConfig } from "next-auth/providers";
 import Github from "next-auth/providers/github";
+import { redirect } from "next/navigation";
+import * as React from "react";
 
 import { db } from "~/db/client";
 import { sessions, users } from "~/db/schema";

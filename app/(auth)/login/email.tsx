@@ -1,8 +1,8 @@
 "use client";
 
-import * as React from "react";
-import { useRouter, useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
+import { useRouter, useSearchParams } from "next/navigation";
+import * as React from "react";
 
 import { Button } from "~/ui/button";
 import { Input } from "~/ui/input";

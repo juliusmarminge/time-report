@@ -1,10 +1,10 @@
 "use client";
 
-import { use } from "react";
-import Link from "next/link";
 import { ChevronRightIcon, ExitIcon } from "@radix-ui/react-icons";
 import type { Session } from "next-auth";
 import { signOut } from "next-auth/react";
+import Link from "next/link";
+import { use } from "react";
 
 import { cn } from "~/lib/cn";
 import { setDefaultCurrency } from "~/lib/user-actions";
@@ -34,11 +34,11 @@ export function UserButton(props: {
         href="/login"
         className={cn(
           buttonVariants(),
-          "justify-start gap-2 bg-popover py-6 text-popover-foreground hover:bg-zinc-300 dark:hover:bg-zinc-950",
+          "justify-start gap-2 bg-popover py-6 text-popover-foreground dark:hover:bg-zinc-950 hover:bg-zinc-300",
           props.className,
         )}
       >
-        <span className="text-sm font-semibold">Sign in to get started</span>
+        <span className="font-semibold text-sm">Sign in to get started</span>
         <ChevronRightIcon className="ml-auto h-4 w-4" />
       </Link>
     );
@@ -49,7 +49,7 @@ export function UserButton(props: {
       <DropdownMenuTrigger asChild>
         <Button
           className={cn(
-            "justify-start gap-2 bg-popover py-6 text-popover-foreground hover:bg-zinc-300 dark:hover:bg-zinc-950",
+            "justify-start gap-2 bg-popover py-6 text-popover-foreground dark:hover:bg-zinc-950 hover:bg-zinc-300",
             props.className,
           )}
         >
@@ -64,7 +64,7 @@ export function UserButton(props: {
               {(user?.name ?? "U").slice(0, 2).toUpperCase()}
             </AvatarFallback>
           </Avatar>
-          <span className="text-sm font-semibold">{user.name}</span>
+          <span className="font-semibold text-sm">{user.name}</span>
           <ChevronRightIcon className="ml-auto h-4 w-4" />
         </Button>
       </DropdownMenuTrigger>

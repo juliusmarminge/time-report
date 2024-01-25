@@ -1,9 +1,5 @@
 import "server-only";
 
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { unstable_cache } from "next/cache";
 
 import { tson } from "~/lib/tson";
@@ -16,6 +12,7 @@ export const CACHE_TAGS = {
 type CacheTag = (typeof CACHE_TAGS)[keyof typeof CACHE_TAGS];
 
 export async function withUnstableCache<
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   T extends (...args: any[]) => any,
 >(opts: { fn: T; args: Parameters<T>; tags: CacheTag[] }) {
   const cachedResult = await unstable_cache(

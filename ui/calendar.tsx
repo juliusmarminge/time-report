@@ -1,9 +1,9 @@
 "use client";
 
-import * as React from "react";
 import { Temporal } from "@js-temporal/polyfill";
 import { ChevronLeftIcon, ChevronRightIcon } from "@radix-ui/react-icons";
 import { format, parse } from "date-fns";
+import type * as React from "react";
 import { DayPicker } from "react-day-picker";
 
 import { cn } from "~/lib/cn";
@@ -49,7 +49,7 @@ function Calendar({
         cell: cn(
           "relative p-0 text-center text-sm focus-within:relative focus-within:z-20 [&:has([aria-selected])]:bg-accent",
           props.mode === "range"
-            ? "[&:has(>.day-range-end)]:rounded-r-md [&:has(>.day-range-start)]:rounded-l-md first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md"
+            ? "[&:has(>.day-range-end)]:rounded-r-md last:[&:has([aria-selected])]:rounded-r-md [&:has(>.day-range-start)]:rounded-l-md first:[&:has([aria-selected])]:rounded-l-md"
             : "[&:has([aria-selected])]:rounded-md",
         ),
         day: cn(
