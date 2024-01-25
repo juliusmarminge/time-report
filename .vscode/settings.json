@@ -13,11 +13,12 @@
   ],
   "typescript.enablePromptUseWorkspaceTsdk": true,
   "typescript.preferences.autoImportFileExcludePatterns": [
+    "@radix-ui/**",
     "next/router.d.ts",
     "next/dist/client/router.d.ts",
-    "react-hook-form/dist/index.d.ts",
-    "react-day-picker/dist/index.d.ts",
-    "vaul/dist/index.d.ts"
+    "react-hook-form/**",
+    "react-day-picker/**",
+    "vaul/**"
   ],
   "typescript.surveys.enabled": false,
   "typescript.tsdk": "node_modules/typescript/lib"
