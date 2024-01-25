@@ -1,7 +1,7 @@
-import * as React from "react";
 import { valibotResolver } from "@hookform/resolvers/valibot";
 import type * as LabelPrimitive from "@radix-ui/react-label";
 import { Slot } from "@radix-ui/react-slot";
+import * as React from "react";
 import type {
   ControllerProps,
   FieldPath,
@@ -11,8 +11,8 @@ import type {
 import {
   Controller,
   FormProvider,
-  useFormContext,
   useForm as useFormHook,
+  useFormContext,
 } from "react-hook-form";
 import type { BaseSchema, Input } from "valibot";
 
@@ -179,7 +179,7 @@ const FormMessage = React.forwardRef<
     <p
       ref={ref}
       id={formMessageId}
-      className={cn("text-[0.8rem] font-medium text-destructive", className)}
+      className={cn("font-medium text-[0.8rem] text-destructive", className)}
       {...props}
     >
       {body}

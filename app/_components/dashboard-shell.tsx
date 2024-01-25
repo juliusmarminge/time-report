@@ -1,4 +1,4 @@
-import React from "react";
+import type React from "react";
 
 import { cn } from "~/lib/cn";
 
@@ -14,7 +14,7 @@ export function DashboardShell(props: {
       <header className="mb-4 flex items-center justify-between">
         <div className="space-y-1">
           {typeof props.title === "string" ? (
-            <h1 className="font-cal text-xl font-semibold leading-none">
+            <h1 className="font-cal font-semibold text-xl leading-none">
               {props.title}
             </h1>
           ) : (
@@ -31,6 +31,7 @@ export function DashboardShell(props: {
         {Array.isArray(props.headerActions) ? (
           <ul className="flex items-center gap-4">
             {props.headerActions.map((action, i) => (
+              // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
               <li key={i}>{action}</li>
             ))}
           </ul>

@@ -1,8 +1,8 @@
 "use client";
 
-import * as React from "react";
 import type { Dinero } from "dinero.js";
 import type { Session } from "next-auth";
+import * as React from "react";
 
 import { convert } from "./monetary";
 import type { CurrencyCode } from "./monetary";
@@ -36,7 +36,7 @@ export const ConverterProvider = (props: {
 
   const _convert = React.useCallback(
     (d: Dinero<number>, c: CurrencyCode) => convert(d, c, rates),
-    [props.rates],
+    [rates],
   );
 
   return (

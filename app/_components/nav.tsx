@@ -1,7 +1,7 @@
-import { Suspense } from "react";
-import Link from "next/link";
 import { Temporal } from "@js-temporal/polyfill";
 import { HamburgerMenuIcon } from "@radix-ui/react-icons";
+import Link from "next/link";
+import { Suspense } from "react";
 
 import { currentUser } from "~/lib/auth";
 import { cn } from "~/lib/cn";
@@ -20,7 +20,7 @@ export function DesktopSidebar(props: { className?: string }) {
     >
       <Link
         href="/"
-        className="flex cursor-pointer items-center stroke-stone-800 px-8 py-6 text-2xl font-semibold tracking-tight duration-200 hover:stroke-stone-700 hover:text-stone-700 dark:stroke-stone-500 dark:text-stone-200 dark:hover:stroke-white dark:hover:text-white"
+        className="flex cursor-pointer items-center stroke-stone-800 px-8 py-6 font-semibold text-2xl tracking-tight duration-200 dark:hover:stroke-white dark:stroke-stone-500 hover:stroke-stone-700 dark:hover:text-white dark:text-stone-200 hover:text-stone-700"
       >
         <span className="bg-gradient-to-tr from-gray-800 to-gray-500 bg-clip-text text-transparent dark:from-gray-100 dark:to-gray-400">
           Time
@@ -42,6 +42,7 @@ export function DesktopSidebar(props: { className?: string }) {
             viewBox="0 0 24 24"
             className="mr-2 h-6 w-6"
           >
+            <title>Calendar</title>
             <path
               className="fill-foreground"
               d="M5 4h14a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6c0-1.1.9-2 2-2zm0 5v10h14V9H5z"
@@ -59,6 +60,7 @@ export function DesktopSidebar(props: { className?: string }) {
             viewBox="0 0 24 24"
             className="mr-2 h-6 w-6"
           >
+            <title>Clients</title>
             <path
               className="fill-muted-foreground"
               d="M12 13a3 3 0 0 1 3-3h4a3 3 0 0 1 3 3v3a1 1 0 0 1-1 1h-8a1 1 0 0 1-1-1 1 1 0 0 1-1 1H3a1 1 0 0 1-1-1v-3a3 3 0 0 1 3-3h4a3 3 0 0 1 3 3zM7 9a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm10 0a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"
@@ -89,7 +91,7 @@ export function MobileNav(props: { className?: string }) {
     >
       <Link
         href="/"
-        className="flex cursor-pointer items-center stroke-stone-800 text-2xl font-semibold tracking-tight duration-200 hover:stroke-stone-700 hover:text-stone-700 dark:stroke-stone-500 dark:text-stone-200 dark:hover:stroke-white dark:hover:text-white"
+        className="flex cursor-pointer items-center stroke-stone-800 font-semibold text-2xl tracking-tight duration-200 dark:hover:stroke-white dark:stroke-stone-500 hover:stroke-stone-700 dark:hover:text-white dark:text-stone-200 hover:text-stone-700"
       >
         <span className="bg-gradient-to-tr from-gray-800 to-gray-500 bg-clip-text text-transparent dark:from-gray-100 dark:to-gray-400">
           Time
@@ -109,6 +111,7 @@ export function MobileNav(props: { className?: string }) {
               viewBox="0 0 24 24"
               className="mr-2 h-6 w-6"
             >
+              <title>Calendar</title>
               <path
                 className="fill-muted-foreground"
                 d="M3 11h2a1 1 0 0 1 0 2H3v-2zm3.34-6.07l1.42 1.41a1 1 0 0 1-1.42 1.42L4.93 6.34l1.41-1.41zM13 3v2a1 1 0 0 1-2 0V3h2zm6.07 3.34l-1.41 1.42a1 1 0 1 1-1.42-1.42l1.42-1.41 1.41 1.41zM21 13h-2a1 1 0 0 1 0-2h2v2z"
@@ -122,7 +125,7 @@ export function MobileNav(props: { className?: string }) {
                 d="M11 14.27V9a1 1 0 0 1 2 0v5.27a2 2 0 1 1-2 0z"
               />
             </svg>
-            Overview
+            Report Time
           </NavButton>
           <NavButton href="/clients" inSheet>
             <svg
@@ -130,6 +133,7 @@ export function MobileNav(props: { className?: string }) {
               viewBox="0 0 24 24"
               className="mr-2 h-6 w-6"
             >
+              <title>Clients</title>
               <path
                 className="fill-muted-foreground"
                 d="M12 13a3 3 0 0 1 3-3h4a3 3 0 0 1 3 3v3a1 1 0 0 1-1 1h-8a1 1 0 0 1-1-1 1 1 0 0 1-1 1H3a1 1 0 0 1-1-1v-3a3 3 0 0 1 3-3h4a3 3 0 0 1 3 3zM7 9a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm10 0a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"

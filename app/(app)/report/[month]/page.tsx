@@ -1,7 +1,7 @@
-import { Suspense } from "react";
-import { redirect } from "next/navigation";
 import { Temporal } from "@js-temporal/polyfill";
 import { toDecimal } from "dinero.js";
+import { redirect } from "next/navigation";
+import { Suspense } from "react";
 
 import { DashboardShell } from "~/app/_components/dashboard-shell";
 import type { Timeslot } from "~/db/queries";
@@ -104,53 +104,53 @@ export default async function IndexPage(props: { params: { month: string } }) {
         </Suspense>,
       ]}
     >
-      <section className="flex gap-4 overflow-x-scroll md:grid md:grid-cols-2 lg:grid-cols-3">
+      <section className="flex gap-4 overflow-x-scroll md:grid lg:grid-cols-3 md:grid-cols-2">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
+            <CardTitle className="font-medium text-sm">Total Revenue</CardTitle>
           </CardHeader>
           <CardContent className="w-max md:w-auto">
-            <div className="text-2xl font-bold">
+            <div className="font-bold text-2xl">
               {toDecimal(totalRevenue, formatMoney)}
             </div>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-muted-foreground text-xs">
               +{toDecimal(totalRevenue, formatMoney)} since last month
             </p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Billed time</CardTitle>
+            <CardTitle className="font-medium text-sm">Billed time</CardTitle>
           </CardHeader>
           <CardContent className="w-max md:w-auto">
-            <div className="text-2xl font-bold">
+            <div className="font-bold text-2xl">
               {totalHours}
               <span className="ml-1 text-lg">hours</span>
             </div>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-muted-foreground text-xs">
               +{totalHours} hours from last month
             </p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
+            <CardTitle className="font-medium text-sm">
               Active Clients
             </CardTitle>
           </CardHeader>
           <CardContent className="w-max md:w-auto">
-            <div className="text-2xl font-bold">
+            <div className="font-bold text-2xl">
               {billedClients}
               <span className="ml-1 text-lg">billed this month</span>
             </div>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-muted-foreground text-xs">
               out of {clients.length} total clients
             </p>
           </CardContent>
         </Card>
       </section>
 
-      <section className="flex flex-col gap-4 md:grid md:grid-cols-2 lg:grid-cols-4">
+      <section className="flex flex-col gap-4 md:grid lg:grid-cols-4 md:grid-cols-2">
         <CalendarAndSidePanel
           referenceDate={tson.serialize(date)}
           clients={tson.serialize(clients)}

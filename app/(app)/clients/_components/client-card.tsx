@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
 import { Temporal } from "@js-temporal/polyfill";
 import { CheckIcon, Pencil1Icon, TrashIcon } from "@radix-ui/react-icons";
 import { format } from "date-fns";
 import type { Dinero } from "dinero.js";
 import { dinero, toDecimal } from "dinero.js";
+import { useState } from "react";
 import type { TsonSerialized } from "tupleson";
 import * as v from "valibot";
 
@@ -103,17 +103,17 @@ export function ClientCard(props: { client: TsonSerialized<Client> }) {
             <AvatarFallback>{client.name[0]}</AvatarFallback>
           </Avatar>
           <div>
-            <h2 className="text-xl font-bold">{client.name}</h2>
-            <p className="text-sm text-muted-foreground">
+            <h2 className="font-bold text-xl">{client.name}</h2>
+            <p className="text-muted-foreground text-sm">
               Created: {format(client.createdAt, "MMMM do yyyy")},{" "}
             </p>
             {client.currency && client.defaultCharge && (
-              <p className="text-sm text-muted-foreground">
-                {`Invoiced `}
+              <p className="text-muted-foreground text-sm">
+                {"Invoiced "}
                 {client.defaultBillingPeriod}
-                {` at `}
+                {" at "}
                 {toDecimal(defaultCharge, (money) => formatMoney(money))}
-                {` an hour `}
+                {" an hour "}
               </p>
             )}
           </div>
@@ -128,12 +128,12 @@ export function ClientCard(props: { client: TsonSerialized<Client> }) {
         </Button>
       </div>
       <CardContent className="flex flex-col gap-4 p-6 pt-0">
-        <h3 className="text-base font-semibold">
+        <h3 className="font-semibold text-base">
           Total invoiced: {toDecimal(clientTotal, formatMoney)}
         </h3>
 
         <div className="flex flex-col gap-2">
-          <h3 className="text-base font-semibold">Billing Periods</h3>
+          <h3 className="font-semibold text-base">Billing Periods</h3>
           <ul className="flex flex-col gap-2">
             {sortedPeriods.map((p, i) => (
               <div key={p.id} className="flex flex-col gap-1">
@@ -149,7 +149,7 @@ export function ClientCard(props: { client: TsonSerialized<Client> }) {
                       Expired
                     </Badge>
                   )}
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-muted-foreground text-sm">
                     {formatOrdinal(p.startDate)} to {formatOrdinal(p.endDate)}
                   </p>
                 </div>
@@ -221,7 +221,7 @@ function EditingClientCard(props: {
                     <FormControl>
                       <Input {...field} />
                     </FormControl>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-muted-foreground text-sm">
                       Created: {format(client.createdAt, "MMMM do yyyy")}
                     </p>
                   </FormItem>
@@ -252,7 +252,7 @@ function EditingClientCard(props: {
                   <AlertDialogTitle>Delete client</AlertDialogTitle>
                   <AlertDialogDescription>
                     {`Are you sure you want to delete the client "${client.name}"? `}
-                    {`This will also delete all timeslots for this client.`}
+                    {"This will also delete all timeslots for this client."}
                   </AlertDialogDescription>
                   <AlertDialogFooter>
                     <AlertDialogCancel>Cancel</AlertDialogCancel>

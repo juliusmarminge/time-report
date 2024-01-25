@@ -9,7 +9,7 @@ export default function Page() {
       className="max-w-2xl gap-6"
     >
       <div className="flex flex-col gap-3">
-        <h2 className="text-lg font-semibold">How to use?</h2>
+        <h2 className="font-semibold text-lg">How to use?</h2>
         <p className="text-base text-muted-foreground">
           Time Report has 3 main concepts, <b>Clients</b>, <b>Periods</b> and{" "}
           <b>Slots</b>.
@@ -42,7 +42,7 @@ export default function Page() {
       </div>
 
       <div className="flex flex-col gap-3">
-        <h2 className="text-lg font-semibold">Core Features</h2>
+        <h2 className="font-semibold text-lg">Core Features</h2>
         <p className="text-base text-muted-foreground">
           Time Report aims to be as simple as possible, the main features we aim
           to solve are:

@@ -10,7 +10,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
       <input
         type={type}
         className={cn(
-          "flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
+          "flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 shadow-sm transition-colors disabled:cursor-not-allowed file:border-0 file:bg-transparent file:font-medium file:text-sm md:text-sm placeholder:text-muted-foreground disabled:opacity-50 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring",
           className,
         )}
         ref={ref}
@@ -72,7 +72,7 @@ interface AddonProps {
 const Addon = ({ children, className }: AddonProps) => (
   <div
     className={cn(
-      "addon-wrapper [&:has(+_input:hover)]:border-emphasis [&:has(+_input:hover)]:border-r-default h-9 overflow-hidden border [input:hover_+_&]:border [input:hover_+_&]:border-l",
+      "addon-wrapper h-9 overflow-hidden border [input:hover_+_&]:border [&:has(+_input:hover)]:border-emphasis [&:has(+_input:hover)]:border-r-default [input:hover_+_&]:border-l",
       className,
     )}
   >

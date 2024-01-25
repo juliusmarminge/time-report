@@ -1,8 +1,8 @@
 "use client";
 
-import { Fragment } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Fragment } from "react";
 
 import { cn } from "~/lib/cn";
 import { buttonVariants } from "~/ui/button";
@@ -23,7 +23,7 @@ export function NavButton(props: {
         href={props.href}
         className={cn(
           buttonVariants({ variant: "ghost" }),
-          "group w-full justify-start text-popover-foreground hover:bg-zinc-300 dark:hover:bg-zinc-950",
+          "group w-full justify-start text-popover-foreground dark:hover:bg-zinc-950 hover:bg-zinc-300",
           pathname === props.href && "bg-popover",
         )}
       >

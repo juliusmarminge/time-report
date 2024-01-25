@@ -1,9 +1,9 @@
 "use client";
 
-import { useRef, useState, useTransition } from "react";
-import { useRouter } from "next/navigation";
 import type { Temporal } from "@js-temporal/polyfill";
 import { format } from "date-fns";
+import { useRouter } from "next/navigation";
+import { useRef, useState, useTransition } from "react";
 import { useDayRender } from "react-day-picker";
 import type { TsonSerialized } from "tupleson";
 
@@ -106,7 +106,7 @@ export function Calendar(props: {
                 day.buttonProps.onClick?.(e);
               }}
             >
-              <span className="text-lg font-bold">
+              <span className="font-bold text-lg">
                 {format(dayProps.date, "d")}
               </span>
               {slots?.map((slot) => (

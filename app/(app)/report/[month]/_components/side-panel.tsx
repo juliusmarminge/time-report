@@ -1,9 +1,9 @@
 "use client";
 
-import { Suspense } from "react";
 import type { Temporal } from "@js-temporal/polyfill";
 import { toDecimal } from "dinero.js";
 import { useSetAtom } from "jotai";
+import { Suspense } from "react";
 
 import { NewClientSheet } from "~/app/(app)/clients/_components/new-client-form";
 import type { Client, Timeslot } from "~/db/queries";
@@ -58,7 +58,7 @@ export function SidePanel(props: {
       </CardHeader>
       <CardContent className="flex flex-col gap-4 p-0 lg:px-6">
         {props.timeslots.length === 0 && (
-          <p className="text-sm text-muted-foreground">
+          <p className="text-muted-foreground text-sm">
             No timeslots for this date.
           </p>
         )}

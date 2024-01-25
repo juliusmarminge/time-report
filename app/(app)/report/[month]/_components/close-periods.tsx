@@ -1,7 +1,7 @@
 "use client";
 
-import { Fragment, useEffect, useState } from "react";
 import { dinero, toDecimal } from "dinero.js";
+import { Fragment, useEffect, useState } from "react";
 import type { TsonSerialized } from "tupleson";
 
 import type { Period } from "~/db/queries";
@@ -56,8 +56,8 @@ function PeriodCard(props: { period: Period }) {
   return (
     <div className="flex flex-col gap-2">
       <div className="flex items-center gap-2">
-        <h2 className="text-lg font-bold">{period.client.name}</h2>
-        <p className="text-sm text-muted-foreground">
+        <h2 className="font-bold text-lg">{period.client.name}</h2>
+        <p className="text-muted-foreground text-sm">
           {formatOrdinal(period.startDate)}
           {" to "}
           {formatOrdinal(period.endDate)}
@@ -81,11 +81,11 @@ function PeriodCard(props: { period: Period }) {
 
           return (
             <div key={slot.id}>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-muted-foreground text-sm">
                 {formatOrdinal(slot.date)}
-                {` - `}
+                {" - "}
                 {slot.duration}
-                {`h @ `}
+                {"h @ "}
                 {toDecimal(chargeRate, (money) => formatMoney(money))}
               </p>
             </div>
@@ -184,7 +184,7 @@ export function ClosePeriodSheet(props: {
       isPast(period.endDate),
     );
     setDialogOpen(hasExpiredPeriods);
-  }, []);
+  }, [openPeriods]);
 
   const { Root, Trigger, Content, Header, Title, Description } =
     useResponsiveSheet();

@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
 import { CheckIcon, Pencil1Icon, TrashIcon } from "@radix-ui/react-icons";
 import type { Dinero } from "dinero.js";
 import { dinero, toDecimal } from "dinero.js";
+import { useState } from "react";
 import * as v from "valibot";
 
 import type { Timeslot } from "~/db/queries";
@@ -75,10 +75,10 @@ export function TimeslotCard(props: { slot: Timeslot }) {
         </Button>
       </div>
       <CardContent>
-        <p className="text-base font-bold text-muted-foreground">
+        <p className="font-bold text-base text-muted-foreground">
           {props.slot.duration}
-          {`h`}
-          <span className="font-normal">{` @ `}</span>
+          {"h"}
+          <span className="font-normal">{" @ "}</span>
           {toDecimal(chargeRate, (money) => formatMoney(money))}
         </p>
       </CardContent>

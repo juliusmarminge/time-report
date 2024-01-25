@@ -1,9 +1,9 @@
 import "./globals.css";
 
-import type { Metadata, Viewport } from "next";
 import { ThemeProvider } from "@juliusmarminge/next-themes";
 import { GeistMono } from "geist/font/mono";
 import { GeistSans } from "geist/font/sans";
+import type { Metadata, Viewport } from "next";
 
 import { DesktopSidebar, MobileNav } from "~/app/_components/nav";
 import { cn } from "~/lib/cn";
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://timeit.jumr.dev"),
   title: {
     default: "Time Reporting App",
-    template: `%s - Time Reporting App`,
+    template: "%s - Time Reporting App",
   },
   description:
     "An app for indie contractors to track time and generate invoices.",
