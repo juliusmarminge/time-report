@@ -138,7 +138,7 @@ export function ReportTimeForm(props: {
                         value={field.value}
                       >
                         <FormControl>
-                          <SelectTrigger className="w-max rounded-none border-none bg-muted px-3 font-mono">
+                          <SelectTrigger className="w-24 rounded-none border-none bg-muted px-3 font-mono">
                             <SelectValue />
                           </SelectTrigger>
                         </FormControl>
@@ -229,7 +229,7 @@ export function ReportTimeSheet(props: {
           <Header className="mb-4">
             <Title>Report time</Title>
           </Header>
-          <ScrollArea className="h-[65dvh]">
+          <ScrollArea className="h-[65dvh] 2xl:h-auto">
             <ReportTimeForm
               clients={props.clients}
               date={props.date}
