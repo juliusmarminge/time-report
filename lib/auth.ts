@@ -1,3 +1,4 @@
+import type { Adapter } from "@auth/core/adapters";
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import { eq } from "drizzle-orm";
 import type { InferSelectModel } from "drizzle-orm";
@@ -60,7 +61,7 @@ export const {
 
       return sessionAndUsers[0] ?? null;
     },
-  },
+  } as Adapter,
   providers: [
     ...providers.map((p) => p.handler),
     ...(process.env.VERCEL_ENV !== "production" ? [mockEmail] : []),

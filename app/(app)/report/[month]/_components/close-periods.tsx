@@ -173,18 +173,39 @@ export function ClosePeriodConfirmationModal(props: { period: Period }) {
   );
 }
 
+function useLocalStorage<T>(key: string, initialValue: T) {
+  const [value, setValue] = useState<T>(() => {
+    if (typeof window === "undefined") return initialValue;
+    const item = window.localStorage.getItem(key);
+    return item ? JSON.parse(item) : initialValue;
+  });
+
+  useEffect(() => {
+    window.localStorage.setItem(key, JSON.stringify(value));
+  }, [key, value]);
+
+  return [value, setValue] as const;
+}
+
 export function ClosePeriodSheet(props: {
   openPeriods: TsonSerialized<Period[]>;
 }) {
   const openPeriods = tson.deserialize(props.openPeriods);
+  const [hasDismissed, setHasDismissed] = useLocalStorage<number | null>(
+    "close-period-sheet-dismissed",
+    null,
+  );
 
   const [dialogOpen, setDialogOpen] = useState(false);
   useEffect(() => {
     const hasExpiredPeriods = openPeriods.some((period) =>
       isPast(period.endDate),
     );
+    const dismissed = hasDismissed ? new Date(hasDismissed) : null;
+    const oneHourAgo = new Date(Date.now() - 1000 * 60 * 60);
+    if (hasExpiredPeriods && dismissed && dismissed > oneHourAgo) return;
     setDialogOpen(hasExpiredPeriods);
-  }, [openPeriods]);
+  }, [openPeriods, hasDismissed]);
 
   const { Root, Trigger, Content, Header, Title, Description } =
     useResponsiveSheet();
@@ -218,7 +239,13 @@ export function ClosePeriodSheet(props: {
             It is recommended that you close expired periods.
           </AlertDialogDescription>
           <AlertDialogFooter>
-            <AlertDialogCancel>Remind me later</AlertDialogCancel>
+            <AlertDialogCancel
+              onClick={() => {
+                setHasDismissed(Date.now());
+              }}
+            >
+              Remind me later
+            </AlertDialogCancel>
             <AlertDialogAction asChild>
               <Trigger asChild>
                 <Button variant="secondary">Manage</Button>

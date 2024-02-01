@@ -72,13 +72,5 @@
     "postcss": "8.4.33",
     "tailwindcss": "3.4.1",
     "typescript": "^5.3.3"
-  },
-  "pnpm": {
-    "overrides": {
-      "@auth/core": "0.21.0"
-    },
-    "patchedDependencies": {
-      "@baselime/node-opentelemetry@0.3.0": "patches/@baselime__node-opentelemetry@0.3.0.patch"
-    }
   }
 }
