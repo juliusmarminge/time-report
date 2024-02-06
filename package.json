@@ -15,7 +15,7 @@
     "ui": "bunx shadcn-ui"
   },
   "dependencies": {
-    "@auth/core": "^0.26.2",
+    "@auth/core": "0.21.0",
     "@auth/drizzle-adapter": "^0.3.15",
     "@baselime/node-opentelemetry": "^0.3.0",
     "@dinero.js/currencies": "2.0.0-alpha.14",

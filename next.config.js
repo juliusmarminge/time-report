@@ -5,7 +5,6 @@ export default withBundleAnalyzer({
   openAnalyzer: false,
 })({
   eslint: { ignoreDuringBuilds: true },
-  typescript: { ignoreBuildErrors: true },
   experimental: {
     ppr: true,
     instrumentationHook: true,
