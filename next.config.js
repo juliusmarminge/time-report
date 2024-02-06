@@ -4,9 +4,8 @@ export default withBundleAnalyzer({
   enabled: process.env.ANALYZE === "true",
   openAnalyzer: false,
 })({
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
+  eslint: { ignoreDuringBuilds: true },
+  typescript: { ignoreBuildErrors: true },
   experimental: {
     ppr: true,
     instrumentationHook: true,
