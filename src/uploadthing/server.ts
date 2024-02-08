@@ -1,7 +1,12 @@
 import type { FileRouter } from "uploadthing/next";
 import { createUploadthing } from "uploadthing/next";
+import { UTApi } from "uploadthing/server";
 
 import { currentUser } from "~/auth/rsc";
+
+export const utapi = new UTApi({
+  // logLevel: "debug",
+});
 
 const f = createUploadthing({
   errorFormatter: (err) => {

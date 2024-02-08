@@ -4,7 +4,7 @@ import { revalidateTag } from "next/cache";
 
 import { db } from "~/db/client";
 import { users } from "~/db/schema";
-import type { CurrencyCode } from "./monetary";
+import type { CurrencyCode } from "../monetary/math";
 
 export async function setDefaultCurrency(currency: CurrencyCode) {
   await db.update(users).set({

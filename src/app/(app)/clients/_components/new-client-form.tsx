@@ -6,8 +6,7 @@ import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 
 import { cn } from "~/lib/cn";
-import { currencies } from "~/lib/monetary";
-import { useUploadThing } from "~/lib/uploadthing";
+import { currencies } from "~/monetary/math";
 import { Button } from "~/ui/button";
 import {
   Form,
@@ -30,6 +29,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/ui/select";
+import { useUploadThing } from "~/uploadthing/client";
 import { createClient, deleteImageFromUT } from "../_actions";
 import { billingPeriods, createClientSchema } from "../_validators";
 

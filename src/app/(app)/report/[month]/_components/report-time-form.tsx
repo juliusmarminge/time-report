@@ -5,8 +5,8 @@ import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 import { atom, useAtom } from "jotai";
 
 import type { Client } from "~/db/queries";
-import { currencies } from "~/lib/monetary";
 import { isFuture } from "~/lib/temporal";
+import { currencies } from "~/monetary/math";
 import {
   AlertDialog,
   AlertDialogAction,

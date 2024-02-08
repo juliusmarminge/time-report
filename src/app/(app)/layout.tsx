@@ -1,6 +1,6 @@
 import { currentUser } from "~/auth/rsc";
-import { ConverterProvider } from "~/lib/converter";
-import { getCurrencyRates } from "~/lib/monetary.server";
+import { ConverterProvider } from "~/monetary/context";
+import { getCurrencyRates } from "~/monetary/rsc";
 
 /**
  * FIXME: This indirection shouldn't be needed.

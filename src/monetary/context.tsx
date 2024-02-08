@@ -2,10 +2,10 @@
 
 import type { Dinero } from "dinero.js";
 import type { Session } from "next-auth";
-import * as React from "react";
+import { createContext, use, useMemo } from "react";
 
-import { convert } from "./monetary";
-import type { CurrencyCode } from "./monetary";
+import { convert } from "./math";
+import type { CurrencyCode } from "./math";
 
 /**
  * Context that allows the server to pass the exchange rates once, and then
@@ -13,13 +13,13 @@ import type { CurrencyCode } from "./monetary";
  * the rates to a bunch of client compoenents all over the place...
  */
 
-const ConvertedContext = React.createContext<{
+const ConvertedContext = createContext<{
   preferredCurrency: CurrencyCode;
   convert: (dinero: Dinero<number>, currency: CurrencyCode) => Dinero<number>;
 } | null>(null);
 
 export const useConverter = () => {
-  const context = React.useContext(ConvertedContext);
+  const context = use(ConvertedContext);
   if (!context) {
     throw new Error("useConverter must be used within a ConverterProvider");
   }
@@ -31,21 +31,19 @@ export const ConverterProvider = (props: {
   rates: Promise<Record<string, number>>;
   user: Promise<Session["user"] | null>;
 }) => {
-  const rates = React.use(props.rates);
-  const curr = React.use(props.user)?.defaultCurrency;
+  const rates = use(props.rates);
+  const curr = use(props.user)?.defaultCurrency;
 
-  const _convert = React.useCallback(
-    (d: Dinero<number>, c: CurrencyCode) => convert(d, c, rates),
-    [rates],
+  const contextValue = useMemo(
+    () => ({
+      convert: (d: Dinero<number>, c: CurrencyCode) => convert(d, c, rates),
+      preferredCurrency: curr ?? "USD",
+    }),
+    [rates, curr],
   );
 
   return (
-    <ConvertedContext.Provider
-      value={{
-        convert: _convert,
-        preferredCurrency: curr ?? "USD",
-      }}
-    >
+    <ConvertedContext.Provider value={contextValue}>
       {props.children}
     </ConvertedContext.Provider>
   );

@@ -7,7 +7,7 @@ import { useState } from "react";
 import * as v from "valibot";
 
 import type { Timeslot } from "~/db/queries";
-import { currencies, formatMoney } from "~/lib/monetary";
+import { currencies, formatMoney } from "~/monetary/math";
 import {
   AlertDialog,
   AlertDialogAction,

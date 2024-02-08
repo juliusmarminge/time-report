@@ -15,7 +15,7 @@ import {
 } from "drizzle-orm/mysql-core";
 import type { AdapterAccount } from "next-auth/adapters";
 
-import type { CurrencyCode } from "~/lib/monetary";
+import type { CurrencyCode } from "~/monetary/math";
 
 const idColumn = bigint("id", { mode: "number", unsigned: true })
   .primaryKey()

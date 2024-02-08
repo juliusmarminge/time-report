@@ -4,7 +4,7 @@ import { fontFamily } from "tailwindcss/defaultTheme";
 
 export default {
   darkMode: ["class"],
-  content: ["./app/**/*.tsx", "./ui/**/*.tsx"],
+  content: ["./src/**/*.tsx"],
   future: { hoverOnlyWhenSupported: true },
   theme: {
     container: {

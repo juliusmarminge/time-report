@@ -8,9 +8,9 @@ import { Suspense } from "react";
 import { NewClientSheet } from "~/app/(app)/clients/_components/new-client-form";
 import type { Client, Timeslot } from "~/db/queries";
 import { cn } from "~/lib/cn";
-import { useConverter } from "~/lib/converter";
-import { formatMoney, slotsToDineros, sumDineros } from "~/lib/monetary";
 import { formatOrdinal } from "~/lib/temporal";
+import { useConverter } from "~/monetary/context";
+import { formatMoney, slotsToDineros, sumDineros } from "~/monetary/math";
 import {
   Card,
   CardContent,

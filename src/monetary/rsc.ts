@@ -3,8 +3,8 @@ import "server-only";
 import type { Dinero } from "dinero.js";
 import { cache } from "react";
 
-import type { CurrencyCode } from "./monetary";
-import { convert } from "./monetary";
+import type { CurrencyCode } from "./math";
+import { convert } from "./math";
 
 export const getCurrencyRates = async () => {
   interface FixerResponse {
