@@ -8,6 +8,7 @@ export default withBundleAnalyzer({
   experimental: {
     ppr: true,
     instrumentationHook: true,
+    serverComponentsExternalPackages: ["@trpc/server"],
   },
   logging: {
     fetches: {
