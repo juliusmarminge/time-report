@@ -2,7 +2,7 @@ import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import { eq } from "drizzle-orm";
 import type { InferSelectModel } from "drizzle-orm";
 import NextAuth from "next-auth";
-import "next-auth/adapters";
+import type from "next-auth/adapters";
 import type { EmailConfig } from "next-auth/providers";
 import Github from "next-auth/providers/github";
 import { redirect } from "next/navigation";
