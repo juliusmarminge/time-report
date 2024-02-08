@@ -1,7 +1,7 @@
 import type { FileRouter } from "uploadthing/next";
 import { createUploadthing } from "uploadthing/next";
 
-import { currentUser } from "~/lib/auth";
+import { currentUser } from "~/auth/rsc";
 
 const f = createUploadthing({
   errorFormatter: (err) => {

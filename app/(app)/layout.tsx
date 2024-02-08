@@ -1,4 +1,4 @@
-import { currentUser } from "~/lib/auth";
+import { currentUser } from "~/auth/rsc";
 import { ConverterProvider } from "~/lib/converter";
 import { getCurrencyRates } from "~/lib/monetary.server";
 

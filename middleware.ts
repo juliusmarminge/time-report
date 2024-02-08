@@ -1,6 +1,8 @@
+import NextAuth from "next-auth";
 import { type NextRequest, NextResponse } from "next/server";
+import { authConfig } from "~/auth/base-config";
 
-import { auth } from "~/lib/auth";
+const { auth } = NextAuth(authConfig);
 
 const PUBLIC_ROUTES = ["/", "/login(.*)", "/api(.*)"];
 const isPublic = (url: URL) =>

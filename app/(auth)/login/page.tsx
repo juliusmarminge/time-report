@@ -2,7 +2,7 @@ import { GitHubLogoIcon } from "@radix-ui/react-icons";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 
-import { currentUser, signIn } from "~/lib/auth";
+import { currentUser, signIn } from "~/auth/rsc";
 import { Badge } from "~/ui/badge";
 import { Button } from "~/ui/button";
 import { EmailSignIn } from "./email";

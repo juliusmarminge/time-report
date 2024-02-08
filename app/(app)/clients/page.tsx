@@ -1,8 +1,8 @@
 import { redirect } from "next/navigation";
 
 import { DashboardShell } from "~/app/_components/dashboard-shell";
+import { currentUser } from "~/auth/rsc";
 import { getClients } from "~/db/queries";
-import { currentUser } from "~/lib/auth";
 import { withUnstableCache } from "~/lib/cache";
 import { tson } from "~/lib/tson";
 import { ClientCard } from "./_components/client-card";

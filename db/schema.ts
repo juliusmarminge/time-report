@@ -1,4 +1,3 @@
-import type { AdapterAccount } from "@auth/core/adapters";
 import { Temporal } from "@js-temporal/polyfill";
 import { relations, sql } from "drizzle-orm";
 import {
@@ -14,6 +13,7 @@ import {
   timestamp,
   varchar,
 } from "drizzle-orm/mysql-core";
+import type { AdapterAccount } from "next-auth/adapters";
 
 import type { CurrencyCode } from "~/lib/monetary";
 

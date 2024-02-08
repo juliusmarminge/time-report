@@ -4,9 +4,9 @@ import { redirect } from "next/navigation";
 import { Suspense } from "react";
 
 import { DashboardShell } from "~/app/_components/dashboard-shell";
+import { currentUser } from "~/auth/rsc";
 import type { Timeslot } from "~/db/queries";
 import { getClients, getOpenPeriods, getTimeslots } from "~/db/queries";
-import { currentUser } from "~/lib/auth";
 import { withUnstableCache } from "~/lib/cache";
 import { getMonthMetadata } from "~/lib/get-month-metadata";
 import { formatMoney } from "~/lib/monetary";
