@@ -40,3 +40,34 @@ export const formatOrdinal = (
     nthNumber(date.day)
   );
 };
+
+export const parseMonthParam = (month: string) => {
+  // MMMyy => jan23 for example, parse it to a Temporal.PlainDate { 2023-01-01 }
+  const [monthCode, yearNr] = month.match(/\d+|\D+/g) as string[];
+  const monthNr =
+    [
+      "jan",
+      "feb",
+      "mar",
+      "apr",
+      "may",
+      "jun",
+      "jul",
+      "aug",
+      "sep",
+      "oct",
+      "nov",
+      "dec",
+    ].indexOf(monthCode.toLowerCase()) + 1;
+
+  const today = Temporal.Now.plainDateISO();
+  const temporal = Temporal.PlainDate.from({
+    year: 2000 + +yearNr,
+    month: monthNr,
+    day: 1,
+  });
+  if (temporal.year === today.year && temporal.month === today.month) {
+    return today;
+  }
+  return temporal;
+};

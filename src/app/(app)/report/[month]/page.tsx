@@ -6,46 +6,15 @@ import { Suspense } from "react";
 import { DashboardShell } from "~/app/_components/dashboard-shell";
 import { currentUser } from "~/auth/rsc";
 import type { Timeslot } from "~/db/queries";
-import { getClients, getOpenPeriods, getTimeslots } from "~/db/queries";
-import { withUnstableCache } from "~/lib/cache";
+import { CACHE_TAGS, withUnstableCache } from "~/lib/cache";
 import { getMonthMetadata } from "~/lib/get-month-metadata";
-import { isSameMonth } from "~/lib/temporal";
+import { isSameMonth, parseMonthParam } from "~/lib/temporal";
 import { tson } from "~/lib/tson";
 import { formatMoney } from "~/monetary/math";
+import { trpc } from "~/trpc/server";
 import { Card, CardContent, CardHeader, CardTitle } from "~/ui/card";
 import { CalendarAndSidePanel } from "./_components/calendar";
 import { ClosePeriodSheet } from "./_components/close-periods";
-
-const parseMonthParam = (month: string) => {
-  // MMMyy => jan23 for example, parse it to a Temporal.PlainDate { 2023-01-01 }
-  const [monthCode, yearNr] = month.match(/\d+|\D+/g) as string[];
-  const monthNr =
-    [
-      "jan",
-      "feb",
-      "mar",
-      "apr",
-      "may",
-      "jun",
-      "jul",
-      "aug",
-      "sep",
-      "oct",
-      "nov",
-      "dec",
-    ].indexOf(monthCode.toLowerCase()) + 1;
-
-  const today = Temporal.Now.plainDateISO();
-  const temporal = Temporal.PlainDate.from({
-    year: 2000 + +yearNr,
-    month: monthNr,
-    day: 1,
-  });
-  if (temporal.year === today.year && temporal.month === today.month) {
-    return today;
-  }
-  return temporal;
-};
 
 export default async function IndexPage(props: { params: { month: string } }) {
   const user = await currentUser();
@@ -65,15 +34,15 @@ export default async function IndexPage(props: { params: { month: string } }) {
   const date = parseMonthParam(props.params.month);
 
   const clients = await withUnstableCache({
-    fn: getClients,
-    args: [user.id],
-    tags: ["clients"],
+    fn: trpc.getClients,
+    args: [{ userId: user.id }],
+    tags: [CACHE_TAGS.CLIENTS],
   });
 
   const timeslots = await withUnstableCache({
-    fn: getTimeslots,
-    args: [date, user.id, { mode: "month" }],
-    tags: ["timeslots"],
+    fn: trpc.getTimeslots,
+    args: [{ date, userId: user.id, mode: "month" }],
+    tags: [CACHE_TAGS.TIMESLOTS],
   });
 
   const monthSlots = timeslots.filter((slot) => isSameMonth(slot.date, date));
@@ -166,9 +135,9 @@ async function ClosePeriod() {
   if (!user) return null;
 
   const openPeriods = await withUnstableCache({
-    fn: getOpenPeriods,
-    args: [user.id],
-    tags: ["periods"],
+    fn: trpc.getOpenPeriods,
+    args: [{ userId: user.id }],
+    tags: [CACHE_TAGS.PERIODS],
   });
 
   return <ClosePeriodSheet openPeriods={tson.serialize(openPeriods)} />;

@@ -9,9 +9,10 @@ import * as v from "valibot";
 import { db } from "~/db/client";
 import { client, period, timeslot } from "~/db/schema";
 import { CACHE_TAGS } from "~/lib/cache";
-import { createAction, protectedProcedure } from "~/lib/trpc";
 import type { CurrencyCode } from "~/monetary/math";
 import { normalizeAmount } from "~/monetary/math";
+import { protectedProcedure } from "~/trpc/init";
+import { createAction } from "~/trpc/server";
 import { createClientSchema, updateClientSchema } from "./_validators";
 
 export const createClient = createAction(

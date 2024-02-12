@@ -16,12 +16,12 @@
   },
   "dependencies": {
     "@auth/drizzle-adapter": "^0.6.3",
-    "@baselime/node-opentelemetry": "^0.3.0",
+    "@baselime/node-opentelemetry": "^0.3.6",
     "@dinero.js/currencies": "2.0.0-alpha.14",
     "@hookform/resolvers": "^3.3.2",
     "@js-temporal/polyfill": "^0.4.4",
     "@juliusmarminge/next-themes": "^0.3.0",
-    "@next/bundle-analyzer": "14.1.1-canary.44",
+    "@next/bundle-analyzer": "14.1.1-canary.36",
     "@planetscale/database": "^1.13.0",
     "@radix-ui/react-alert-dialog": "^1.0.5",
     "@radix-ui/react-avatar": "^1.0.4",
@@ -35,8 +35,10 @@
     "@radix-ui/react-select": "^2.0.0",
     "@radix-ui/react-separator": "^1.0.3",
     "@radix-ui/react-slot": "^1.0.2",
+    "@tanstack/react-query": "^5.18.1",
     "@trpc/client": "11.0.0-alpha-tmp-app-router-example.281",
     "@trpc/next": "11.0.0-alpha-tmp-app-router-example.281",
+    "@trpc/react-query": "11.0.0-alpha-tmp-app-router-example.281",
     "@trpc/server": "11.0.0-alpha-tmp-app-router-example.281",
     "@uploadthing/react": "^6.2.0",
     "class-variance-authority": "^0.7.0",
@@ -58,7 +60,8 @@
     "tupleson": "^0.23.1",
     "uploadthing": "^6.2.0",
     "valibot": "^0.22.0",
-    "vaul": "^0.8.0"
+    "vaul": "^0.8.0",
+    "zod": "^3.22.4"
   },
   "devDependencies": {
     "@biomejs/biome": "1.5.3-nightly.24fcf19",
