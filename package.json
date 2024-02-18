@@ -40,7 +40,7 @@
     "@trpc/next": "11.0.0-alpha-tmp-app-router-example.281",
     "@trpc/react-query": "11.0.0-alpha-tmp-app-router-example.281",
     "@trpc/server": "11.0.0-alpha-tmp-app-router-example.281",
-    "@uploadthing/react": "^6.2.0",
+    "@uploadthing/react": "^6.2.4",
     "class-variance-authority": "^0.7.0",
     "date-fns": "^3.2.0",
     "dinero.js": "2.0.0-alpha.14",
@@ -58,7 +58,7 @@
     "tailwind-merge": "^2.2.0",
     "tailwindcss-animate": "^1.0.7",
     "tupleson": "^0.23.1",
-    "uploadthing": "^6.2.0",
+    "uploadthing": "^6.4.1",
     "valibot": "^0.22.0",
     "vaul": "^0.8.0",
     "zod": "^3.22.4"
