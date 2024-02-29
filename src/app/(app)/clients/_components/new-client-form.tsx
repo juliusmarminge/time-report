@@ -46,6 +46,7 @@ export function NewClientForm(props: { afterSubmit?: () => void }) {
   console.log(form.watch());
 
   const { startUpload, isUploading } = useUploadThing("clientImage", {
+    skipPolling: true,
     onClientUploadComplete: (file) => {
       if (!file) return;
       form.setValue("image", file[0].url);
