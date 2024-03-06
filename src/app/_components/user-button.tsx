@@ -1,5 +1,6 @@
 "use client";
 
+import { useTheme } from "@juliusmarminge/next-themes";
 import { ChevronRightIcon, ExitIcon } from "@radix-ui/react-icons";
 import type { Session } from "next-auth";
 import { signOut } from "next-auth/react";
@@ -27,6 +28,7 @@ export function UserButton(props: {
   user: Promise<Session["user"] | null>;
 }) {
   const user = use(props.user);
+  const { resolvedTheme, setTheme } = useTheme();
 
   if (!user) {
     return (
@@ -90,6 +92,29 @@ export function UserButton(props: {
                     className={cn(
                       "ml-auto font-bold opacity-0",
                       user?.defaultCurrency === currency && "opacity-100",
+                    )}
+                  >
+                    ⋅
+                  </span>
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuSubContent>
+          </DropdownMenuSub>
+          <DropdownMenuSub>
+            <DropdownMenuSubTrigger>
+              <span>Theme</span>
+            </DropdownMenuSubTrigger>
+            <DropdownMenuSubContent>
+              {["dark", "light"].map((theme) => (
+                <DropdownMenuItem
+                  className="cursor-pointer capitalize"
+                  onClick={() => setTheme(theme)}
+                >
+                  {theme}
+                  <span
+                    className={cn(
+                      "ml-auto font-bold opacity-0",
+                      resolvedTheme === theme && "opacity-100",
                     )}
                   >
                     ⋅
