@@ -26,7 +26,7 @@ export default withBundleAnalyzer({
   },
   webpack: (config, { isServer }) => {
     if (isServer) {
-      config.ignoreWarnings = [{ module: /@opentelemetry(.*)/ }];
+      config.ignoreWarnings = [{ module: /opentelemetry/ }];
     }
     return config;
   },

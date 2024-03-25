@@ -1,5 +1,9 @@
 import NextAuth from "next-auth";
-import { type NextRequest, NextResponse } from "next/server";
+import {
+  type MiddlewareConfig,
+  type NextRequest,
+  NextResponse,
+} from "next/server";
 import { authConfig } from "~/auth/base-config";
 
 const { auth } = NextAuth(authConfig);
@@ -16,7 +20,7 @@ export default (req: NextRequest) => {
   return auth(() => NextResponse.next())(req, {});
 };
 
-export const config = {
+export const config: MiddlewareConfig = {
   matcher: [
     // Omit API routes and static files
     "/((?!api|_next/static|_next/image|favicon.ico).*)",

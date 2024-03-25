@@ -1,12 +1,10 @@
-import { trpcTracingMiddleware } from "@baselime/node-opentelemetry";
+import { tracing } from "@baselime/node-opentelemetry/trpc";
 import { TRPCError, initTRPC } from "@trpc/server";
 import type { Session } from "next-auth";
 
-import { tson } from "~/lib/tson";
-
 export const t = initTRPC.context<{ user: Session["user"] | null }>().create();
 
-const baselime = trpcTracingMiddleware({ collectInput: true });
+const baselime = tracing({ collectInput: true, collectResult: true });
 
 export const protectedProcedure = t.procedure.use(baselime).use((opts) => {
   if (!opts.ctx.user) {
