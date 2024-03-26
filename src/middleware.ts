@@ -1,12 +1,9 @@
-import NextAuth from "next-auth";
 import {
   type MiddlewareConfig,
   type NextRequest,
   NextResponse,
 } from "next/server";
-import { authConfig } from "~/auth/config";
-
-const { auth } = NextAuth(authConfig);
+import { auth } from "~/auth";
 
 const PUBLIC_ROUTES = ["/", "/login(.*)", "/api(.*)"];
 const isPublic = (url: URL) =>
