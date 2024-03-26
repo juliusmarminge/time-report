@@ -3,7 +3,7 @@
  * while retaining the "trpc-router-like" API you're used to :)
  *
  * ```ts
- * import * as trpc from "~/trpc/router";
+ * import * as trpc from "~/trpc/datalayer";
  * const clients = await trpc.getClients({ userId: "123" });
  * ```
  */
