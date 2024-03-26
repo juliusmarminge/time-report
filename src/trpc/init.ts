@@ -1,6 +1,5 @@
 import { tracing } from "@baselime/node-opentelemetry/trpc";
 import { TRPCError, initTRPC } from "@trpc/server";
-import type { Session } from "next-auth";
 import { currentUser } from "~/auth";
 
 export const t = initTRPC.create();

@@ -13,7 +13,7 @@ import { and, between, eq } from "drizzle-orm";
 import * as z from "zod";
 import { db } from "~/db/client";
 import { client, period, timeslot } from "~/db/schema";
-import { protectedProcedure, t } from "./init";
+import { protectedProcedure } from "./init";
 
 export const getClients = protectedProcedure.query(async ({ ctx }) => {
   const userId = ctx.user.id;

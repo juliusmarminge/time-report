@@ -33,7 +33,7 @@ export const createClient = protectedProcedure
     const now = Temporal.Now.plainDateISO();
 
     await db.insert(period).values({
-      clientId: parseInt(newClient.insertId),
+      clientId: Number.parseInt(newClient.insertId),
       startDate:
         input.defaultBillingPeriod === "monthly"
           ? now.with({ day: 1 })
