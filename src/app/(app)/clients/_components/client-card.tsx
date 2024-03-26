@@ -9,7 +9,6 @@ import { useState } from "react";
 import type { TsonSerialized } from "tupleson";
 import * as v from "valibot";
 
-import type { Client } from "~/db/queries";
 import { formatOrdinal, isPast } from "~/lib/temporal";
 import { tson } from "~/lib/tson";
 import { useConverter } from "~/monetary/context";
@@ -19,6 +18,7 @@ import {
   slotsToDineros,
   sumDineros,
 } from "~/monetary/math";
+import type { Client } from "~/trpc/datalayer";
 import {
   AlertDialog,
   AlertDialogAction,

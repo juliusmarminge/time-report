@@ -3,7 +3,7 @@ import "server-only";
 import NextAuth from "next-auth";
 import { redirect } from "next/navigation";
 import { cache } from "react";
-import { authConfig } from "./base-config";
+import { authConfig } from "./config";
 
 export const currentUser = cache(
   // optional chaining is here cause cache is not defined in middleware
