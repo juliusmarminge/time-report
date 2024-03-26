@@ -6,8 +6,8 @@ import { dinero, toDecimal } from "dinero.js";
 import { useState } from "react";
 import * as v from "valibot";
 
-import type { Timeslot } from "~/db/queries";
 import { currencies, formatMoney } from "~/monetary/math";
+import type { Timeslot } from "~/trpc/datalayer";
 import {
   AlertDialog,
   AlertDialogAction,

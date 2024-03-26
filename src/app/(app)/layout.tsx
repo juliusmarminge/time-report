@@ -1,7 +1,6 @@
-import { currentUser } from "~/auth/rsc";
+import { currentUser } from "~/auth";
 import { ConverterProvider } from "~/monetary/context";
 import { getCurrencyRates } from "~/monetary/rsc";
-import { TRPCReactProvider } from "~/trpc/react";
 
 /**
  * FIXME: This indirection shouldn't be needed.
@@ -9,10 +8,8 @@ import { TRPCReactProvider } from "~/trpc/react";
  */
 export default function DynamicLayout(props: { children: React.ReactNode }) {
   return (
-    <TRPCReactProvider>
-      <ConverterProvider user={currentUser()} rates={getCurrencyRates()}>
-        {props.children}
-      </ConverterProvider>
-    </TRPCReactProvider>
+    <ConverterProvider user={currentUser()} rates={getCurrencyRates()}>
+      {props.children}
+    </ConverterProvider>
   );
 }

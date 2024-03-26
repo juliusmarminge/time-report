@@ -4,7 +4,6 @@ import { dinero, toDecimal } from "dinero.js";
 import { Fragment, useEffect, useState } from "react";
 import type { TsonSerialized } from "tupleson";
 
-import type { Period } from "~/db/queries";
 import { formatOrdinal, isPast } from "~/lib/temporal";
 import { tson } from "~/lib/tson";
 import { useConverter } from "~/monetary/context";
@@ -14,6 +13,7 @@ import {
   slotsToDineros,
   sumDineros,
 } from "~/monetary/math";
+import type { Period } from "~/trpc/datalayer";
 import {
   AlertDialog,
   AlertDialogAction,

@@ -2,7 +2,7 @@ import type { FileRouter } from "uploadthing/next";
 import { createUploadthing } from "uploadthing/next";
 import { UTApi } from "uploadthing/server";
 
-import { currentUser } from "~/auth/rsc";
+import { currentUser } from "~/auth";
 
 export const utapi = new UTApi({
   // logLevel: "debug",

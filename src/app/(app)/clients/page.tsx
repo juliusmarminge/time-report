@@ -1,10 +1,10 @@
 import { redirect } from "next/navigation";
 
 import { DashboardShell } from "~/app/_components/dashboard-shell";
-import { currentUser } from "~/auth/rsc";
-import { getClients } from "~/db/queries";
+import { currentUser } from "~/auth";
 import { withUnstableCache } from "~/lib/cache";
 import { tson } from "~/lib/tson";
+import * as trpc from "~/trpc/datalayer";
 import { ClientCard } from "./_components/client-card";
 import { NewClientSheet } from "./_components/new-client-form";
 
@@ -13,8 +13,8 @@ export default async function ClientsPage() {
   if (!user) redirect("/login");
 
   const clients = await withUnstableCache({
-    fn: getClients,
-    args: [user.id],
+    fn: trpc.getClients,
+    args: [],
     tags: ["clients"],
   });
 

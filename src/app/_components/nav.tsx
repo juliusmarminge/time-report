@@ -3,7 +3,7 @@ import { HamburgerMenuIcon } from "@radix-ui/react-icons";
 import Link from "next/link";
 import { Suspense } from "react";
 
-import { currentUser } from "~/auth/rsc";
+import { currentUser } from "~/auth";
 import { cn } from "~/lib/cn";
 import { Button } from "~/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "~/ui/sheet";

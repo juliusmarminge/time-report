@@ -7,10 +7,10 @@ import { useRef, useState, useTransition } from "react";
 import { useDayRender } from "react-day-picker";
 import type { TsonSerialized } from "tupleson";
 
-import type { Client, Timeslot } from "~/db/queries";
 import { cn } from "~/lib/cn";
 import { tson } from "~/lib/tson";
 import { useIsDesktop } from "~/lib/use-media-query";
+import type { Client, Timeslot } from "~/trpc/datalayer";
 import { Button } from "~/ui/button";
 import { Calendar as CalendarCore, fromDate, toDate } from "~/ui/calendar";
 import { Drawer, DrawerContent } from "~/ui/drawer";

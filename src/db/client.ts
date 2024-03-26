@@ -11,7 +11,6 @@ const ps = new Client(credentials);
 //   await ps.execute("SET @@boost_cached_queries = true");
 // })();
 
-// @ts-expect-error - https://github.com/drizzle-team/drizzle-orm/pull/1801
 export const db = drizzle(ps, {
   schema,
   logger: {

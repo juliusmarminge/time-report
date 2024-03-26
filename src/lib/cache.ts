@@ -2,6 +2,7 @@ import "server-only";
 
 import { unstable_cache } from "next/cache";
 
+import { currentUser } from "~/auth";
 import { tson } from "~/lib/tson";
 
 export const CACHE_TAGS = {
@@ -15,12 +16,15 @@ export async function withUnstableCache<
   // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   T extends (...args: any[]) => any,
 >(opts: { fn: T; args: Parameters<T>; tags: CacheTag[] }) {
+  const user = await currentUser();
+  const allTags = user ? [...opts.tags, user.id] : opts.tags;
+
   const cachedResult = await unstable_cache(
     async (...args) => {
       const result = await opts.fn(...args);
       return tson.serialize(result);
     },
-    opts.tags,
+    allTags,
     { tags: opts.tags },
   )(...opts.args);
 
