@@ -4,14 +4,14 @@ import { redirect } from "next/navigation";
 import { Suspense } from "react";
 
 import { DashboardShell } from "~/app/_components/dashboard-shell";
-import { currentUser } from "~/auth/rsc";
-import type { Timeslot } from "~/db/queries";
+import { currentUser } from "~/auth";
 import { CACHE_TAGS, withUnstableCache } from "~/lib/cache";
 import { getMonthMetadata } from "~/lib/get-month-metadata";
 import { isSameMonth, parseMonthParam } from "~/lib/temporal";
 import { tson } from "~/lib/tson";
 import { formatMoney } from "~/monetary/math";
-import { trpc } from "~/trpc/server";
+import type { Timeslot } from "~/trpc/datalayer";
+import * as trpc from "~/trpc/datalayer";
 import { Card, CardContent, CardHeader, CardTitle } from "~/ui/card";
 import { CalendarAndSidePanel } from "./_components/calendar";
 import { ClosePeriodSheet } from "./_components/close-periods";
@@ -35,13 +35,13 @@ export default async function IndexPage(props: { params: { month: string } }) {
 
   const clients = await withUnstableCache({
     fn: trpc.getClients,
-    args: [{ userId: user.id }],
+    args: [],
     tags: [CACHE_TAGS.CLIENTS],
   });
 
   const timeslots = await withUnstableCache({
     fn: trpc.getTimeslots,
-    args: [{ date, userId: user.id, mode: "month" }],
+    args: [{ date, mode: "month" }],
     tags: [CACHE_TAGS.TIMESLOTS],
   });
 
@@ -136,7 +136,7 @@ async function ClosePeriod() {
 
   const openPeriods = await withUnstableCache({
     fn: trpc.getOpenPeriods,
-    args: [{ userId: user.id }],
+    args: [],
     tags: [CACHE_TAGS.PERIODS],
   });
 
