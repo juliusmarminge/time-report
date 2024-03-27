@@ -4,7 +4,7 @@ import { CheckIcon, Pencil1Icon, TrashIcon } from "@radix-ui/react-icons";
 import type { Dinero } from "dinero.js";
 import { dinero, toDecimal } from "dinero.js";
 import { useState } from "react";
-import * as v from "valibot";
+import * as z from "zod";
 
 import { currencies, formatMoney } from "~/monetary/math";
 import type { Timeslot } from "~/trpc/datalayer";
@@ -92,10 +92,10 @@ function EditingTimeslotCard(props: {
   chargeRate: Dinero<number>;
 }) {
   const form = useForm({
-    schema: v.object({
-      duration: v.string(),
-      chargeRate: v.string(),
-      currency: v.string(),
+    schema: z.object({
+      duration: z.string(),
+      chargeRate: z.string(),
+      currency: z.string(),
     }),
     defaultValues: {
       duration: props.slot.duration,

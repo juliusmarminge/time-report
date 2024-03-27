@@ -13,18 +13,22 @@
     "enabled": true,
     "rules": {
       "recommended": true,
+      "correctness": {
+        "noUnusedVariables": "warn",
+        "noUnusedImports": "warn"
+      },
       "nursery": {
         "useSortedClasses": {
           "level": "warn",
           "options": {
             "functions": ["cva", "cn", "cx"]
           }
-        },
-        "useImportType": "error",
-        "useExportType": "error"
+        }
       },
       "style": {
-        "noNonNullAssertion": "off"
+        "noNonNullAssertion": "off",
+        "useImportType": "error",
+        "useExportType": "error"
       }
     }
   },

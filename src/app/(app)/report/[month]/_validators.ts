@@ -1,46 +1,36 @@
 import { format } from "date-fns";
-import {
-  coerce,
-  date,
-  literal,
-  number,
-  object,
-  optional,
-  string,
-  transform,
-  union,
-} from "valibot";
+import * as z from "zod";
 
-const ensureDateIsString = union([
-  transform(date(), (d) => format(d, "yyyy-MM-dd")),
-  string(),
+const ensureDateIsString = z.union([
+  z.date().transform((d) => format(d, "yyyy-MM-dd")),
+  z.string(),
 ]);
 
-export const reportTimeSchema = object({
-  clientId: union([number(), coerce(number(), Number)]),
+export const reportTimeSchema = z.object({
+  clientId: z.union([z.number(), z.coerce.number()]),
   date: ensureDateIsString,
-  duration: coerce(number(), Number),
-  description: optional(string()),
-  chargeRate: coerce(number(), Number),
-  currency: string(),
+  duration: z.coerce.number(),
+  description: z.string().optional(),
+  chargeRate: z.coerce.number(),
+  currency: z.string(),
 });
 
-export const updateSchema = object({
-  id: number(),
-  duration: transform(string(), Number),
-  currency: string(),
-  chargeRate: transform(string(), Number),
+export const updateSchema = z.object({
+  id: z.number(),
+  duration: z.coerce.number(),
+  currency: z.string(),
+  chargeRate: z.coerce.number(),
 });
 
-export const closePeriodSchema = union([
-  object({
-    id: number(),
-    openNewPeriod: literal(false),
+export const closePeriodSchema = z.union([
+  z.object({
+    id: z.number(),
+    openNewPeriod: z.literal(false),
   }),
-  object({
-    id: number(),
-    openNewPeriod: literal(true),
-    clientId: number(),
+  z.object({
+    id: z.number(),
+    openNewPeriod: z.literal(true),
+    clientId: z.number(),
     periodStart: ensureDateIsString,
     periodEnd: ensureDateIsString,
   }),

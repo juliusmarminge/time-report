@@ -3,7 +3,7 @@
 import { Temporal } from "@js-temporal/polyfill";
 import { and, eq } from "drizzle-orm";
 import { revalidateTag } from "next/cache";
-import * as v from "valibot";
+import * as z from "zod";
 
 import { db } from "~/db/client";
 import { client, period, timeslot } from "~/db/schema";
@@ -18,7 +18,7 @@ import {
 } from "./_validators";
 
 export const reportTime = protectedProcedure
-  .input((raw) => v.parse(reportTimeSchema, raw))
+  .input(reportTimeSchema)
   .mutation(async ({ ctx, input }) => {
     const existingClient = await db.query.client.findFirst({
       where: and(
@@ -62,7 +62,7 @@ export const reportTime = protectedProcedure
   });
 
 export const deleteTimeslot = protectedProcedure
-  .input((raw) => v.parse(v.number(), raw))
+  .input(z.number())
   .mutation(async ({ ctx, input }) => {
     const existing = await db.query.timeslot.findFirst({
       where: and(eq(timeslot.tenantId, ctx.user.id), eq(timeslot.id, input)),
@@ -77,7 +77,7 @@ export const deleteTimeslot = protectedProcedure
   });
 
 export const updateTimeslot = protectedProcedure
-  .input((raw) => v.parse(updateSchema, raw))
+  .input(updateSchema)
   .mutation(async ({ ctx, input }) => {
     const existing = await db.query.timeslot.findFirst({
       where: and(eq(timeslot.tenantId, ctx.user.id), eq(timeslot.id, input.id)),
@@ -102,7 +102,7 @@ export const updateTimeslot = protectedProcedure
   });
 
 export const closePeriod = protectedProcedure
-  .input((raw) => v.parse(closePeriodSchema, raw))
+  .input(closePeriodSchema)
   .mutation(async ({ ctx, input }) => {
     const userId = ctx.user.id;
 

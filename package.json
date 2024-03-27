@@ -59,20 +59,19 @@
     "tailwindcss-animate": "^1.0.7",
     "tupleson": "^0.23.1",
     "uploadthing": "6.7.0",
-    "valibot": "^0.22.0",
     "vaul": "^0.9.0",
     "zod": "^3.22.4"
   },
   "devDependencies": {
-    "@biomejs/biome": "1.5.3-nightly.24fcf19",
-    "@tailwindcss/postcss": "4.0.0-alpha.10",
+    "@biomejs/biome": "1.6.3",
+    "@tailwindcss/postcss": "4.0.0-alpha.11",
     "@types/node": "^20.11.5",
     "@types/react": "^18.2.48",
     "@types/react-dom": "^18.2.18",
     "drizzle-kit": "0.20.13",
     "mysql2": "^3.6.5",
     "postcss": "8.4.38",
-    "tailwindcss": "4.0.0-alpha.10",
+    "tailwindcss": "4.0.0-alpha.11",
     "typescript": "^5.4.3"
   }
 }

@@ -3,7 +3,6 @@
 import type { Temporal } from "@js-temporal/polyfill";
 import { CalendarIcon } from "@radix-ui/react-icons";
 import { format } from "date-fns";
-import * as React from "react";
 
 import { cn } from "~/lib/cn";
 import { Button } from "~/ui/button";

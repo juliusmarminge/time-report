@@ -4,7 +4,7 @@ import { Temporal } from "@js-temporal/polyfill";
 import { and, eq } from "drizzle-orm";
 import { revalidateTag } from "next/cache";
 import { UTApi } from "uploadthing/server";
-import * as v from "valibot";
+import * as z from "zod";
 
 import { db } from "~/db/client";
 import { client, period, timeslot } from "~/db/schema";
@@ -16,7 +16,7 @@ import { protectedProcedure } from "~/trpc/init";
 import { createClientSchema, updateClientSchema } from "./_validators";
 
 export const createClient = protectedProcedure
-  .input((raw) => v.parse(createClientSchema, raw))
+  .input(createClientSchema)
   .mutation(async ({ ctx, input }) => {
     const currencyCode = input.currency as CurrencyCode;
     const normalized = normalizeAmount(input.defaultCharge, currencyCode);
@@ -33,7 +33,7 @@ export const createClient = protectedProcedure
     const now = Temporal.Now.plainDateISO();
 
     await db.insert(period).values({
-      clientId: parseInt(newClient.insertId),
+      clientId: Number.parseInt(newClient.insertId),
       startDate:
         input.defaultBillingPeriod === "monthly"
           ? now.with({ day: 1 })
@@ -52,7 +52,7 @@ export const createClient = protectedProcedure
   });
 
 export const updateClient = protectedProcedure
-  .input((raw) => v.parse(updateClientSchema, raw))
+  .input(updateClientSchema)
   .mutation(async ({ ctx, input }) => {
     const existing = await db.query.client.findFirst({
       columns: { id: true },
@@ -84,13 +84,13 @@ const deleteImageIfExists = async (image?: string | null) => {
 };
 
 export const deleteImageFromUT = protectedProcedure
-  .input((raw) => v.parse(v.optional(v.string()), raw))
+  .input(z.string().optional())
   .mutation(async ({ input }) => {
     await deleteImageIfExists(input);
   });
 
 export const deleteClient = protectedProcedure
-  .input((raw) => v.parse(v.object({ id: v.number() }), raw))
+  .input(z.object({ id: z.number() }))
   .mutation(async ({ ctx, input }) => {
     const existing = await db.query.client.findFirst({
       columns: { id: true, image: true },
