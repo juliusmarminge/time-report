@@ -1,4 +1,4 @@
-import { valibotResolver } from "@hookform/resolvers/valibot";
+import { zodResolver } from "@hookform/resolvers/zod";
 import type * as LabelPrimitive from "@radix-ui/react-label";
 import { Slot } from "@radix-ui/react-slot";
 import * as React from "react";
@@ -14,23 +14,23 @@ import {
   useFormContext,
   useForm as useFormHook,
 } from "react-hook-form";
-import type { BaseSchema, Input } from "valibot";
+import type { ZodType } from "zod";
 
 import { Label } from "~/./ui/label";
 import { cn } from "~/lib/cn";
 
-export function useForm<TSchema extends BaseSchema>(
-  props: Omit<UseFormProps<Input<TSchema>>, "resolver"> & {
+export const useForm = <TSchema extends ZodType>(
+  props: Omit<UseFormProps<TSchema["_input"]>, "resolver"> & {
     schema: TSchema;
   },
-) {
-  const form = useFormHook<Input<TSchema>>({
+) => {
+  const form = useFormHook<TSchema["_input"]>({
     ...props,
-    resolver: valibotResolver(props.schema),
+    resolver: zodResolver(props.schema, undefined),
   });
 
   return form;
-}
+};
 
 const Form = FormProvider;
 

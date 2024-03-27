@@ -59,7 +59,6 @@
     "tailwindcss-animate": "^1.0.7",
     "tupleson": "^0.23.1",
     "uploadthing": "6.7.0",
-    "valibot": "^0.22.0",
     "vaul": "^0.9.0",
     "zod": "^3.22.4"
   },

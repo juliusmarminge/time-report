@@ -7,7 +7,7 @@ import type { Dinero } from "dinero.js";
 import { dinero, toDecimal } from "dinero.js";
 import { useState } from "react";
 import type { TsonSerialized } from "tupleson";
-import * as v from "valibot";
+import * as z from "zod";
 
 import { formatOrdinal, isPast } from "~/lib/temporal";
 import { tson } from "~/lib/tson";
@@ -176,11 +176,11 @@ function EditingClientCard(props: {
   const { client } = props;
 
   const form = useForm({
-    schema: v.object({
-      name: v.string(),
-      chargeRate: v.string(),
-      currency: v.string(),
-      period: v.string(),
+    schema: z.object({
+      name: z.string(),
+      chargeRate: z.string(),
+      currency: z.string(),
+      period: z.string(),
     }),
     defaultValues: {
       name: client.name,

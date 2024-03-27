@@ -5,7 +5,6 @@ import { Suspense } from "react";
 
 import { DashboardShell } from "~/app/_components/dashboard-shell";
 import { currentUser } from "~/auth";
-import { CACHE_TAGS, withUnstableCache } from "~/lib/cache";
 import { getMonthMetadata } from "~/lib/get-month-metadata";
 import { isSameMonth, parseMonthParam } from "~/lib/temporal";
 import { tson } from "~/lib/tson";
@@ -33,17 +32,19 @@ export default async function IndexPage(props: { params: { month: string } }) {
 
   const date = parseMonthParam(props.params.month);
 
-  const clients = await withUnstableCache({
-    fn: trpc.getClients,
-    args: [],
-    tags: [CACHE_TAGS.CLIENTS],
-  });
+  // const clients = await withUnstableCache({
+  //   fn: trpc.getClients,
+  //   args: [],
+  //   tags: [CACHE_TAGS.CLIENTS],
+  // });
+  const clients = await trpc.getClients();
 
-  const timeslots = await withUnstableCache({
-    fn: trpc.getTimeslots,
-    args: [{ date, mode: "month" }],
-    tags: [CACHE_TAGS.TIMESLOTS],
-  });
+  // const timeslots = await withUnstableCache({
+  //   fn: trpc.getTimeslots,
+  //   args: [{ date, mode: "month" }],
+  //   tags: [CACHE_TAGS.TIMESLOTS],
+  // });
+  const timeslots = await trpc.getTimeslots({ date, mode: "month" });
 
   const monthSlots = timeslots.filter((slot) => isSameMonth(slot.date, date));
 
@@ -134,11 +135,12 @@ async function ClosePeriod() {
   const user = await currentUser();
   if (!user) return null;
 
-  const openPeriods = await withUnstableCache({
-    fn: trpc.getOpenPeriods,
-    args: [],
-    tags: [CACHE_TAGS.PERIODS],
-  });
+  // const openPeriods = await withUnstableCache({
+  //   fn: trpc.getOpenPeriods,
+  //   args: [],
+  //   tags: [CACHE_TAGS.PERIODS],
+  // });
+  const openPeriods = await trpc.getOpenPeriods();
 
   return <ClosePeriodSheet openPeriods={tson.serialize(openPeriods)} />;
 }
