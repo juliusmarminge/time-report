@@ -28,7 +28,7 @@ export function UserButton(props: {
   user: Promise<Session["user"] | null>;
 }) {
   const user = use(props.user);
-  const { resolvedTheme, setTheme } = useTheme();
+  const { theme, setTheme } = useTheme();
 
   if (!user) {
     return (
@@ -105,16 +105,16 @@ export function UserButton(props: {
               <span>Theme</span>
             </DropdownMenuSubTrigger>
             <DropdownMenuSubContent>
-              {["dark", "light"].map((theme) => (
+              {["dark", "light", "system"].map((t) => (
                 <DropdownMenuItem
                   className="cursor-pointer capitalize"
-                  onClick={() => setTheme(theme)}
+                  onClick={() => setTheme(t)}
                 >
-                  {theme}
+                  {t}
                   <span
                     className={cn(
                       "ml-auto font-bold opacity-0",
-                      resolvedTheme === theme && "opacity-100",
+                      t === theme && "opacity-100",
                     )}
                   >
                     ⋅
