@@ -1,7 +1,7 @@
 "use client";
 
 import { useTheme } from "@juliusmarminge/next-themes";
-import { ChevronRightIcon, ExitIcon } from "@radix-ui/react-icons";
+import { ChevronRightIcon, ExitIcon, Half2Icon } from "@radix-ui/react-icons";
 import type { Session } from "next-auth";
 import { signOut } from "next-auth/react";
 import Link from "next/link";
@@ -102,6 +102,7 @@ export function UserButton(props: {
           </DropdownMenuSub>
           <DropdownMenuSub>
             <DropdownMenuSubTrigger>
+              <Half2Icon className="mr-2 size-4" />
               <span>Theme</span>
             </DropdownMenuSubTrigger>
             <DropdownMenuSubContent>
