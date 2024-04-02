@@ -4,8 +4,8 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "db:push": "drizzle-kit push:mysql --config db/config.ts",
-    "db:studio": "drizzle-kit studio --config db/config.ts",
+    "db:push": "drizzle-kit push:mysql --config src/db/config.ts",
+    "db:studio": "drizzle-kit studio --config src/db/config.ts",
     "dev": "next dev",
     "ps-proxy": "ps-http-sim -mysql-dbname time-report -mysql-no-pass",
     "build": "next build",
