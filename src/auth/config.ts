@@ -1,10 +1,14 @@
 import type { InferSelectModel } from "drizzle-orm";
 import type { NextAuthConfig } from "next-auth";
 import Github from "next-auth/providers/github";
+import Passkey from "next-auth/providers/passkey";
 import type { users } from "~/db/schema";
 import { drizzleAdapter, mockEmail } from "./adapters";
 
-export const providers = [{ name: "github", handler: Github }] as const;
+export const providers = [
+  { name: "github", handler: Github },
+  { name: "passkey", handler: Passkey },
+] as const;
 export type OAuthProviders = (typeof providers)[number]["name"];
 
 declare module "next-auth" {
@@ -18,6 +22,7 @@ declare module "next-auth/adapters" {
 }
 
 export const authConfig = {
+  experimental: { enableWebAuthn: true },
   adapter: drizzleAdapter,
   providers: [
     ...providers.map((p) => p.handler),

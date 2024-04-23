@@ -2,6 +2,7 @@ import { Temporal } from "@js-temporal/polyfill";
 import { relations, sql } from "drizzle-orm";
 import {
   bigint,
+  boolean,
   customType,
   decimal,
   index,
@@ -13,7 +14,6 @@ import {
   timestamp,
   varchar,
 } from "drizzle-orm/mysql-core";
-import type { AdapterAccount } from "next-auth/adapters";
 
 import type { CurrencyCode } from "~/monetary/math";
 
@@ -128,15 +128,14 @@ export const users = mysqlTable("user", {
 
 export const usersRelations = relations(users, ({ many }) => ({
   accounts: many(accounts),
+  authenticators: many(authenticators),
 }));
 
 export const accounts = mysqlTable(
   "account",
   {
     userId: varchar("userId", { length: 255 }).notNull(),
-    type: varchar("type", { length: 255 })
-      .$type<AdapterAccount["type"]>()
-      .notNull(),
+    type: varchar("type", { length: 255 }).notNull(),
     provider: varchar("provider", { length: 255 }).notNull(),
     providerAccountId: varchar("providerAccountId", { length: 255 }).notNull(),
     refresh_token: varchar("refresh_token", { length: 255 }),
@@ -188,3 +187,29 @@ export const verificationTokens = mysqlTable(
     compoundKey: primaryKey({ columns: [vt.identifier, vt.token] }),
   }),
 );
+
+export const authenticators = mysqlTable(
+  "authenticators",
+  {
+    id: varchar("id", { length: 255 }).notNull().primaryKey(),
+    credentialID: varchar("credentialId", { length: 255 }).notNull().unique(),
+    userId: varchar("userId", { length: 255 }).notNull(),
+    providerAccountId: varchar("providerAccountId", { length: 255 }).notNull(),
+    credentialPublicKey: varchar("credentialPublicKey", {
+      length: 255,
+    }).notNull(),
+    counter: int("counter").notNull(),
+    credentialDeviceType: varchar("credentialDeviceType", {
+      length: 255,
+    }).notNull(),
+    credentialBackedUp: boolean("credentialBackedUp").notNull(),
+    transports: varchar("transports", { length: 255 }),
+  },
+  (authenticator) => ({
+    userIdIdx: index("userId_idx").on(authenticator.userId),
+  }),
+);
+
+export const authenticatorsRelations = relations(authenticators, ({ one }) => ({
+  user: one(users, { fields: [authenticators.userId], references: [users.id] }),
+}));
