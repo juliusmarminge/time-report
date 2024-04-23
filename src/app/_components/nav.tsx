@@ -145,6 +145,9 @@ export function MobileNav(props: { className?: string }) {
             </svg>
             Clients
           </NavButton>
+          <Suspense>
+            <UserButton className="mx-4 mt-auto" user={currentUser()} />
+          </Suspense>
         </SheetContent>
       </Sheet>
     </nav>
