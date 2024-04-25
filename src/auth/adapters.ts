@@ -7,7 +7,13 @@ import type {
 } from "next-auth/adapters";
 import type { EmailConfig } from "next-auth/providers";
 import { db } from "~/db/client";
-import { accounts, authenticators, sessions, users } from "~/db/schema";
+import {
+  accounts,
+  authenticators,
+  sessions,
+  users,
+  verificationTokens,
+} from "~/db/schema";
 
 /**
  * Basically same as the original one but it uses my tables so it'll include
@@ -16,19 +22,13 @@ import { accounts, authenticators, sessions, users } from "~/db/schema";
  * @see https://github.com/nextauthjs/next-auth/pull/8561
  */
 export const drizzleAdapter = {
-  ...DrizzleAdapter(db),
-  getSessionAndUser: async (data) => {
-    const sessionAndUsers = await db
-      .select({
-        session: sessions,
-        user: users,
-      })
-      .from(sessions)
-      .where(eq(sessions.sessionToken, data))
-      .innerJoin(users, eq(users.id, sessions.userId));
-
-    return sessionAndUsers[0] ?? null;
-  },
+  ...DrizzleAdapter(db, {
+    accountsTable: accounts,
+    // authenticatorsTable: authenticators,
+    sessionsTable: sessions,
+    usersTable: users,
+    verificationTokensTable: verificationTokens,
+  }),
   getAccount: async (providerAccountId, provider) => {
     const [account] = await db
       .select()
