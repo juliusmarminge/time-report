@@ -1,12 +1,12 @@
 "use client";
 
 import { dinero, toDecimal } from "dinero.js";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, use, useEffect, useState } from "react";
 import type { TsonSerialized } from "tupleson";
 
 import { formatOrdinal, isPast } from "~/lib/temporal";
 import { tson } from "~/lib/tson";
-import { useConverter } from "~/monetary/context";
+import { ConverterContext } from "~/monetary/context";
 import {
   currencies,
   formatMoney,
@@ -46,7 +46,7 @@ function PeriodCard(props: { period: Period }) {
   const nSlots = period.timeslot.length;
   const nHours = period.timeslot.reduce((acc, slot) => +slot.duration + acc, 0);
 
-  const converter = useConverter();
+  const converter = use(ConverterContext);
   const revenue = sumDineros({
     dineros: slotsToDineros(period.timeslot),
     currency: converter.preferredCurrency,

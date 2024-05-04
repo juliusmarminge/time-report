@@ -5,13 +5,13 @@ import { CheckIcon, Pencil1Icon, TrashIcon } from "@radix-ui/react-icons";
 import { format } from "date-fns";
 import type { Dinero } from "dinero.js";
 import { dinero, toDecimal } from "dinero.js";
-import { useState } from "react";
+import { use, useState } from "react";
 import type { TsonSerialized } from "tupleson";
 import * as z from "zod";
 
 import { formatOrdinal, isPast } from "~/lib/temporal";
 import { tson } from "~/lib/tson";
-import { useConverter } from "~/monetary/context";
+import { ConverterContext } from "~/monetary/context";
 import {
   currencies,
   formatMoney,
@@ -79,7 +79,7 @@ export function ClientCard(props: { client: TsonSerialized<Client> }) {
     Temporal.PlainDate.compare(b.startDate, a.startDate),
   );
 
-  const converter = useConverter();
+  const converter = use(ConverterContext);
   const periodAmounts = sortedPeriods.map((p) =>
     sumDineros({
       dineros: slotsToDineros(p.timeslot),

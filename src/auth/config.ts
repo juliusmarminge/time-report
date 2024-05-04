@@ -23,6 +23,15 @@ declare module "next-auth/adapters" {
 
 export const authConfig = {
   experimental: { enableWebAuthn: true },
+  logger: {
+    // debug: console.debug,
+    warn: (code) => {
+      const url = `https://warnings.authjs.dev#${code}`;
+      if (code === "experimental-webauthn") return;
+      console.warn(`\x1b[33m[auth][warn][${code}]\x1b[0m`, `Read more: ${url}`);
+    },
+    error: console.error,
+  },
   adapter: drizzleAdapter,
   providers: [
     ...providers.map((p) => p.handler),
