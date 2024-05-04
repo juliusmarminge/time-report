@@ -13,18 +13,13 @@ import type { CurrencyCode } from "./math";
  * the rates to a bunch of client compoenents all over the place...
  */
 
-const ConvertedContext = createContext<{
+export const ConverterContext = createContext<{
   preferredCurrency: CurrencyCode;
   convert: (dinero: Dinero<number>, currency: CurrencyCode) => Dinero<number>;
-} | null>(null);
-
-export const useConverter = () => {
-  const context = use(ConvertedContext);
-  if (!context) {
-    throw new Error("useConverter must be used within a ConverterProvider");
-  }
-  return context;
-};
+}>({
+  preferredCurrency: "USD",
+  convert: (d) => d,
+});
 
 export const ConverterProvider = (props: {
   children: React.ReactNode;
@@ -43,8 +38,8 @@ export const ConverterProvider = (props: {
   );
 
   return (
-    <ConvertedContext.Provider value={contextValue}>
+    <ConverterContext.Provider value={contextValue}>
       {props.children}
-    </ConvertedContext.Provider>
+    </ConverterContext.Provider>
   );
 };

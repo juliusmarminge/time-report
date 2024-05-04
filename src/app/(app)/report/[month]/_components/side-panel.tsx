@@ -3,12 +3,12 @@
 import type { Temporal } from "@js-temporal/polyfill";
 import { toDecimal } from "dinero.js";
 import { useSetAtom } from "jotai";
-import { Suspense } from "react";
+import { Suspense, use } from "react";
 
 import { NewClientSheet } from "~/app/(app)/clients/_components/new-client-form";
 import { cn } from "~/lib/cn";
 import { formatOrdinal } from "~/lib/temporal";
-import { useConverter } from "~/monetary/context";
+import { ConverterContext } from "~/monetary/context";
 import { formatMoney, slotsToDineros, sumDineros } from "~/monetary/math";
 import type { Client, Timeslot } from "~/trpc/datalayer";
 import {
@@ -28,7 +28,7 @@ export function SidePanel(props: {
   timeslots: Timeslot[];
   className?: string;
 }) {
-  const converter = useConverter();
+  const converter = use(ConverterContext);
 
   const totalRevenue = sumDineros({
     dineros: slotsToDineros(props.timeslots),
