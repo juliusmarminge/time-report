@@ -51,24 +51,17 @@ export const createClient = protectedProcedure
 export const updateClient = protectedProcedure
   .input(updateClientSchema)
   .mutation(async ({ ctx, input }) => {
-    const existing = await e
-      .select(e.Client, (client) => ({
-        filter_single: e.op(
-          e.op(client.tenantId, "=", e.uuid(ctx.user.id)),
-          "and",
-          e.op(client.id, "=", e.uuid(input.id)),
-        ),
-      }))
-      .run(edgedb);
-    if (!existing) throw new Error("Unauthorized");
-
     await e
       .update(e.Client, (client) => ({
         set: {
           ...input,
           defaultCharge: normalizeAmount(input.defaultCharge, input.currency),
         },
-        filter_single: e.op(client.id, "=", e.uuid(input.id)),
+        filter_single: e.op(
+          e.op(client.id, "=", e.uuid(input.id)),
+          "and",
+          e.op(client.tenantId, "=", e.uuid(ctx.user.id)),
+        ),
       }))
       .run(edgedb);
 
