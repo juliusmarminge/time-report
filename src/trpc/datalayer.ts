@@ -8,8 +8,6 @@ import { protectedProcedure } from "./init";
 
 export const getClients = cache(
   protectedProcedure.query(async ({ ctx }) => {
-    const userId = ctx.user.id;
-
     const clients = await e
       .select(e.Client, (client) => ({
         ...client["*"],
@@ -17,7 +15,7 @@ export const getClients = cache(
           ...period["*"],
           timeslots: (ts) => ts["*"],
         }),
-        filter: e.op(client.tenantId, "=", e.uuid(userId)),
+        filter: e.op(client.tenantId, "=", e.uuid(ctx.user.id)),
       }))
       .run(db);
 
@@ -47,7 +45,6 @@ export const getTimeslots = cache(
     )
     .query(async ({ ctx, input }) => {
       const { date, mode } = input;
-      const userId = ctx.user.id;
 
       const range = [
         // to account for timeslots that start/end in the previous/next month
@@ -71,7 +68,7 @@ export const getTimeslots = cache(
           tenantId: true,
 
           filter: e.op(
-            e.op(ts.tenantId, "=", e.uuid(userId)),
+            e.op(ts.tenantId, "=", e.uuid(ctx.user.id)),
             "and",
             mode === "exact"
               ? e.op(ts.date, "=", plainDate(date))
@@ -94,15 +91,13 @@ export type Timeslot = Awaited<ReturnType<typeof getTimeslots>>[number];
 
 export const getOpenPeriods = cache(
   protectedProcedure.query(async ({ ctx }) => {
-    const userId = ctx.user.id;
-
     const _periods = await e
       .select(e.Period, (period) => ({
         ...period["*"],
         timeslots: (ts) => ts["*"],
         client: (client) => client["*"],
         filter: e.op(
-          e.op(period.tenantId, "=", e.uuid(userId)),
+          e.op(period.tenantId, "=", e.uuid(ctx.user.id)),
           "and",
           e.op(period.status, "=", e.PeriodStatus.open),
         ),

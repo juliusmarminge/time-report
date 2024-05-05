@@ -109,14 +109,12 @@ export const updateTimeslot = protectedProcedure
 export const closePeriod = protectedProcedure
   .input(closePeriodSchema)
   .mutation(async ({ ctx, input }) => {
-    const userId = ctx.user.id;
-
     const existing = await e
       .select(e.Period, (period) => ({
         filter_single: e.all(
           e.set(
             e.op(period.status, "=", e.PeriodStatus.open),
-            e.op(period.tenantId, "=", e.uuid(userId)),
+            e.op(period.tenantId, "=", e.uuid(ctx.user.id)),
             e.op(period.id, "=", e.uuid(input.id)),
           ),
         ),
@@ -136,7 +134,7 @@ export const closePeriod = protectedProcedure
         .insert(e.Period, {
           status: e.PeriodStatus.open,
           tenant: e.select(e.User, (user) => ({
-            filter_single: e.op(user.id, "=", e.uuid(userId)),
+            filter_single: e.op(user.id, "=", e.uuid(ctx.user.id)),
           })),
           client: e.select(e.Client, (client) => ({
             filter_single: e.op(client.id, "=", e.uuid(input.clientId)),
