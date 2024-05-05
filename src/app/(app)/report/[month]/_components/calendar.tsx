@@ -15,7 +15,7 @@ import { Button } from "~/ui/button";
 import { Calendar as CalendarCore } from "~/ui/calendar";
 import { Drawer, DrawerContent } from "~/ui/drawer";
 import { SidePanel } from "./side-panel";
-import { fromDate, toDate } from "~/lib/temporal";
+import { fromDate, toDate } from "~/ui/calendar";
 
 export function Calendar(props: {
   date: Temporal.PlainDate;

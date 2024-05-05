@@ -3,8 +3,7 @@ import "server-only";
 import { Temporal } from "@js-temporal/polyfill";
 import { cache } from "react";
 import * as z from "zod";
-import { e, edgedb } from "~/edgedb";
-import { fromDate, toDate } from "~/lib/temporal";
+import { e, edgedb, plainDate } from "~/edgedb";
 import { protectedProcedure } from "./init";
 
 export const getClients = cache(
@@ -28,11 +27,11 @@ export const getClients = cache(
       ...client,
       periods: client.periods.map((period) => ({
         ...period,
-        startDate: fromDate(period.startDate),
-        endDate: fromDate(period.endDate),
+        startDate: Temporal.PlainDate.from(period.startDate),
+        endDate: Temporal.PlainDate.from(period.endDate),
         timeslots: period.timeslots.map((timeslot) => ({
           ...timeslot,
-          date: fromDate(timeslot.date),
+          date: Temporal.PlainDate.from(timeslot.date),
         })),
       })),
     }));
@@ -55,8 +54,8 @@ export const getTimeslots = cache(
       const range = [
         // to account for timeslots that start/end in the previous/next month
         // pad the month with a week on either side
-        toDate(input.date.subtract({ days: date.day + 7 })),
-        toDate(input.date.add({ days: date.daysInMonth - date.day + 7 })),
+        input.date.subtract({ days: date.day + 7 }),
+        input.date.add({ days: date.daysInMonth - date.day + 7 }),
       ] as const;
 
       const _slots = await e
@@ -77,11 +76,11 @@ export const getTimeslots = cache(
             e.op(timeslot.tenantId, "=", e.uuid(userId)),
             "and",
             mode === "exact"
-              ? e.op(timeslot.date, "=", toDate(date))
+              ? e.op(timeslot.date, "=", plainDate(date))
               : e.op(
-                  e.op(timeslot.date, ">=", range[0]),
+                  e.op(timeslot.date, ">=", plainDate(range[0])),
                   "and",
-                  e.op(timeslot.date, "<=", range[1]),
+                  e.op(timeslot.date, "<=", plainDate(range[1])),
                 ),
           ),
         }))
@@ -89,7 +88,7 @@ export const getTimeslots = cache(
 
       return _slots.map((slot) => ({
         ...slot,
-        date: fromDate(slot.date),
+        date: Temporal.PlainDate.from(slot.date),
       }));
     }),
 );
@@ -114,11 +113,11 @@ export const getOpenPeriods = cache(
 
     return _periods.map((period) => ({
       ...period,
-      startDate: fromDate(period.startDate),
-      endDate: fromDate(period.endDate),
+      startDate: Temporal.PlainDate.from(period.startDate),
+      endDate: Temporal.PlainDate.from(period.endDate),
       timeslots: period.timeslots.map((timeslot) => ({
         ...timeslot,
-        date: fromDate(timeslot.date),
+        date: Temporal.PlainDate.from(timeslot.date),
       })),
     }));
   }),

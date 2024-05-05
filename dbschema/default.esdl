@@ -29,7 +29,7 @@ module default {
         required clientId := .client.id;
         required tenantId := .tenant.id;
         required periodId := .period.id;
-        required date: datetime;
+        required date: cal::local_date;
         required duration: decimal;
         description: str;
         required chargeRate: int32;
@@ -53,8 +53,8 @@ module default {
     type Period {
         required clientId := .client.id;
         required tenantId := .tenant.id;
-        required startDate: datetime;
-        required endDate: datetime;
+        required startDate: cal::local_date;
+        required endDate: cal::local_date;
         closedAt: datetime;
         required status: PeriodStatus {
             default := "open";

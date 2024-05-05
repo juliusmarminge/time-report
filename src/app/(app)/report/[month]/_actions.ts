@@ -4,7 +4,7 @@ import { Temporal } from "@js-temporal/polyfill";
 import { revalidateTag } from "next/cache";
 import * as z from "zod";
 
-import { e, edgedb } from "~/edgedb";
+import { e, edgedb, plainDate } from "~/edgedb";
 import { CACHE_TAGS } from "~/lib/cache";
 import { normalizeAmount } from "~/monetary/math";
 import { protectedProcedure } from "~/trpc/init";
@@ -13,7 +13,6 @@ import {
   reportTimeSchema,
   updateSchema,
 } from "./_validators";
-import { toDate } from "~/lib/temporal";
 
 export const reportTime = protectedProcedure
   .input(reportTimeSchema)
@@ -33,7 +32,7 @@ export const reportTime = protectedProcedure
       .select(e.Period, (period) => ({
         filter_single: e.all(
           e.set(
-            e.op(period.status, "=", "open"),
+            e.op(period.status, "=", e.PeriodStatus.open),
             e.op(period.tenantId, "=", e.uuid(ctx.user.id)),
             e.op(period.clientId, "=", e.uuid(input.clientId)),
           ),
@@ -49,7 +48,7 @@ export const reportTime = protectedProcedure
 
     await e
       .insert(e.Timeslot, {
-        date: toDate(Temporal.PlainDate.from(input.date)),
+        date: plainDate(Temporal.PlainDate.from(input.date)),
         duration: String(input.duration),
         chargeRate: normalizeAmount(input.chargeRate, input.currency),
         currency: input.currency,
@@ -121,7 +120,7 @@ export const closePeriod = protectedProcedure
       .select(e.Period, (period) => ({
         filter_single: e.all(
           e.set(
-            e.op(period.status, "=", "open"),
+            e.op(period.status, "=", e.PeriodStatus.open),
             e.op(period.tenantId, "=", e.uuid(userId)),
             e.op(period.id, "=", e.uuid(input.id)),
           ),
@@ -147,8 +146,8 @@ export const closePeriod = protectedProcedure
           client: e.select(e.Client, (client) => ({
             filter_single: e.op(client.id, "=", e.uuid(input.clientId)),
           })),
-          startDate: toDate(Temporal.PlainDate.from(input.periodStart)),
-          endDate: toDate(Temporal.PlainDate.from(input.periodEnd)),
+          startDate: plainDate(Temporal.PlainDate.from(input.periodStart)),
+          endDate: plainDate(Temporal.PlainDate.from(input.periodEnd)),
         })
         .run(edgedb);
     }

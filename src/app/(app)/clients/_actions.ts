@@ -5,9 +5,8 @@ import { revalidateTag } from "next/cache";
 import { UTApi } from "uploadthing/server";
 import * as z from "zod";
 
-import { e, edgedb } from "~/edgedb";
+import { e, edgedb, plainDate } from "~/edgedb";
 import { CACHE_TAGS } from "~/lib/cache";
-import { toDate } from "~/lib/temporal";
 import { normalizeAmount } from "~/monetary/math";
 import { protectedProcedure } from "~/trpc/init";
 import { createClientSchema, updateClientSchema } from "./_validators";
@@ -30,12 +29,12 @@ export const createClient = protectedProcedure
       .insert(e.Period, {
         client: insertClient,
         tenant: currentUser,
-        startDate: toDate(
+        startDate: plainDate(
           input.defaultBillingPeriod === "monthly"
             ? now.with({ day: 1 })
             : now.with({ day: now.day - now.dayOfWeek }),
         ),
-        endDate: toDate(
+        endDate: plainDate(
           input.defaultBillingPeriod === "monthly"
             ? now.with({ day: now.daysInMonth })
             : input.defaultBillingPeriod === "biweekly"
