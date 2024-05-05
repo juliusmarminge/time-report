@@ -1,10 +1,9 @@
 "use server";
 
-import { Temporal } from "@js-temporal/polyfill";
 import { revalidateTag } from "next/cache";
 import * as z from "zod";
 
-import { e, db, plainDate } from "~/edgedb";
+import { e, db } from "~/edgedb";
 import { CACHE_TAGS } from "~/lib/cache";
 import { normalizeAmount } from "~/monetary/math";
 import { protectedProcedure } from "~/trpc/init";
@@ -32,8 +31,8 @@ export const reportTime = protectedProcedure
       .select(e.Period, (period) => ({
         filter_single: e.all(
           e.set(
-            e.op(period.status, "=", e.PeriodStatus.open),
             e.op(period.clientId, "=", e.uuid(input.clientId)),
+            e.op(period.status, "=", e.PeriodStatus.open),
             e.op(period.tenantId, "=", e.uuid(ctx.user.id)),
           ),
         ),
@@ -48,7 +47,7 @@ export const reportTime = protectedProcedure
 
     await e
       .insert(e.Timeslot, {
-        date: plainDate(Temporal.PlainDate.from(input.date)),
+        date: e.cal.local_date(input.date),
         duration: String(input.duration),
         chargeRate: normalizeAmount(input.chargeRate, input.currency),
         currency: input.currency,
@@ -137,8 +136,8 @@ export const closePeriod = protectedProcedure
           client: e.select(e.Client, (client) => ({
             filter_single: e.op(client.id, "=", e.uuid(input.clientId)),
           })),
-          startDate: plainDate(Temporal.PlainDate.from(input.periodStart)),
-          endDate: plainDate(Temporal.PlainDate.from(input.periodEnd)),
+          startDate: e.cal.local_date(input.periodStart),
+          endDate: e.cal.local_date(input.periodEnd),
         })
         .run(db);
     }
