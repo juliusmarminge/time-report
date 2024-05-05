@@ -1,87 +1,222 @@
-import { DrizzleAdapter } from "@auth/drizzle-adapter";
-import { and, eq } from "drizzle-orm";
-import type {
-  Adapter,
-  AdapterAccount,
-  AdapterAuthenticator,
-} from "next-auth/adapters";
+import type { Adapter, AdapterAccount } from "next-auth/adapters";
 import type { EmailConfig } from "next-auth/providers";
-import { db } from "~/db/client";
-import {
-  accounts,
-  authenticators,
-  sessions,
-  users,
-  verificationTokens,
-} from "~/db/schema";
+import { edgedb } from "~/db/client";
 
-/**
- * Basically same as the original one but it uses my tables so it'll include
- * fields like `user.defaultCurrency` etc.
- *
- * @see https://github.com/nextauthjs/next-auth/pull/8561
- */
-export const drizzleAdapter = {
-  ...DrizzleAdapter(db, {
-    accountsTable: accounts,
-    // authenticatorsTable: authenticators,
-    sessionsTable: sessions,
-    usersTable: users,
-    verificationTokensTable: verificationTokens,
-  }),
-  getAccount: async (providerAccountId, provider) => {
-    const [account] = await db
-      .select()
-      .from(accounts)
-      .where(
-        and(
-          eq(accounts.provider, provider),
-          eq(accounts.providerAccountId, providerAccountId),
+import e from "@edgedb";
+
+export const edgedbAdapter = {
+  createUser: async ({ id, ...data }) => {
+    const user = await e
+      .select(e.insert(e.User, { ...data }), (user) => user["*"])
+      .run(edgedb);
+    return user;
+  },
+  deleteUser: async (id) => {
+    await e
+      .delete(e.User, (user) => ({
+        filter_single: e.op(user.id, "=", e.uuid(id)),
+      }))
+      .run(edgedb);
+  },
+  getUser: async (id) => {
+    const user = await e
+      .select(e.User, (user) => ({
+        ...user["*"],
+        filter_single: e.op(user.id, "=", e.uuid(id)),
+      }))
+      .run(edgedb);
+    return user;
+  },
+  getUserByAccount: async ({ provider, providerAccountId }) => {
+    const account = await e
+      .select(e.Account, (account) => ({
+        user: e.User["*"],
+        filter_single: e.op(
+          e.op(account.provider, "=", provider),
+          "and",
+          e.op(account.providerAccountId, "=", providerAccountId),
         ),
-      );
+      }))
+      .run(edgedb);
+    return account?.user ?? null;
+  },
+  getUserByEmail: async (email) => {
+    const user = await e
+      .select(e.User, (user) => ({
+        ...user["*"],
+        filter_single: e.op(user.email, "=", email),
+      }))
+      .run(edgedb);
+    return user;
+  },
+  updateUser: async ({ id, ...data }) => {
+    const user = await e
+      .select(
+        e.update(e.User, (user) => ({
+          set: data,
+          filter_single: e.op(user.id, "=", e.uuid(id)),
+        })),
+        (user) => user["*"],
+      )
+      .run(edgedb);
+    if (!user) throw "user not found";
+    return user;
+  },
+
+  createSession: async ({ userId, ...data }) => {
+    const session = await e
+      .select(
+        e.insert(e.Session, {
+          ...data,
+          user: e.select(e.User, (user) => ({
+            filter_single: e.op(user.id, "=", e.uuid(userId)),
+          })),
+        }),
+        (session) => session["*"],
+      )
+      .run(edgedb);
+    return session;
+  },
+  deleteSession: async (sessionToken) => {
+    await e
+      .delete(e.Session, (session) => ({
+        filter_single: e.op(session.sessionToken, "=", sessionToken),
+      }))
+      .run(edgedb);
+  },
+  getSessionAndUser: async (sessionToken) => {
+    const session = await e
+      .select(e.Session, (session) => ({
+        ...session["*"],
+        user: e.User["*"],
+        filter_single: e.op(session.sessionToken, "=", sessionToken),
+      }))
+      .run(edgedb);
+    if (!session) return null;
+    const { user, ...sessionData } = session;
+    return { user, session: sessionData };
+  },
+  updateSession: async ({ sessionToken, ...data }) => {
+    const session = await e
+      .select(
+        e.update(e.Session, (session) => ({
+          set: data,
+          filter_single: e.op(session.sessionToken, "=", sessionToken),
+        })),
+        (session) => session["*"],
+      )
+      .run(edgedb);
+    if (!session) throw "session not found";
+    return session;
+  },
+
+  linkAccount: async ({ userId, ...data }) => {
+    await e
+      .insert(e.Account, {
+        ...data,
+        user: e.select(e.User, (user) => ({
+          filter_single: e.op(user.id, "=", e.uuid(userId)),
+        })),
+      })
+      .run(edgedb);
+  },
+  unlinkAccount: async ({ provider, providerAccountId }) => {
+    await e
+      .delete(e.Account, (account) => ({
+        filter_single: e.op(
+          e.op(account.provider, "=", provider),
+          "and",
+          e.op(account.providerAccountId, "=", providerAccountId),
+        ),
+      }))
+      .run(edgedb);
+  },
+  getAccount: async (providerAccountId, provider) => {
+    const account = await e
+      .select(e.Account, (account) => ({
+        ...account["*"],
+        filter_single: e.op(
+          e.op(account.provider, "=", provider),
+          "and",
+          e.op(account.providerAccountId, "=", providerAccountId),
+        ),
+      }))
+      .run(edgedb);
     return (account as AdapterAccount) ?? null;
   },
-  createAuthenticator: async (data) => {
-    const id = crypto.randomUUID();
-    console.log(data);
-    await db.insert(authenticators).values({
-      id,
-      ...data,
-    });
-    const [authenticator] = await db
-      .select()
-      .from(authenticators)
-      .where(eq(authenticators.id, id));
-    const { transports, id: _, ...rest } = authenticator;
-    return { ...rest, transports: transports ?? undefined };
+
+  createVerificationToken: async (data) => {
+    const token = await e
+      .select(
+        e.insert(e.VerificationToken, {
+          ...data,
+        }),
+        (vt) => vt["*"],
+      )
+      .run(edgedb);
+    return token;
+  },
+  useVerificationToken: async ({ identifier, token }) => {
+    const usedToken = await e
+      .select(
+        e.delete(e.VerificationToken, (vt) => ({
+          filter_single: e.op(
+            e.op(vt.identifier, "=", identifier),
+            "and",
+            e.op(vt.token, "=", token),
+          ),
+        })),
+        (vt) => vt["*"],
+      )
+      .run(edgedb);
+    return usedToken;
+  },
+
+  createAuthenticator: async ({ userId, ...data }) => {
+    const authenticator = await e
+      .select(
+        e.insert(e.Authenticators, {
+          ...data,
+          user: e.select(e.User, (user) => ({
+            filter_single: e.op(user.id, "=", e.uuid(userId)),
+          })),
+        }),
+        (auth) => auth["*"],
+      )
+      .run(edgedb);
+    const { id: _, ...rest } = authenticator;
+    return rest;
   },
   getAuthenticator: async (credentialId) => {
-    const [authenticator] = await db
-      .select()
-      .from(authenticators)
-      .where(eq(authenticators.credentialID, credentialId));
-    return (authenticator as AdapterAuthenticator) ?? null;
+    const authenticator = await e
+      .select(e.Authenticators, (auth) => ({
+        ...auth["*"],
+        filter_single: e.op(auth.credentialID, "=", credentialId),
+      }))
+      .run(edgedb);
+    return authenticator ?? null;
   },
   listAuthenticatorsByUserId: async (userId) => {
-    const auths = await db
-      .select()
-      .from(authenticators)
-      .where(eq(authenticators.userId, userId));
-    return auths.map((a) => ({
-      ...a,
-      transports: a.transports ?? undefined,
-    }));
+    const auths = await e
+      .select(e.Authenticators, (auth) => ({
+        ...auth["*"],
+        filter: e.op(auth.userId, "=", e.uuid(userId)),
+      }))
+      .run(edgedb);
+    return auths;
   },
   updateAuthenticatorCounter: async (credentialId, counter) => {
-    await db
-      .update(authenticators)
-      .set({ counter })
-      .where(eq(authenticators.credentialID, credentialId));
-    const [authenticator] = await db
-      .select()
-      .from(authenticators)
-      .where(eq(authenticators.credentialID, credentialId));
-    return (authenticator as AdapterAuthenticator) ?? null;
+    const authenticator = await e
+      .select(
+        e.update(e.Authenticators, (auth) => ({
+          set: { counter },
+          filter_single: e.op(auth.credentialID, "=", credentialId),
+        })),
+        (auth) => auth["*"],
+      )
+      .run(edgedb);
+    if (!authenticator) throw "authenticator not found";
+    return authenticator;
   },
 } satisfies Adapter;
 

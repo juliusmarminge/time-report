@@ -3,7 +3,8 @@ import type { NextAuthConfig } from "next-auth";
 import Github from "next-auth/providers/github";
 import Passkey from "next-auth/providers/passkey";
 import type { users } from "~/db/schema";
-import { drizzleAdapter, mockEmail } from "./adapters";
+import type { CurrencyCode } from "~/monetary/math";
+import { edgedbAdapter, mockEmail } from "./adapters";
 
 export const providers = [
   { name: "github", handler: Github },
@@ -18,7 +19,11 @@ declare module "next-auth" {
 }
 
 declare module "next-auth/adapters" {
-  interface AdapterUser extends InferSelectModel<typeof users> {}
+  // interface AdapterUser extends InferSelectModel<typeof users> {}
+  interface AdapterAuthenticator {
+    // Just for convenience not having to convert null to undefined...
+    transports: string | null | undefined;
+  }
 }
 
 export const authConfig = {
@@ -32,7 +37,7 @@ export const authConfig = {
     },
     error: console.error,
   },
-  adapter: drizzleAdapter,
+  adapter: edgedbAdapter,
   providers: [
     ...providers.map((p) => p.handler),
     ...(process.env.VERCEL_ENV !== "production" ? [mockEmail] : []),
@@ -66,7 +71,7 @@ export const authConfig = {
           id: user.id,
           name: user.name,
           image: user.image,
-          defaultCurrency: user.defaultCurrency,
+          defaultCurrency: (user as any).defaultCurrency as CurrencyCode,
         },
       };
     },

@@ -1,5 +1,6 @@
 import { Client } from "@planetscale/database";
 import { drizzle } from "drizzle-orm/planetscale-serverless";
+import { createHttpClient } from "edgedb";
 
 import { credentials } from "./config";
 import * as schema from "./schema";
@@ -18,4 +19,8 @@ export const db = drizzle(ps, {
       // console.log("[DRIZZLE]", { query: _query, params: _params });
     },
   },
+});
+
+export const edgedb = createHttpClient({
+  tlsSecurity: process.env.EDGEDB_SECRET_KEY ? "default" : "insecure",
 });
