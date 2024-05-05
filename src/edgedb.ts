@@ -1,6 +1,6 @@
+import e from "@edgedb-gen/edgeql-js";
 import type { Temporal } from "@js-temporal/polyfill";
 import { createHttpClient } from "edgedb";
-import e from "@edgedb-gen/edgeql-js";
 
 export const db = createHttpClient({
   tlsSecurity: process.env.EDGEDB_SECRET_KEY ? "default" : "insecure",

@@ -3,7 +3,7 @@
 import { revalidateTag } from "next/cache";
 import * as z from "zod";
 
-import { e, db } from "~/edgedb";
+import { db, e } from "~/edgedb";
 import { CACHE_TAGS } from "~/lib/cache";
 import { normalizeAmount } from "~/monetary/math";
 import { protectedProcedure } from "~/trpc/init";

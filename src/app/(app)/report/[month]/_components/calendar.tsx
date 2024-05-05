@@ -13,9 +13,9 @@ import { useIsDesktop } from "~/lib/use-media-query";
 import type { Client, Timeslot } from "~/trpc/datalayer";
 import { Button } from "~/ui/button";
 import { Calendar as CalendarCore } from "~/ui/calendar";
+import { fromDate, toDate } from "~/ui/calendar";
 import { Drawer, DrawerContent } from "~/ui/drawer";
 import { SidePanel } from "./side-panel";
-import { fromDate, toDate } from "~/ui/calendar";
 
 export function Calendar(props: {
   date: Temporal.PlainDate;

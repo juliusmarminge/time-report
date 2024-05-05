@@ -3,7 +3,7 @@ import "server-only";
 import { Temporal } from "@js-temporal/polyfill";
 import { cache } from "react";
 import * as z from "zod";
-import { e, db, plainDate } from "~/edgedb";
+import { db, e, plainDate } from "~/edgedb";
 import { protectedProcedure } from "./init";
 
 export const getClients = cache(

@@ -1,6 +1,6 @@
 import type { Adapter, AdapterAccount } from "next-auth/adapters";
 import type { EmailConfig } from "next-auth/providers";
-import { e, db } from "~/edgedb";
+import { db, e } from "~/edgedb";
 
 export const edgedbAdapter = {
   createUser: async ({ id, ...data }) => {

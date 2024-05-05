@@ -1,7 +1,7 @@
 {
   "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
   "organizeImports": {
-    "enabled": false
+    "enabled": true
   },
   "formatter": {
     "enabled": true,
@@ -15,7 +15,7 @@
       "recommended": true,
       "correctness": {
         "noUnusedVariables": "warn",
-        "noUnusedImports": "off"
+        "noUnusedImports": "warn"
       },
       "nursery": {
         "useSortedClasses": {

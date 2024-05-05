@@ -5,7 +5,7 @@ import { revalidateTag } from "next/cache";
 import { UTApi } from "uploadthing/server";
 import * as z from "zod";
 
-import { e, db, plainDate } from "~/edgedb";
+import { db, e, plainDate } from "~/edgedb";
 import { CACHE_TAGS } from "~/lib/cache";
 import { normalizeAmount } from "~/monetary/math";
 import { protectedProcedure } from "~/trpc/init";

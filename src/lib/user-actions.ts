@@ -2,9 +2,9 @@
 
 import { revalidateTag } from "next/cache";
 
-import { e, db } from "~/edgedb";
-import type { CurrencyCode } from "../monetary/math";
 import { currentUser } from "~/auth";
+import { db, e } from "~/edgedb";
+import type { CurrencyCode } from "../monetary/math";
 
 export async function setDefaultCurrency(currency: CurrencyCode) {
   const _user = await currentUser();
