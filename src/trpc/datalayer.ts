@@ -19,6 +19,7 @@ export const getClients = cache(
       }))
       .run(db);
 
+    // FIXME: Would be nice to handle this in the db-driver
     return clients.map((client) => ({
       ...client,
       periods: client.periods.map((period) => ({
@@ -53,7 +54,7 @@ export const getTimeslots = cache(
         input.date.add({ days: date.daysInMonth - date.day + 7 }),
       ] as const;
 
-      const _slots = await e
+      const slots = await e
         .select(e.Timeslot, (ts) => ({
           id: true,
           client: {
@@ -81,7 +82,8 @@ export const getTimeslots = cache(
         }))
         .run(db);
 
-      return _slots.map((slot) => ({
+      // FIXME: Would be nice to handle this in the db-driver
+      return slots.map((slot) => ({
         ...slot,
         date: Temporal.PlainDate.from(slot.date),
       }));
@@ -91,7 +93,7 @@ export type Timeslot = Awaited<ReturnType<typeof getTimeslots>>[number];
 
 export const getOpenPeriods = cache(
   protectedProcedure.query(async ({ ctx }) => {
-    const _periods = await e
+    const periods = await e
       .select(e.Period, (period) => ({
         ...period["*"],
         timeslots: (ts) => ts["*"],
@@ -104,7 +106,8 @@ export const getOpenPeriods = cache(
       }))
       .run(db);
 
-    return _periods.map((period) => ({
+    // FIXME: Would be nice to handle this in the db-driver
+    return periods.map((period) => ({
       ...period,
       startDate: Temporal.PlainDate.from(period.startDate),
       endDate: Temporal.PlainDate.from(period.endDate),
