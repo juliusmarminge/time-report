@@ -1,14 +1,11 @@
 import { format } from "date-fns";
 import * as z from "zod";
-import { type CurrencyCode, currencies } from "~/monetary/math";
+import { currencySchema } from "~/monetary/math";
 
 const ensureDateIsString = z.union([
   z.date().transform((d) => format(d, "yyyy-MM-dd")),
   z.string(),
 ]);
-const currencySchema = z
-  .string()
-  .refine((s): s is CurrencyCode => s in currencies);
 
 export const reportTimeSchema = z.object({
   clientId: z.string(),

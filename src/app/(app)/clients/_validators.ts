@@ -1,10 +1,7 @@
 import * as z from "zod";
-import { type CurrencyCode, currencies } from "~/monetary/math";
+import { currencySchema } from "~/monetary/math";
 
 export const billingPeriods = ["weekly", "biweekly", "monthly"] as const;
-const currencySchema = z
-  .string()
-  .refine((s): s is CurrencyCode => s in currencies);
 
 export const createClientSchema = z.object({
   name: z.string().min(4, "Name must be at least 4 characters."),
