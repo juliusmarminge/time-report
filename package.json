@@ -9,7 +9,7 @@
     "db:studio": "drizzle-kit studio --config src/db/config.ts",
     "dev": "next dev",
     "ps-proxy": "ps-http-sim -mysql-dbname time-report -mysql-no-pass",
-    "build": "next build",
+    "build": "pnpm prebuild && next build",
     "prebuild": "npx @edgedb/generate edgeql-js",
     "start": "next start",
     "lint": "biome check .",
