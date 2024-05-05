@@ -56,7 +56,7 @@ export const reportTime = protectedProcedure
           filter_single: e.op(client.id, "=", e.uuid(input.clientId)),
         })),
         period: e.select(e.Period, (period) => ({
-          filter_single: e.op(period.clientId, "=", e.uuid(input.clientId)),
+          filter_single: e.op(period.id, "=", e.uuid(slotPeriod.id)),
         })),
         tenant: e.select(e.User, (user) => ({
           filter_single: e.op(user.id, "=", e.uuid(ctx.user.id)),
