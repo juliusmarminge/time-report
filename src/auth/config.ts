@@ -1,9 +1,8 @@
-import type { InferSelectModel } from "drizzle-orm";
 import type { NextAuthConfig } from "next-auth";
 import Github from "next-auth/providers/github";
 import Passkey from "next-auth/providers/passkey";
-import type { users } from "~/db/schema";
-import { drizzleAdapter, mockEmail } from "./adapters";
+import type { User } from "~/edgedb";
+import { edgedbAdapter, mockEmail } from "./adapters";
 
 export const providers = [
   { name: "github", handler: Github },
@@ -11,14 +10,23 @@ export const providers = [
 ] as const;
 export type OAuthProviders = (typeof providers)[number]["name"];
 
+type UserWithoutRelations = Omit<
+  User,
+  "accounts" | "authenticators" | "periods" | "sessions" | "timeslots"
+>;
+
 declare module "next-auth" {
   interface Session {
-    user: InferSelectModel<typeof users>;
+    user: UserWithoutRelations;
   }
 }
 
 declare module "next-auth/adapters" {
-  interface AdapterUser extends InferSelectModel<typeof users> {}
+  interface AdapterUser extends UserWithoutRelations {}
+  interface AdapterAuthenticator {
+    // Just for convenience not having to convert null to undefined...
+    transports: string | null | undefined;
+  }
 }
 
 export const authConfig = {
@@ -32,7 +40,7 @@ export const authConfig = {
     },
     error: console.error,
   },
-  adapter: drizzleAdapter,
+  adapter: edgedbAdapter,
   providers: [
     ...providers.map((p) => p.handler),
     ...(process.env.VERCEL_ENV !== "production" ? [mockEmail] : []),
@@ -46,7 +54,7 @@ export const authConfig = {
         return Response.redirect(url);
       }
 
-      if (url.pathname === "/report") {
+      if (url.pathname === "/report" || url.pathname === "/report/") {
         url.pathname = `/report/${Intl.DateTimeFormat("en-US", {
           month: "short",
           year: "2-digit",

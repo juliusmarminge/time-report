@@ -82,7 +82,7 @@ export function ClientCard(props: { client: TsonSerialized<Client> }) {
   const converter = use(ConverterContext);
   const periodAmounts = sortedPeriods.map((p) =>
     sumDineros({
-      dineros: slotsToDineros(p.timeslot),
+      dineros: slotsToDineros(p.timeslots),
       currency: converter.preferredCurrency,
       converter: converter.convert,
     }),
@@ -155,7 +155,7 @@ export function ClientCard(props: { client: TsonSerialized<Client> }) {
                 </div>
                 <p className="text-sm">
                   {p.status === "closed" ? "Invoiced" : "Reported"}{" "}
-                  {p.timeslot.reduce((acc, slot) => +slot.duration + acc, 0)}{" "}
+                  {p.timeslots.reduce((acc, slot) => +slot.duration + acc, 0)}{" "}
                   hours for a total of{" "}
                   <b>{toDecimal(periodAmounts[i], formatMoney)}</b>
                 </p>

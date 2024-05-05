@@ -43,12 +43,15 @@ import { closePeriod } from "../_actions";
 function PeriodCard(props: { period: Period }) {
   const { period } = props;
 
-  const nSlots = period.timeslot.length;
-  const nHours = period.timeslot.reduce((acc, slot) => +slot.duration + acc, 0);
+  const nSlots = period.timeslots.length;
+  const nHours = period.timeslots.reduce(
+    (acc, slot) => +slot.duration + acc,
+    0,
+  );
 
   const converter = use(ConverterContext);
   const revenue = sumDineros({
-    dineros: slotsToDineros(period.timeslot),
+    dineros: slotsToDineros(period.timeslots),
     currency: converter.preferredCurrency,
     converter: converter.convert,
   });
@@ -73,7 +76,7 @@ function PeriodCard(props: { period: Period }) {
         <b>{toDecimal(revenue, formatMoney)}</b>
       </p>
       <ul>
-        {period.timeslot.map((slot) => {
+        {period.timeslots.map((slot) => {
           const chargeRate = dinero({
             amount: slot.chargeRate,
             currency: currencies[slot.currency],
@@ -147,7 +150,10 @@ export function ClosePeriodConfirmationModal(props: { period: Period }) {
           <Button
             variant="secondary"
             onClick={async () => {
-              await closePeriod({ id: props.period.id, openNewPeriod: false });
+              await closePeriod({
+                id: props.period.id,
+                openNewPeriod: false,
+              });
               setNewPeriodDialogOpen(false);
             }}
           >
