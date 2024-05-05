@@ -15,16 +15,22 @@ import { createClientSchema, updateClientSchema } from "./_validators";
 export const createClient = protectedProcedure
   .input(createClientSchema)
   .mutation(async ({ ctx, input }) => {
-    const currencyCode = input.currency;
-    const normalized = normalizeAmount(input.defaultCharge, currencyCode);
+    const defaultCharge = normalizeAmount(input.defaultCharge, input.currency);
 
     const now = Temporal.Now.plainDateISO();
     const currentUser = e.select(e.User, (user) => ({
       filter_single: e.op(user.id, "=", e.uuid(ctx.user.id)),
     }));
 
+    const insertClient = e.insert(e.Client, {
+      ...input,
+      defaultCharge,
+      tenant: currentUser,
+    });
+
     await e
       .insert(e.Period, {
+        client: insertClient,
         tenant: currentUser,
         startDate: toDate(
           input.defaultBillingPeriod === "monthly"
@@ -38,14 +44,6 @@ export const createClient = protectedProcedure
               ? now.add({ days: 13 - now.dayOfWeek })
               : now.add({ days: 6 - now.dayOfWeek }),
         ),
-        client: e.insert(e.Client, {
-          name: input.name,
-          currency: currencyCode,
-          defaultCharge: normalized,
-          defaultBillingPeriod: input.defaultBillingPeriod,
-          image: input.image,
-          tenant: currentUser,
-        }),
       })
       .run(edgedb);
 
@@ -67,16 +65,13 @@ export const updateClient = protectedProcedure
       .run(edgedb);
     if (!existing) throw new Error("Unauthorized");
 
-    const currencyCode = input.currency;
-    const normalized = normalizeAmount(input.defaultCharge, currencyCode);
+    const defaultCharge = normalizeAmount(input.defaultCharge, input.currency);
 
     await e
       .update(e.Client, (client) => ({
         set: {
-          name: input.name,
-          currency: currencyCode,
-          defaultCharge: normalized,
-          defaultBillingPeriod: input.defaultBillingPeriod,
+          ...input,
+          defaultCharge,
         },
         filter_single: e.op(client.id, "=", e.uuid(input.id)),
       }))

@@ -29,8 +29,7 @@ export const reportTime = protectedProcedure
       .run(edgedb);
     if (!existingClient) throw new Error("Unauthorized");
 
-    const currencyCode = input.currency;
-    const normalized = normalizeAmount(input.chargeRate, currencyCode);
+    const normalized = normalizeAmount(input.chargeRate, input.currency);
 
     const slotPeriod = await e
       .select(e.Period, (period) => ({
@@ -55,7 +54,7 @@ export const reportTime = protectedProcedure
         date: toDate(Temporal.PlainDate.from(input.date)),
         duration: String(input.duration),
         chargeRate: normalized,
-        currency: currencyCode,
+        currency: input.currency,
         description: input.description,
         client: e.select(e.Client, (client) => ({
           filter_single: e.op(client.id, "=", e.uuid(input.clientId)),
@@ -95,13 +94,12 @@ export const deleteTimeslot = protectedProcedure
 export const updateTimeslot = protectedProcedure
   .input(updateSchema)
   .mutation(async ({ ctx, input }) => {
-    const currencyCode = input.currency;
-    const normalized = normalizeAmount(input.chargeRate, currencyCode);
+    const normalized = normalizeAmount(input.chargeRate, input.currency);
 
     await e
       .update(e.Timeslot, (timeslot) => ({
         set: {
-          currency: currencyCode,
+          currency: input.currency,
           duration: String(input.duration),
           chargeRate: normalized,
         },
