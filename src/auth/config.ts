@@ -1,25 +1,27 @@
-import type { InferSelectModel } from "drizzle-orm";
 import type { NextAuthConfig } from "next-auth";
 import Github from "next-auth/providers/github";
 import Passkey from "next-auth/providers/passkey";
-import type { users } from "~/db/schema";
-import type { CurrencyCode } from "~/monetary/math";
 import { edgedbAdapter, mockEmail } from "./adapters";
-
+import type { User } from "~/edgedb";
 export const providers = [
   { name: "github", handler: Github },
   { name: "passkey", handler: Passkey },
 ] as const;
 export type OAuthProviders = (typeof providers)[number]["name"];
 
+type UserWithoutRelations = Omit<
+  User,
+  "accounts" | "authenticators" | "periods" | "sessions" | "timeslots"
+>;
+
 declare module "next-auth" {
   interface Session {
-    user: InferSelectModel<typeof users>;
+    user: UserWithoutRelations;
   }
 }
 
 declare module "next-auth/adapters" {
-  // interface AdapterUser extends InferSelectModel<typeof users> {}
+  interface AdapterUser extends UserWithoutRelations {}
   interface AdapterAuthenticator {
     // Just for convenience not having to convert null to undefined...
     transports: string | null | undefined;
@@ -46,6 +48,8 @@ export const authConfig = {
     authorized({ request, auth }) {
       const url = request.nextUrl;
 
+      console.log("AUTHORIZED", auth);
+
       if (!auth?.user) {
         url.pathname = "/login";
         return Response.redirect(url);
@@ -71,7 +75,7 @@ export const authConfig = {
           id: user.id,
           name: user.name,
           image: user.image,
-          defaultCurrency: (user as any).defaultCurrency as CurrencyCode,
+          defaultCurrency: user.defaultCurrency,
         },
       };
     },

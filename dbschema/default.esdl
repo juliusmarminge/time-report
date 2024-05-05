@@ -1,22 +1,100 @@
 using extension edgeql_http;
 
 module default {
+    scalar type BillingPeriod extending enum<weekly, biweekly, monthly>;
+    scalar type Currency extending enum<USD, EUR, GBP, SEK>;
+    scalar type PeriodStatus extending enum<open, closed>;
+
+    type Client {
+        required appId: int64;
+        required name: str;
+        image: str;
+        required defaultCharge: int64;
+        required defaultBillingPeriod: BillingPeriod {
+            default := "monthly";
+        }
+        required currency: Currency;
+        required tenantId := .tenant.id;
+        required tenant: User {
+            on target delete delete source;
+        }
+        required createdAt: datetime {
+            default := datetime_current();
+        }
+
+        multi periods := .<client[is Period];
+        multi timeslots := .<client[is Timeslot];
+    }
+
+    type Timeslot {
+        required appId: int64;
+        required clientId := .client.id;
+        required tenantId := .tenant.id;
+        required periodId := .period.id;
+        required date: datetime;
+        required duration: decimal;
+        description: str;
+        required chargeRate: int32;
+        required currency: Currency;
+        
+        required client: Client {
+            on target delete delete source;
+        }
+        required tenant: User {
+            on target delete delete source;
+        }
+        required period: Period {
+            on target delete delete source;
+        }
+
+        required createdAt: datetime {
+            default := datetime_current();
+        }
+    }
+
+    type Period {
+        required appId: int64;
+        required clientId := .client.id;
+        required tenantId := .tenant.id;
+        required startDate: datetime;
+        required endDate: datetime;
+        closedAt: datetime;
+        required status: PeriodStatus {
+            default := "open";
+        }
+
+        required client: Client {
+            on target delete delete source;
+        }
+        required tenant: User {
+            on target delete delete source;
+        }
+
+        required createdAt: datetime {
+            default := datetime_current();
+        }
+
+        multi timeslots := .<period[is Timeslot];
+    }
+
     type User {
         name: str;
         required email: str {
             constraint exclusive;
         }
         emailVerified: datetime;
-        image:str;
-        required defaultCurrency: str {
+        image: str;
+        required defaultCurrency: Currency {
             default := "USD";
         }
 
+        multi periods := .<tenant[is Period];
+        multi timeslots := .<tenant[is Timeslot];
         multi accounts := .<user[is Account];
         multi sessions := .<user[is Session];
         multi authenticators := .<user[is Authenticators];
 
-        createdAt: datetime {
+        required createdAt: datetime {
             default := datetime_current();
         }
     }
@@ -40,7 +118,7 @@ module default {
             on target delete delete source;
         };
 
-        createdAt: datetime {
+        required createdAt: datetime {
             default := datetime_current();
         }
  
@@ -58,7 +136,7 @@ module default {
             on target delete delete source;
         };
 
-        createdAt: datetime {
+        required createdAt: datetime {
             default := datetime_current();
         }
     }
@@ -91,6 +169,10 @@ module default {
 
         required user: User {
             on target delete delete source;
+        }
+
+        required createdAt: datetime {
+            default := datetime_current();
         }
     }
 }

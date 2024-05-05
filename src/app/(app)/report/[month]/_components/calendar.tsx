@@ -12,9 +12,10 @@ import { tson } from "~/lib/tson";
 import { useIsDesktop } from "~/lib/use-media-query";
 import type { Client, Timeslot } from "~/trpc/datalayer";
 import { Button } from "~/ui/button";
-import { Calendar as CalendarCore, fromDate, toDate } from "~/ui/calendar";
+import { Calendar as CalendarCore } from "~/ui/calendar";
 import { Drawer, DrawerContent } from "~/ui/drawer";
 import { SidePanel } from "./side-panel";
+import { fromDate, toDate } from "~/lib/temporal";
 
 export function Calendar(props: {
   date: Temporal.PlainDate;
@@ -111,7 +112,7 @@ export function Calendar(props: {
               </span>
               {slots?.map((slot) => (
                 <div className="text-xs" key={slot.id}>
-                  {slot.clientName} ({slot.duration}h)
+                  {slot.client.name} ({slot.duration}h)
                 </div>
               ))}
             </Button>

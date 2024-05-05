@@ -53,7 +53,7 @@ export function ReportTimeForm(props: {
     schema: reportTimeSchema,
     defaultValues: {
       date: props.date?.toString(),
-      clientId: props.clients[0].id,
+      clientId: props.clients[0].appId,
       currency: props.clients[0].currency,
       chargeRate: props.clients[0].defaultCharge / 100,
     },

@@ -82,7 +82,7 @@ export function ClientCard(props: { client: TsonSerialized<Client> }) {
   const converter = use(ConverterContext);
   const periodAmounts = sortedPeriods.map((p) =>
     sumDineros({
-      dineros: slotsToDineros(p.timeslot),
+      dineros: slotsToDineros(p.timeslots),
       currency: converter.preferredCurrency,
       converter: converter.convert,
     }),
@@ -155,7 +155,7 @@ export function ClientCard(props: { client: TsonSerialized<Client> }) {
                 </div>
                 <p className="text-sm">
                   {p.status === "closed" ? "Invoiced" : "Reported"}{" "}
-                  {p.timeslot.reduce((acc, slot) => +slot.duration + acc, 0)}{" "}
+                  {p.timeslots.reduce((acc, slot) => +slot.duration + acc, 0)}{" "}
                   hours for a total of{" "}
                   <b>{toDecimal(periodAmounts[i], formatMoney)}</b>
                 </p>
@@ -196,7 +196,7 @@ function EditingClientCard(props: {
         <form
           onSubmit={form.handleSubmit(async (data) => {
             await updateClient({
-              id: props.client.id,
+              id: props.client.appId,
               name: data.name,
               currency: data.currency,
               // @ts-expect-error unsure how to get input_in working with Valibot
@@ -259,7 +259,7 @@ function EditingClientCard(props: {
                     <AlertDialogAction
                       asChild
                       onClick={async () => {
-                        await deleteClient({ id: client.id });
+                        await deleteClient({ id: client.appId });
                       }}
                     >
                       <Button variant="destructive">Yes, Delete</Button>

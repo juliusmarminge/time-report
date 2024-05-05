@@ -5,12 +5,12 @@ import {
 } from "next/server";
 import { auth } from "~/auth";
 
-const PUBLIC_ROUTES = ["/", "/login(.*)", "/api(.*)"];
+const PUBLIC_ROUTES = ["/", "/login(.*)"];
 const isPublic = (url: URL) =>
   PUBLIC_ROUTES.some((route) => new RegExp(`^${route}$`).test(url.pathname));
 
 export default (req: NextRequest) => {
-  if (isPublic(req.nextUrl)) {
+  if (isPublic(new URL(req.nextUrl.href))) {
     return NextResponse.next();
   }
   // Run auth middleware for route protection, session management, etc.

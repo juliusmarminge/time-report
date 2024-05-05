@@ -1,29 +1,43 @@
 import "server-only";
 
 import { Temporal } from "@js-temporal/polyfill";
-import { and, between, eq } from "drizzle-orm";
 import { cache } from "react";
 import * as z from "zod";
-import { db } from "~/db/client";
-import { client, period, timeslot } from "~/db/schema";
+import { e, edgedb } from "~/edgedb";
+import { fromDate, toDate } from "~/lib/temporal";
 import { protectedProcedure } from "./init";
 
 export const getClients = cache(
   protectedProcedure.query(async ({ ctx }) => {
     const userId = ctx.user.id;
 
-    const clients = await db.query.client.findMany({
-      where: eq(client.tenantId, userId),
-      with: {
-        periods: {
-          with: {
-            timeslot: true,
-          },
-        },
-      },
-    });
+    const clients = await e
+      .select(e.Client, (client) => ({
+        ...client["*"],
+        periods: (period) => ({
+          ...period["*"],
+          timeslots: (timeslot) => ({
+            ...timeslot["*"],
+          }),
+        }),
+        filter: e.op(client.tenantId, "=", e.uuid(userId)),
+      }))
+      .run(edgedb);
 
-    return clients;
+    console.log("raw client", clients);
+
+    return clients.map((client) => ({
+      ...client,
+      periods: client.periods.map((period) => ({
+        ...period,
+        startDate: fromDate(period.startDate),
+        endDate: fromDate(period.endDate),
+        timeslots: period.timeslots.map((timeslot) => ({
+          ...timeslot,
+          date: fromDate(timeslot.date),
+        })),
+      })),
+    }));
   }),
 );
 export type Client = Awaited<ReturnType<typeof getClients>>[number];
@@ -40,35 +54,46 @@ export const getTimeslots = cache(
       const { date, mode } = input;
       const userId = ctx.user.id;
 
-      const slots = await db
-        .select({
-          id: timeslot.id,
-          clientId: timeslot.clientId,
-          clientName: client.name,
-          date: timeslot.date,
-          duration: timeslot.duration,
-          description: timeslot.description,
-          chargeRate: timeslot.chargeRate,
-          currency: timeslot.currency,
-        })
-        .from(timeslot)
-        .innerJoin(client, eq(client.id, timeslot.clientId))
-        .where(
-          and(
-            eq(timeslot.tenantId, userId),
+      const range = [
+        // to account for timeslots that start/end in the previous/next month
+        // pad the month with a week on either side
+        toDate(input.date.subtract({ days: date.day + 7 })),
+        toDate(input.date.add({ days: date.daysInMonth - date.day + 7 })),
+      ] as const;
+
+      const _slots = await e
+        .select(e.Timeslot, (timeslot) => ({
+          id: true,
+          appId: true,
+          client: () => ({
+            id: true,
+            name: true,
+          }),
+          date: true,
+          duration: true,
+          description: true,
+          chargeRate: true,
+          currency: true,
+          tenantId: true,
+
+          filter: e.op(
+            e.op(timeslot.tenantId, "=", e.uuid(userId)),
+            "and",
             mode === "exact"
-              ? eq(timeslot.date, input.date)
-              : between(
-                  timeslot.date,
-                  // to account for timeslots that start/end in the previous/next month
-                  // pad the month with a week on either side
-                  date.subtract({ days: date.day + 7 }),
-                  date.add({ days: date.daysInMonth - date.day + 7 }),
+              ? e.op(timeslot.date, "=", toDate(date))
+              : e.op(
+                  e.op(timeslot.date, ">=", range[0]),
+                  "and",
+                  e.op(timeslot.date, "<=", range[1]),
                 ),
           ),
-        );
+        }))
+        .run(edgedb);
 
-      return slots;
+      return _slots.map((slot) => ({
+        ...slot,
+        date: fromDate(slot.date),
+      }));
     }),
 );
 export type Timeslot = Awaited<ReturnType<typeof getTimeslots>>[number];
@@ -77,15 +102,28 @@ export const getOpenPeriods = cache(
   protectedProcedure.query(async ({ ctx }) => {
     const userId = ctx.user.id;
 
-    const periods = await db.query.period.findMany({
-      where: and(eq(period.tenantId, userId), eq(period.status, "open")),
-      with: {
-        client: true,
-        timeslot: true,
-      },
-    });
+    const _periods = await e
+      .select(e.Period, (period) => ({
+        ...period["*"],
+        timeslots: e.Timeslot["*"],
+        client: e.Client["*"],
+        filter: e.op(
+          e.op(period.tenantId, "=", e.uuid(userId)),
+          "and",
+          e.op(period.status, "=", e.PeriodStatus.open),
+        ),
+      }))
+      .run(edgedb);
 
-    return periods;
+    return _periods.map((period) => ({
+      ...period,
+      startDate: fromDate(period.startDate),
+      endDate: fromDate(period.endDate),
+      timeslots: period.timeslots.map((timeslot) => ({
+        ...timeslot,
+        date: fromDate(timeslot.date),
+      })),
+    }));
   }),
 );
 export type Period = Awaited<ReturnType<typeof getOpenPeriods>>[number];

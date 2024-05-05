@@ -1,8 +1,6 @@
 import type { Adapter, AdapterAccount } from "next-auth/adapters";
 import type { EmailConfig } from "next-auth/providers";
-import { edgedb } from "~/db/client";
-
-import e from "@edgedb";
+import { e, edgedb } from "~/edgedb";
 
 export const edgedbAdapter = {
   createUser: async ({ id, ...data }) => {
@@ -142,7 +140,7 @@ export const edgedbAdapter = {
         ),
       }))
       .run(edgedb);
-    return (account as AdapterAccount) ?? null;
+    return (account as unknown as AdapterAccount) ?? null;
   },
 
   createVerificationToken: async (data) => {
