@@ -18,8 +18,6 @@ export default async function ClientsPage() {
   // });
   const clients = await trpc.getClients();
 
-  console.log("CLIENTS", clients);
-
   return (
     <DashboardShell
       title="Clients"

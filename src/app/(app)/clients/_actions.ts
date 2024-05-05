@@ -15,8 +15,6 @@ import { createClientSchema, updateClientSchema } from "./_validators";
 export const createClient = protectedProcedure
   .input(createClientSchema)
   .mutation(async ({ ctx, input }) => {
-    const defaultCharge = normalizeAmount(input.defaultCharge, input.currency);
-
     const now = Temporal.Now.plainDateISO();
     const currentUser = e.select(e.User, (user) => ({
       filter_single: e.op(user.id, "=", e.uuid(ctx.user.id)),
@@ -24,7 +22,7 @@ export const createClient = protectedProcedure
 
     const insertClient = e.insert(e.Client, {
       ...input,
-      defaultCharge,
+      defaultCharge: normalizeAmount(input.defaultCharge, input.currency),
       tenant: currentUser,
     });
 
@@ -65,13 +63,11 @@ export const updateClient = protectedProcedure
       .run(edgedb);
     if (!existing) throw new Error("Unauthorized");
 
-    const defaultCharge = normalizeAmount(input.defaultCharge, input.currency);
-
     await e
       .update(e.Client, (client) => ({
         set: {
           ...input,
-          defaultCharge,
+          defaultCharge: normalizeAmount(input.defaultCharge, input.currency),
         },
         filter_single: e.op(client.id, "=", e.uuid(input.id)),
       }))
