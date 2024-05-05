@@ -89,9 +89,9 @@ export const deleteClient = protectedProcedure
         id: true,
         image: true,
         filter_single: e.op(
-          e.op(client.tenantId, "=", e.uuid(ctx.user.id)),
-          "and",
           e.op(client.id, "=", e.uuid(input.id)),
+          "and",
+          e.op(client.tenantId, "=", e.uuid(ctx.user.id)),
         ),
       }))
       .run(db);

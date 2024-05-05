@@ -20,9 +20,9 @@ export const reportTime = protectedProcedure
     const existingClient = await e
       .select(e.Client, (client) => ({
         filter: e.op(
-          e.op(client.tenantId, "=", e.uuid(ctx.user.id)),
-          "and",
           e.op(client.id, "=", e.uuid(input.clientId)),
+          "and",
+          e.op(client.tenantId, "=", e.uuid(ctx.user.id)),
         ),
       }))
       .run(db);
@@ -33,8 +33,8 @@ export const reportTime = protectedProcedure
         filter_single: e.all(
           e.set(
             e.op(period.status, "=", e.PeriodStatus.open),
-            e.op(period.tenantId, "=", e.uuid(ctx.user.id)),
             e.op(period.clientId, "=", e.uuid(input.clientId)),
+            e.op(period.tenantId, "=", e.uuid(ctx.user.id)),
           ),
         ),
       }))
@@ -94,9 +94,9 @@ export const updateTimeslot = protectedProcedure
           chargeRate: normalizeAmount(input.chargeRate, input.currency),
         },
         filter_single: e.op(
-          e.op(timeslot.tenantId, "=", e.uuid(ctx.user.id)),
-          "and",
           e.op(timeslot.id, "=", e.uuid(input.id)),
+          "and",
+          e.op(timeslot.tenantId, "=", e.uuid(ctx.user.id)),
         ),
       }))
       .run(db);
@@ -109,25 +109,23 @@ export const updateTimeslot = protectedProcedure
 export const closePeriod = protectedProcedure
   .input(closePeriodSchema)
   .mutation(async ({ ctx, input }) => {
-    const existing = await e
-      .select(e.Period, (period) => ({
+    const res = await e
+      .update(e.Period, (period) => ({
+        set: { status: e.PeriodStatus.closed, closedAt: new Date() },
         filter_single: e.all(
           e.set(
+            e.op(period.id, "=", e.uuid(input.id)),
             e.op(period.status, "=", e.PeriodStatus.open),
             e.op(period.tenantId, "=", e.uuid(ctx.user.id)),
-            e.op(period.id, "=", e.uuid(input.id)),
           ),
         ),
       }))
       .run(db);
-    if (!existing) throw new Error("Unauthorized");
 
-    await e
-      .update(e.Period, (period) => ({
-        set: { status: e.PeriodStatus.closed, closedAt: new Date() },
-        filter_single: e.op(period.id, "=", e.uuid(existing.id)),
-      }))
-      .run(db);
+    if (!res) {
+      // Nothing changed meaning the period was already closed, or the user is not the owner
+      throw new Error("Unauthorized");
+    }
 
     if (input.openNewPeriod) {
       await e
