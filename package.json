@@ -15,7 +15,7 @@
     "ui": "bunx shadcn-ui"
   },
   "dependencies": {
-    "@baselime/node-opentelemetry": "^0.4.8",
+    "@baselime/node-opentelemetry": "^0.5.8",
     "@hookform/resolvers": "^3.3.2",
     "@js-temporal/polyfill": "^0.4.4",
     "@juliusmarminge/next-themes": "^0.3.0",
