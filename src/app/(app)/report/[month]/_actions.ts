@@ -73,15 +73,10 @@ export const reportTime = protectedProcedure
 export const deleteTimeslot = protectedProcedure
   .input(z.string())
   .mutation(async ({ ctx, input }) => {
-    await e
-      .delete(e.Timeslot, (timeslot) => ({
-        filter_single: e.op(
-          e.op(timeslot.tenantId, "=", e.uuid(ctx.user.id)),
-          "and",
-          e.op(timeslot.id, "=", e.uuid(input)),
-        ),
-      }))
-      .run(edgedb);
+    await edgedb.execute(
+      "delete Timeslot filter .id = <uuid>$id and .tenantId = <uuid>$tenantId",
+      { id: input, tenantId: ctx.user.id },
+    );
 
     revalidateTag(CACHE_TAGS.TIMESLOTS);
     revalidateTag(CACHE_TAGS.PERIODS);

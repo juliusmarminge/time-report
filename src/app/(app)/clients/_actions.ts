@@ -105,11 +105,7 @@ export const deleteClient = protectedProcedure
     if (!existing) throw new Error("Unauthorized");
 
     await Promise.all([
-      e
-        .delete(e.Client, (client) => ({
-          filter_single: e.op(client.id, "=", e.uuid(input.id)),
-        }))
-        .run(edgedb),
+      edgedb.execute("delete Client filter .id = <uuid>$id", { id: input.id }),
       deleteImageIfExists(existing.image),
     ]);
 

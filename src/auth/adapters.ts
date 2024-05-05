@@ -9,13 +9,8 @@ export const edgedbAdapter = {
       .run(edgedb);
     return user;
   },
-  deleteUser: async (id) => {
-    await e
-      .delete(e.User, (user) => ({
-        filter_single: e.op(user.id, "=", e.uuid(id)),
-      }))
-      .run(edgedb);
-  },
+  deleteUser: (id) =>
+    edgedb.execute("delete User filter .id = <uuid>$id", { id }),
   getUser: async (id) => {
     const user = await e
       .select(e.User, (user) => ({
@@ -75,13 +70,10 @@ export const edgedbAdapter = {
       .run(edgedb);
     return session;
   },
-  deleteSession: async (sessionToken) => {
-    await e
-      .delete(e.Session, (session) => ({
-        filter_single: e.op(session.sessionToken, "=", sessionToken),
-      }))
-      .run(edgedb);
-  },
+  deleteSession: (token) =>
+    edgedb.execute("delete Session filter .sessionToken = <uuid>$token", {
+      token,
+    }),
   getSessionAndUser: async (sessionToken) => {
     const session = await e
       .select(e.Session, (session) => ({
@@ -119,15 +111,10 @@ export const edgedbAdapter = {
       .run(edgedb);
   },
   unlinkAccount: async ({ provider, providerAccountId }) => {
-    await e
-      .delete(e.Account, (account) => ({
-        filter_single: e.op(
-          e.op(account.provider, "=", provider),
-          "and",
-          e.op(account.providerAccountId, "=", providerAccountId),
-        ),
-      }))
-      .run(edgedb);
+    await edgedb.execute(
+      "delete Account filter .provider = $provider and .providerAccountId = $providerAccountId",
+      { provider, providerAccountId },
+    );
   },
   getAccount: async (providerAccountId, provider) => {
     const account = await e
