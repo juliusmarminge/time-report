@@ -2,7 +2,7 @@
 
 import { revalidateTag } from "next/cache";
 
-import { e, edgedb } from "~/edgedb";
+import { e, db } from "~/edgedb";
 import type { CurrencyCode } from "../monetary/math";
 import { currentUser } from "~/auth";
 
@@ -15,7 +15,7 @@ export async function setDefaultCurrency(currency: CurrencyCode) {
       set: { defaultCurrency: currency },
       filter_single: e.op(user.id, "=", e.uuid(_user.id)),
     }))
-    .run(edgedb);
+    .run(db);
 
   revalidateTag("/");
 }

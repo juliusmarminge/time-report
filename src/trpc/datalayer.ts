@@ -3,7 +3,7 @@ import "server-only";
 import { Temporal } from "@js-temporal/polyfill";
 import { cache } from "react";
 import * as z from "zod";
-import { e, edgedb, plainDate } from "~/edgedb";
+import { e, db, plainDate } from "~/edgedb";
 import { protectedProcedure } from "./init";
 
 export const getClients = cache(
@@ -15,13 +15,11 @@ export const getClients = cache(
         ...client["*"],
         periods: (period) => ({
           ...period["*"],
-          timeslots: (timeslot) => ({
-            ...timeslot["*"],
-          }),
+          timeslots: (ts) => ts["*"],
         }),
         filter: e.op(client.tenantId, "=", e.uuid(userId)),
       }))
-      .run(edgedb);
+      .run(db);
 
     return clients.map((client) => ({
       ...client,
@@ -59,7 +57,7 @@ export const getTimeslots = cache(
       ] as const;
 
       const _slots = await e
-        .select(e.Timeslot, (timeslot) => ({
+        .select(e.Timeslot, (ts) => ({
           id: true,
           client: {
             id: true,
@@ -73,18 +71,18 @@ export const getTimeslots = cache(
           tenantId: true,
 
           filter: e.op(
-            e.op(timeslot.tenantId, "=", e.uuid(userId)),
+            e.op(ts.tenantId, "=", e.uuid(userId)),
             "and",
             mode === "exact"
-              ? e.op(timeslot.date, "=", plainDate(date))
+              ? e.op(ts.date, "=", plainDate(date))
               : e.op(
-                  e.op(timeslot.date, ">=", plainDate(range[0])),
+                  e.op(ts.date, ">=", plainDate(range[0])),
                   "and",
-                  e.op(timeslot.date, "<=", plainDate(range[1])),
+                  e.op(ts.date, "<=", plainDate(range[1])),
                 ),
           ),
         }))
-        .run(edgedb);
+        .run(db);
 
       return _slots.map((slot) => ({
         ...slot,
@@ -109,15 +107,15 @@ export const getOpenPeriods = cache(
           e.op(period.status, "=", e.PeriodStatus.open),
         ),
       }))
-      .run(edgedb);
+      .run(db);
 
     return _periods.map((period) => ({
       ...period,
       startDate: Temporal.PlainDate.from(period.startDate),
       endDate: Temporal.PlainDate.from(period.endDate),
-      timeslots: period.timeslots.map((timeslot) => ({
-        ...timeslot,
-        date: Temporal.PlainDate.from(timeslot.date),
+      timeslots: period.timeslots.map((ts) => ({
+        ...ts,
+        date: Temporal.PlainDate.from(ts.date),
       })),
     }));
   }),

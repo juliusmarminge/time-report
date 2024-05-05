@@ -1,23 +1,22 @@
 import type { Adapter, AdapterAccount } from "next-auth/adapters";
 import type { EmailConfig } from "next-auth/providers";
-import { e, edgedb } from "~/edgedb";
+import { e, db } from "~/edgedb";
 
 export const edgedbAdapter = {
   createUser: async ({ id, ...data }) => {
     const user = await e
       .select(e.insert(e.User, { ...data }), (user) => user["*"])
-      .run(edgedb);
+      .run(db);
     return user;
   },
-  deleteUser: (id) =>
-    edgedb.execute("delete User filter .id = <uuid>$id", { id }),
+  deleteUser: (id) => db.execute("delete User filter .id = <uuid>$id", { id }),
   getUser: async (id) => {
     const user = await e
       .select(e.User, (user) => ({
         ...user["*"],
         filter_single: e.op(user.id, "=", e.uuid(id)),
       }))
-      .run(edgedb);
+      .run(db);
     return user;
   },
   getUserByAccount: async ({ provider, providerAccountId }) => {
@@ -30,7 +29,7 @@ export const edgedbAdapter = {
           e.op(account.providerAccountId, "=", providerAccountId),
         ),
       }))
-      .run(edgedb);
+      .run(db);
     return account?.user ?? null;
   },
   getUserByEmail: async (email) => {
@@ -39,7 +38,7 @@ export const edgedbAdapter = {
         ...user["*"],
         filter_single: e.op(user.email, "=", email),
       }))
-      .run(edgedb);
+      .run(db);
     return user;
   },
   updateUser: async ({ id, ...data }) => {
@@ -51,7 +50,7 @@ export const edgedbAdapter = {
         })),
         (user) => user["*"],
       )
-      .run(edgedb);
+      .run(db);
     if (!user) throw "user not found";
     return user;
   },
@@ -67,11 +66,11 @@ export const edgedbAdapter = {
         }),
         (session) => session["*"],
       )
-      .run(edgedb);
+      .run(db);
     return session;
   },
   deleteSession: (token) =>
-    edgedb.execute("delete Session filter .sessionToken = <uuid>$token", {
+    db.execute("delete Session filter .sessionToken = <uuid>$token", {
       token,
     }),
   getSessionAndUser: async (sessionToken) => {
@@ -81,7 +80,7 @@ export const edgedbAdapter = {
         user: e.User["*"],
         filter_single: e.op(session.sessionToken, "=", sessionToken),
       }))
-      .run(edgedb);
+      .run(db);
     if (!session) return null;
     const { user, ...sessionData } = session;
     return { user, session: sessionData };
@@ -95,7 +94,7 @@ export const edgedbAdapter = {
         })),
         (session) => session["*"],
       )
-      .run(edgedb);
+      .run(db);
     if (!session) throw "session not found";
     return session;
   },
@@ -108,10 +107,10 @@ export const edgedbAdapter = {
           filter_single: e.op(user.id, "=", e.uuid(userId)),
         })),
       })
-      .run(edgedb);
+      .run(db);
   },
   unlinkAccount: async ({ provider, providerAccountId }) => {
-    await edgedb.execute(
+    await db.execute(
       "delete Account filter .provider = $provider and .providerAccountId = $providerAccountId",
       { provider, providerAccountId },
     );
@@ -126,7 +125,7 @@ export const edgedbAdapter = {
           e.op(account.providerAccountId, "=", providerAccountId),
         ),
       }))
-      .run(edgedb);
+      .run(db);
     return (account as unknown as AdapterAccount) ?? null;
   },
 
@@ -138,7 +137,7 @@ export const edgedbAdapter = {
         }),
         (vt) => vt["*"],
       )
-      .run(edgedb);
+      .run(db);
     return token;
   },
   useVerificationToken: async ({ identifier, token }) => {
@@ -153,7 +152,7 @@ export const edgedbAdapter = {
         })),
         (vt) => vt["*"],
       )
-      .run(edgedb);
+      .run(db);
     return usedToken;
   },
 
@@ -168,7 +167,7 @@ export const edgedbAdapter = {
         }),
         (auth) => auth["*"],
       )
-      .run(edgedb);
+      .run(db);
     const { id: _, ...rest } = authenticator;
     return rest;
   },
@@ -178,7 +177,7 @@ export const edgedbAdapter = {
         ...auth["*"],
         filter_single: e.op(auth.credentialID, "=", credentialId),
       }))
-      .run(edgedb);
+      .run(db);
     return authenticator ?? null;
   },
   listAuthenticatorsByUserId: async (userId) => {
@@ -187,7 +186,7 @@ export const edgedbAdapter = {
         ...auth["*"],
         filter: e.op(auth.userId, "=", e.uuid(userId)),
       }))
-      .run(edgedb);
+      .run(db);
     return auths;
   },
   updateAuthenticatorCounter: async (credentialId, counter) => {
@@ -199,7 +198,7 @@ export const edgedbAdapter = {
         })),
         (auth) => auth["*"],
       )
-      .run(edgedb);
+      .run(db);
     if (!authenticator) throw "authenticator not found";
     return authenticator;
   },

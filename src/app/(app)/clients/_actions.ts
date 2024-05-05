@@ -5,7 +5,7 @@ import { revalidateTag } from "next/cache";
 import { UTApi } from "uploadthing/server";
 import * as z from "zod";
 
-import { e, edgedb, plainDate } from "~/edgedb";
+import { e, db, plainDate } from "~/edgedb";
 import { CACHE_TAGS } from "~/lib/cache";
 import { normalizeAmount } from "~/monetary/math";
 import { protectedProcedure } from "~/trpc/init";
@@ -42,7 +42,7 @@ export const createClient = protectedProcedure
               : now.add({ days: 6 - now.dayOfWeek }),
         ),
       })
-      .run(edgedb);
+      .run(db);
 
     revalidateTag(CACHE_TAGS.CLIENTS);
     revalidateTag(CACHE_TAGS.PERIODS);
@@ -63,7 +63,7 @@ export const updateClient = protectedProcedure
           e.op(client.tenantId, "=", e.uuid(ctx.user.id)),
         ),
       }))
-      .run(edgedb);
+      .run(db);
 
     revalidateTag(CACHE_TAGS.CLIENTS);
   });
@@ -94,11 +94,11 @@ export const deleteClient = protectedProcedure
           e.op(client.id, "=", e.uuid(input.id)),
         ),
       }))
-      .run(edgedb);
+      .run(db);
     if (!existing) throw new Error("Unauthorized");
 
     await Promise.all([
-      edgedb.execute("delete Client filter .id = <uuid>$id", { id: input.id }),
+      db.execute("delete Client filter .id = <uuid>$id", { id: input.id }),
       deleteImageIfExists(existing.image),
     ]);
 

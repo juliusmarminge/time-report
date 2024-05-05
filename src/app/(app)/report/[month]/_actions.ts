@@ -4,7 +4,7 @@ import { Temporal } from "@js-temporal/polyfill";
 import { revalidateTag } from "next/cache";
 import * as z from "zod";
 
-import { e, edgedb, plainDate } from "~/edgedb";
+import { e, db, plainDate } from "~/edgedb";
 import { CACHE_TAGS } from "~/lib/cache";
 import { normalizeAmount } from "~/monetary/math";
 import { protectedProcedure } from "~/trpc/init";
@@ -25,7 +25,7 @@ export const reportTime = protectedProcedure
           e.op(client.id, "=", e.uuid(input.clientId)),
         ),
       }))
-      .run(edgedb);
+      .run(db);
     if (!existingClient) throw new Error("Unauthorized");
 
     const slotPeriod = await e
@@ -38,7 +38,7 @@ export const reportTime = protectedProcedure
           ),
         ),
       }))
-      .run(edgedb);
+      .run(db);
     if (!slotPeriod) {
       // TODO: Create a new one
       throw new Error("No open period found");
@@ -63,7 +63,7 @@ export const reportTime = protectedProcedure
           filter_single: e.op(user.id, "=", e.uuid(ctx.user.id)),
         })),
       })
-      .run(edgedb);
+      .run(db);
 
     revalidateTag(CACHE_TAGS.TIMESLOTS);
     revalidateTag(CACHE_TAGS.PERIODS);
@@ -73,7 +73,7 @@ export const reportTime = protectedProcedure
 export const deleteTimeslot = protectedProcedure
   .input(z.string())
   .mutation(async ({ ctx, input }) => {
-    await edgedb.execute(
+    await db.execute(
       "delete Timeslot filter .id = <uuid>$id and .tenantId = <uuid>$tenantId",
       { id: input, tenantId: ctx.user.id },
     );
@@ -99,7 +99,7 @@ export const updateTimeslot = protectedProcedure
           e.op(timeslot.id, "=", e.uuid(input.id)),
         ),
       }))
-      .run(edgedb);
+      .run(db);
 
     revalidateTag(CACHE_TAGS.TIMESLOTS);
     revalidateTag(CACHE_TAGS.PERIODS);
@@ -121,7 +121,7 @@ export const closePeriod = protectedProcedure
           ),
         ),
       }))
-      .run(edgedb);
+      .run(db);
     if (!existing) throw new Error("Unauthorized");
 
     await e
@@ -129,7 +129,7 @@ export const closePeriod = protectedProcedure
         set: { status: e.PeriodStatus.closed, closedAt: new Date() },
         filter_single: e.op(period.id, "=", e.uuid(existing.id)),
       }))
-      .run(edgedb);
+      .run(db);
 
     if (input.openNewPeriod) {
       await e
@@ -144,7 +144,7 @@ export const closePeriod = protectedProcedure
           startDate: plainDate(Temporal.PlainDate.from(input.periodStart)),
           endDate: plainDate(Temporal.PlainDate.from(input.periodEnd)),
         })
-        .run(edgedb);
+        .run(db);
     }
 
     revalidateTag(CACHE_TAGS.PERIODS);
