@@ -26,7 +26,6 @@ export const createClient = protectedProcedure
 
     await e
       .insert(e.Period, {
-        appId: 0,
         tenant: currentUser,
         startDate: toDate(
           input.defaultBillingPeriod === "monthly"
@@ -41,7 +40,6 @@ export const createClient = protectedProcedure
               : now.add({ days: 6 - now.dayOfWeek }),
         ),
         client: e.insert(e.Client, {
-          appId: 0,
           name: input.name,
           currency: currencyCode as any,
           defaultCharge: normalized,
@@ -64,7 +62,7 @@ export const updateClient = protectedProcedure
         filter_single: e.op(
           e.op(client.tenantId, "=", e.uuid(ctx.user.id)),
           "and",
-          e.op(client.appId, "=", input.id),
+          e.op(client.id, "=", e.uuid(input.id)),
         ),
       }))
       .run(edgedb);
@@ -81,7 +79,7 @@ export const updateClient = protectedProcedure
           defaultCharge: normalized,
           defaultBillingPeriod: input.defaultBillingPeriod,
         },
-        filter_single: e.op(client.appId, "=", input.id),
+        filter_single: e.op(client.id, "=", e.uuid(input.id)),
       }))
       .run(edgedb);
 
@@ -102,7 +100,7 @@ export const deleteImageFromUT = protectedProcedure
   });
 
 export const deleteClient = protectedProcedure
-  .input(z.object({ id: z.number() }))
+  .input(z.object({ id: z.string() }))
   .mutation(async ({ ctx, input }) => {
     const existing = await e
       .select(e.Client, (client) => ({
@@ -111,7 +109,7 @@ export const deleteClient = protectedProcedure
         filter_single: e.op(
           e.op(client.tenantId, "=", e.uuid(ctx.user.id)),
           "and",
-          e.op(client.appId, "=", input.id),
+          e.op(client.id, "=", e.uuid(input.id)),
         ),
       }))
       .run(edgedb);
@@ -120,7 +118,7 @@ export const deleteClient = protectedProcedure
     await Promise.all([
       e
         .delete(e.Client, (client) => ({
-          filter_single: e.op(client.appId, "=", input.id),
+          filter_single: e.op(client.id, "=", e.uuid(input.id)),
         }))
         .run(edgedb),
       deleteImageIfExists(existing.image),

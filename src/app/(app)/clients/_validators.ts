@@ -11,7 +11,7 @@ export const createClientSchema = z.object({
 });
 
 export const updateClientSchema = z.object({
-  id: z.number(),
+  id: z.string(),
   name: z.string().min(4, "Name must be at least 4 characters."),
   defaultCharge: z.coerce.number(),
   defaultBillingPeriod: z.enum(billingPeriods),

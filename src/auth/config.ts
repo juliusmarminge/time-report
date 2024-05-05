@@ -48,14 +48,12 @@ export const authConfig = {
     authorized({ request, auth }) {
       const url = request.nextUrl;
 
-      console.log("AUTHORIZED", auth);
-
       if (!auth?.user) {
         url.pathname = "/login";
         return Response.redirect(url);
       }
 
-      if (url.pathname === "/report") {
+      if (url.pathname === "/report" || url.pathname === "/report/") {
         url.pathname = `/report/${Intl.DateTimeFormat("en-US", {
           month: "short",
           year: "2-digit",

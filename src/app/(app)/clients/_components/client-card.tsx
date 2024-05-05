@@ -196,7 +196,7 @@ function EditingClientCard(props: {
         <form
           onSubmit={form.handleSubmit(async (data) => {
             await updateClient({
-              id: props.client.appId,
+              id: props.client.id,
               name: data.name,
               currency: data.currency,
               // @ts-expect-error unsure how to get input_in working with Valibot
@@ -259,7 +259,7 @@ function EditingClientCard(props: {
                     <AlertDialogAction
                       asChild
                       onClick={async () => {
-                        await deleteClient({ id: client.appId });
+                        await deleteClient({ id: client.id });
                       }}
                     >
                       <Button variant="destructive">Yes, Delete</Button>

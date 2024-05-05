@@ -24,7 +24,7 @@ export const reportTime = protectedProcedure
         filter: e.op(
           e.op(client.tenantId, "=", e.uuid(ctx.user.id)),
           "and",
-          e.op(client.appId, "=", input.clientId),
+          e.op(client.id, "=", e.uuid(input.clientId)),
         ),
       }))
       .run(edgedb);
@@ -39,7 +39,7 @@ export const reportTime = protectedProcedure
           e.set(
             e.op(period.status, "=", "open"),
             e.op(period.tenantId, "=", e.uuid(ctx.user.id)),
-            e.op(period.appId, "=", input.clientId),
+            e.op(period.clientId, "=", e.uuid(input.clientId)),
           ),
         ),
       }))
@@ -53,17 +53,16 @@ export const reportTime = protectedProcedure
 
     await e
       .insert(e.Timeslot, {
-        appId: 0,
         date: toDate(Temporal.PlainDate.from(input.date)),
         duration: String(input.duration),
         chargeRate: normalized,
         currency: currencyCode as any,
         description: input.description,
         client: e.select(e.Client, (client) => ({
-          filter_single: e.op(client.appId, "=", input.clientId),
+          filter_single: e.op(client.id, "=", e.uuid(input.clientId)),
         })),
         period: e.select(e.Period, (period) => ({
-          filter_single: e.op(period.appId, "=", input.clientId),
+          filter_single: e.op(period.clientId, "=", e.uuid(input.clientId)),
         })),
         tenant: e.select(e.User, (user) => ({
           filter_single: e.op(user.id, "=", e.uuid(ctx.user.id)),
@@ -77,14 +76,14 @@ export const reportTime = protectedProcedure
   });
 
 export const deleteTimeslot = protectedProcedure
-  .input(z.number())
+  .input(z.string())
   .mutation(async ({ ctx, input }) => {
     await e
-      .delete(e.Timeslot, () => ({
+      .delete(e.Timeslot, (timeslot) => ({
         filter_single: e.op(
-          e.op(e.Timeslot.tenantId, "=", e.uuid(ctx.user.id)),
+          e.op(timeslot.tenantId, "=", e.uuid(ctx.user.id)),
           "and",
-          e.op(e.Timeslot.appId, "=", input),
+          e.op(timeslot.id, "=", e.uuid(input)),
         ),
       }))
       .run(edgedb);
@@ -110,7 +109,7 @@ export const updateTimeslot = protectedProcedure
         filter_single: e.op(
           e.op(timeslot.tenantId, "=", e.uuid(ctx.user.id)),
           "and",
-          e.op(timeslot.appId, "=", input.id),
+          e.op(timeslot.id, "=", e.uuid(input.id)),
         ),
       }))
       .run(edgedb);
@@ -131,7 +130,7 @@ export const closePeriod = protectedProcedure
           e.set(
             e.op(period.status, "=", "open"),
             e.op(period.tenantId, "=", e.uuid(userId)),
-            e.op(period.appId, "=", input.id),
+            e.op(period.id, "=", e.uuid(input.id)),
           ),
         ),
       }))
@@ -148,13 +147,12 @@ export const closePeriod = protectedProcedure
     if (input.openNewPeriod) {
       await e
         .insert(e.Period, {
-          appId: 0,
           status: e.PeriodStatus.open,
           tenant: e.select(e.User, (user) => ({
             filter_single: e.op(user.id, "=", e.uuid(userId)),
           })),
           client: e.select(e.Client, (client) => ({
-            filter_single: e.op(client.appId, "=", input.clientId),
+            filter_single: e.op(client.id, "=", e.uuid(input.clientId)),
           })),
           startDate: toDate(Temporal.PlainDate.from(input.periodStart)),
           endDate: toDate(Temporal.PlainDate.from(input.periodEnd)),

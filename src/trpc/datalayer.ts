@@ -24,8 +24,6 @@ export const getClients = cache(
       }))
       .run(edgedb);
 
-    console.log("raw client", clients);
-
     return clients.map((client) => ({
       ...client,
       periods: client.periods.map((period) => ({
@@ -64,11 +62,10 @@ export const getTimeslots = cache(
       const _slots = await e
         .select(e.Timeslot, (timeslot) => ({
           id: true,
-          appId: true,
-          client: () => ({
+          client: {
             id: true,
             name: true,
-          }),
+          },
           date: true,
           duration: true,
           description: true,
@@ -105,8 +102,8 @@ export const getOpenPeriods = cache(
     const _periods = await e
       .select(e.Period, (period) => ({
         ...period["*"],
-        timeslots: e.Timeslot["*"],
-        client: e.Client["*"],
+        timeslots: (ts) => ts["*"],
+        client: (client) => client["*"],
         filter: e.op(
           e.op(period.tenantId, "=", e.uuid(userId)),
           "and",

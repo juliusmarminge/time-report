@@ -112,7 +112,7 @@ function EditingTimeslotCard(props: {
         <form
           onSubmit={form.handleSubmit(async (data) => {
             await updateTimeslot({
-              id: props.slot.appId,
+              id: props.slot.id,
               currency: data.currency,
               // @ts-expect-error unsure how to get input_in working with Valibot
               duration: data.duration,
@@ -216,7 +216,7 @@ function EditingTimeslotCard(props: {
                       asChild
                       onClick={async () => {
                         setDeleting(true);
-                        await deleteTimeslot(props.slot.appId);
+                        await deleteTimeslot(props.slot.id);
                         setDeleting(false);
                       }}
                     >

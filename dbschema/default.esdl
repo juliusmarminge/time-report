@@ -6,7 +6,6 @@ module default {
     scalar type PeriodStatus extending enum<open, closed>;
 
     type Client {
-        required appId: int64;
         required name: str;
         image: str;
         required defaultCharge: int64;
@@ -27,7 +26,6 @@ module default {
     }
 
     type Timeslot {
-        required appId: int64;
         required clientId := .client.id;
         required tenantId := .tenant.id;
         required periodId := .period.id;
@@ -53,7 +51,6 @@ module default {
     }
 
     type Period {
-        required appId: int64;
         required clientId := .client.id;
         required tenantId := .tenant.id;
         required startDate: datetime;

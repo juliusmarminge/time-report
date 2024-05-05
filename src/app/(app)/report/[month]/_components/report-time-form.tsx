@@ -53,7 +53,7 @@ export function ReportTimeForm(props: {
     schema: reportTimeSchema,
     defaultValues: {
       date: props.date?.toString(),
-      clientId: props.clients[0].appId,
+      clientId: props.clients[0].id,
       currency: props.clients[0].currency,
       chargeRate: props.clients[0].defaultCharge / 100,
     },
@@ -85,9 +85,7 @@ export function ReportTimeForm(props: {
 
               <Select
                 onValueChange={(value) => {
-                  const client = props.clients.find(
-                    (c) => String(c.id) === value,
-                  );
+                  const client = props.clients.find((c) => c.id === value);
                   field.onChange(value);
 
                   // Update the default charge and currency to match with the client
@@ -96,7 +94,7 @@ export function ReportTimeForm(props: {
                   client?.currency &&
                     form.setValue("currency", client.currency);
                 }}
-                value={String(field.value)}
+                value={field.value}
               >
                 <FormControl>
                   <SelectTrigger>
@@ -105,7 +103,7 @@ export function ReportTimeForm(props: {
                 </FormControl>
                 <SelectContent>
                   {props.clients.map((client) => (
-                    <SelectItem key={client.id} value={String(client.id)}>
+                    <SelectItem key={client.id} value={client.id}>
                       {client.name}
                     </SelectItem>
                   ))}
