@@ -1,11 +1,18 @@
 "use client";
 
 import { useTheme } from "@juliusmarminge/next-themes";
-import { ChevronRightIcon, ExitIcon, Half2Icon } from "@radix-ui/react-icons";
+import {
+  ChevronRightIcon,
+  ExitIcon,
+  Half2Icon,
+  LockOpen1Icon,
+} from "@radix-ui/react-icons";
 import type { Session } from "next-auth";
 import { signOut } from "next-auth/react";
+import { signIn } from "next-auth/webauthn";
 import Link from "next/link";
 import { use } from "react";
+import { toast } from "sonner";
 
 import { cn } from "~/lib/cn";
 import { setDefaultCurrency } from "~/lib/user-actions";
@@ -129,11 +136,23 @@ export function UserButton(props: {
         <DropdownMenuGroup>
           <DropdownMenuItem
             className="cursor-pointer"
+            onClick={async () => {
+              try {
+                await signIn("passkey", { action: "register" });
+              } catch {
+                toast.error("Failed to register passkey");
+              }
+            }}
+          >
+            <LockOpen1Icon className="mr-2 h-4 w-4" />
+            Add Passkey
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            className="cursor-pointer"
             onClick={() => signOut()}
           >
             <ExitIcon className="mr-2 h-4 w-4" />
             Sign out
-            {/* <CSRF_experimental /> */}
           </DropdownMenuItem>
         </DropdownMenuGroup>
       </DropdownMenuContent>

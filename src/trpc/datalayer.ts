@@ -1,29 +1,37 @@
 import "server-only";
 
 import { Temporal } from "@js-temporal/polyfill";
-import { and, between, eq } from "drizzle-orm";
 import { cache } from "react";
 import * as z from "zod";
-import { db } from "~/db/client";
-import { client, period, timeslot } from "~/db/schema";
+import { db, e, plainDate } from "~/edgedb";
 import { protectedProcedure } from "./init";
 
 export const getClients = cache(
   protectedProcedure.query(async ({ ctx }) => {
-    const userId = ctx.user.id;
+    const clients = await e
+      .select(e.Client, (client) => ({
+        ...client["*"],
+        periods: (period) => ({
+          ...period["*"],
+          timeslots: (ts) => ts["*"],
+        }),
+        filter: e.op(client.tenantId, "=", e.uuid(ctx.user.id)),
+      }))
+      .run(db);
 
-    const clients = await db.query.client.findMany({
-      where: eq(client.tenantId, userId),
-      with: {
-        periods: {
-          with: {
-            timeslot: true,
-          },
-        },
-      },
-    });
-
-    return clients;
+    // FIXME: Would be nice to handle this in the db-driver
+    return clients.map((client) => ({
+      ...client,
+      periods: client.periods.map((period) => ({
+        ...period,
+        startDate: Temporal.PlainDate.from(period.startDate),
+        endDate: Temporal.PlainDate.from(period.endDate),
+        timeslots: period.timeslots.map((timeslot) => ({
+          ...timeslot,
+          date: Temporal.PlainDate.from(timeslot.date),
+        })),
+      })),
+    }));
   }),
 );
 export type Client = Awaited<ReturnType<typeof getClients>>[number];
@@ -38,54 +46,76 @@ export const getTimeslots = cache(
     )
     .query(async ({ ctx, input }) => {
       const { date, mode } = input;
-      const userId = ctx.user.id;
 
-      const slots = await db
-        .select({
-          id: timeslot.id,
-          clientId: timeslot.clientId,
-          clientName: client.name,
-          date: timeslot.date,
-          duration: timeslot.duration,
-          description: timeslot.description,
-          chargeRate: timeslot.chargeRate,
-          currency: timeslot.currency,
-        })
-        .from(timeslot)
-        .innerJoin(client, eq(client.id, timeslot.clientId))
-        .where(
-          and(
-            eq(timeslot.tenantId, userId),
+      const range = [
+        // to account for timeslots that start/end in the previous/next month
+        // pad the month with a week on either side
+        input.date.subtract({ days: date.day + 7 }),
+        input.date.add({ days: date.daysInMonth - date.day + 7 }),
+      ] as const;
+
+      const slots = await e
+        .select(e.Timeslot, (ts) => ({
+          id: true,
+          client: {
+            id: true,
+            name: true,
+          },
+          date: true,
+          duration: true,
+          description: true,
+          chargeRate: true,
+          currency: true,
+          tenantId: true,
+
+          filter: e.op(
+            e.op(ts.tenantId, "=", e.uuid(ctx.user.id)),
+            "and",
             mode === "exact"
-              ? eq(timeslot.date, input.date)
-              : between(
-                  timeslot.date,
-                  // to account for timeslots that start/end in the previous/next month
-                  // pad the month with a week on either side
-                  date.subtract({ days: date.day + 7 }),
-                  date.add({ days: date.daysInMonth - date.day + 7 }),
+              ? e.op(ts.date, "=", plainDate(date))
+              : e.op(
+                  e.op(ts.date, ">=", plainDate(range[0])),
+                  "and",
+                  e.op(ts.date, "<=", plainDate(range[1])),
                 ),
           ),
-        );
+        }))
+        .run(db);
 
-      return slots;
+      // FIXME: Would be nice to handle this in the db-driver
+      return slots.map((slot) => ({
+        ...slot,
+        date: Temporal.PlainDate.from(slot.date),
+      }));
     }),
 );
 export type Timeslot = Awaited<ReturnType<typeof getTimeslots>>[number];
 
 export const getOpenPeriods = cache(
   protectedProcedure.query(async ({ ctx }) => {
-    const userId = ctx.user.id;
+    const periods = await e
+      .select(e.Period, (period) => ({
+        ...period["*"],
+        timeslots: (ts) => ts["*"],
+        client: (client) => client["*"],
+        filter: e.op(
+          e.op(period.tenantId, "=", e.uuid(ctx.user.id)),
+          "and",
+          e.op(period.status, "=", e.PeriodStatus.open),
+        ),
+      }))
+      .run(db);
 
-    const periods = await db.query.period.findMany({
-      where: and(eq(period.tenantId, userId), eq(period.status, "open")),
-      with: {
-        client: true,
-        timeslot: true,
-      },
-    });
-
-    return periods;
+    // FIXME: Would be nice to handle this in the db-driver
+    return periods.map((period) => ({
+      ...period,
+      startDate: Temporal.PlainDate.from(period.startDate),
+      endDate: Temporal.PlainDate.from(period.endDate),
+      timeslots: period.timeslots.map((ts) => ({
+        ...ts,
+        date: Temporal.PlainDate.from(ts.date),
+      })),
+    }));
   }),
 );
 export type Period = Awaited<ReturnType<typeof getOpenPeriods>>[number];

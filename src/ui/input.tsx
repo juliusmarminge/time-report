@@ -47,8 +47,8 @@ const InputField = React.forwardRef<HTMLInputElement, InputFieldProps>(
           type="text"
           className={cn(
             "focus-visible:ring-0",
-            leading && "rounded-l-none border-l-0",
-            trailing && "rounded-r-none border-r-0",
+            !!leading && "rounded-l-none border-l-0",
+            !!trailing && "rounded-r-none border-r-0",
             className,
           )}
           {...props}

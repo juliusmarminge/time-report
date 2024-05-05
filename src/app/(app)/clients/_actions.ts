@@ -1,51 +1,48 @@
 "use server";
 
 import { Temporal } from "@js-temporal/polyfill";
-import { and, eq } from "drizzle-orm";
 import { revalidateTag } from "next/cache";
 import { UTApi } from "uploadthing/server";
 import * as z from "zod";
 
-import { db } from "~/db/client";
-import { client, period, timeslot } from "~/db/schema";
+import { db, e, plainDate } from "~/edgedb";
 import { CACHE_TAGS } from "~/lib/cache";
-import type { CurrencyCode } from "~/monetary/math";
 import { normalizeAmount } from "~/monetary/math";
 import { protectedProcedure } from "~/trpc/init";
-
 import { createClientSchema, updateClientSchema } from "./_validators";
 
 export const createClient = protectedProcedure
   .input(createClientSchema)
   .mutation(async ({ ctx, input }) => {
-    const currencyCode = input.currency as CurrencyCode;
-    const normalized = normalizeAmount(input.defaultCharge, currencyCode);
-
-    const newClient = await db.insert(client).values({
-      name: input.name,
-      currency: currencyCode,
-      defaultCharge: normalized,
-      defaultBillingPeriod: input.defaultBillingPeriod,
-      image: input.image,
-      tenantId: ctx.user.id,
-    });
-
     const now = Temporal.Now.plainDateISO();
+    const currentUser = e.select(e.User, (user) => ({
+      filter_single: e.op(user.id, "=", e.uuid(ctx.user.id)),
+    }));
 
-    await db.insert(period).values({
-      clientId: Number.parseInt(newClient.insertId),
-      startDate:
-        input.defaultBillingPeriod === "monthly"
-          ? now.with({ day: 1 })
-          : now.with({ day: now.day - now.dayOfWeek }),
-      endDate:
-        input.defaultBillingPeriod === "monthly"
-          ? now.with({ day: now.daysInMonth })
-          : input.defaultBillingPeriod === "biweekly"
-            ? now.add({ days: 13 - now.dayOfWeek })
-            : now.add({ days: 6 - now.dayOfWeek }),
-      tenantId: ctx.user.id,
+    const insertClient = e.insert(e.Client, {
+      ...input,
+      defaultCharge: normalizeAmount(input.defaultCharge, input.currency),
+      tenant: currentUser,
     });
+
+    await e
+      .insert(e.Period, {
+        client: insertClient,
+        tenant: currentUser,
+        startDate: plainDate(
+          input.defaultBillingPeriod === "monthly"
+            ? now.with({ day: 1 })
+            : now.with({ day: now.day - now.dayOfWeek }),
+        ),
+        endDate: plainDate(
+          input.defaultBillingPeriod === "monthly"
+            ? now.with({ day: now.daysInMonth })
+            : input.defaultBillingPeriod === "biweekly"
+              ? now.add({ days: 13 - now.dayOfWeek })
+              : now.add({ days: 6 - now.dayOfWeek }),
+        ),
+      })
+      .run(db);
 
     revalidateTag(CACHE_TAGS.CLIENTS);
     revalidateTag(CACHE_TAGS.PERIODS);
@@ -54,24 +51,19 @@ export const createClient = protectedProcedure
 export const updateClient = protectedProcedure
   .input(updateClientSchema)
   .mutation(async ({ ctx, input }) => {
-    const existing = await db.query.client.findFirst({
-      columns: { id: true },
-      where: and(eq(client.tenantId, ctx.user.id), eq(client.id, input.id)),
-    });
-    if (!existing) throw new Error("Unauthorized");
-
-    const currencyCode = input.currency as CurrencyCode;
-    const normalized = normalizeAmount(input.defaultCharge, currencyCode);
-
-    await db
-      .update(client)
-      .set({
-        name: input.name,
-        currency: currencyCode,
-        defaultCharge: normalized,
-        defaultBillingPeriod: input.defaultBillingPeriod,
-      })
-      .where(eq(client.id, input.id));
+    await e
+      .update(e.Client, (client) => ({
+        set: {
+          ...input,
+          defaultCharge: normalizeAmount(input.defaultCharge, input.currency),
+        },
+        filter_single: e.op(
+          e.op(client.id, "=", e.uuid(input.id)),
+          "and",
+          e.op(client.tenantId, "=", e.uuid(ctx.user.id)),
+        ),
+      }))
+      .run(db);
 
     revalidateTag(CACHE_TAGS.CLIENTS);
   });
@@ -90,18 +82,23 @@ export const deleteImageFromUT = protectedProcedure
   });
 
 export const deleteClient = protectedProcedure
-  .input(z.object({ id: z.number() }))
+  .input(z.object({ id: z.string() }))
   .mutation(async ({ ctx, input }) => {
-    const existing = await db.query.client.findFirst({
-      columns: { id: true, image: true },
-      where: and(eq(client.tenantId, ctx.user.id), eq(client.id, input.id)),
-    });
+    const existing = await e
+      .select(e.Client, (client) => ({
+        id: true,
+        image: true,
+        filter_single: e.op(
+          e.op(client.id, "=", e.uuid(input.id)),
+          "and",
+          e.op(client.tenantId, "=", e.uuid(ctx.user.id)),
+        ),
+      }))
+      .run(db);
     if (!existing) throw new Error("Unauthorized");
 
     await Promise.all([
-      db.delete(client).where(eq(client.id, input.id)),
-      db.delete(period).where(eq(period.clientId, input.id)),
-      db.delete(timeslot).where(eq(timeslot.clientId, input.id)),
+      db.execute("delete Client filter .id = <uuid>$id", { id: input.id }),
       deleteImageIfExists(existing.image),
     ]);
 

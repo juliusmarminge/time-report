@@ -1,15 +1,24 @@
-import * as dineroCurrencies from "@dinero.js/currencies";
 import { add, convert as convertCore, dinero, multiply } from "dinero.js";
 import type { Dinero, Rates } from "dinero.js";
+import { z } from "zod";
 
-export type CurrencyCode = keyof typeof dineroCurrencies;
+export type CurrencyCode = import("~/edgedb").Currency;
 export interface Currency {
   readonly code: CurrencyCode;
   readonly base: number;
   readonly exponent: number;
 }
 
-export const currencies = dineroCurrencies as Record<CurrencyCode, Currency>;
+export const currencies: Record<CurrencyCode, Currency> = {
+  EUR: { code: "EUR", base: 10, exponent: 2 },
+  USD: { code: "USD", base: 10, exponent: 2 },
+  GBP: { code: "GBP", base: 10, exponent: 2 },
+  SEK: { code: "SEK", base: 10, exponent: 2 },
+};
+
+export const currencySchema = z
+  .string()
+  .refine((s): s is CurrencyCode => s in currencies);
 
 export function formatMoney(opts: {
   value: string;

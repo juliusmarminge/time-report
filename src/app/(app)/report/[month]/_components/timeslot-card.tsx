@@ -63,7 +63,7 @@ export function TimeslotCard(props: { slot: Timeslot }) {
     <Card>
       <div className="flex items-start p-6">
         <CardHeader className="p-0">
-          <CardTitle>{props.slot.clientName}</CardTitle>
+          <CardTitle>{props.slot.client.name}</CardTitle>
         </CardHeader>
         <Button
           variant="ghost"
@@ -124,7 +124,7 @@ function EditingTimeslotCard(props: {
         >
           <div className="flex items-start gap-2 p-6">
             <CardHeader className="p-0">
-              <CardTitle>{props.slot.clientName}</CardTitle>
+              <CardTitle>{props.slot.client.name}</CardTitle>
               <FormField
                 control={form.control}
                 name="duration"
@@ -208,7 +208,7 @@ function EditingTimeslotCard(props: {
                 <AlertDialogHeader>
                   <AlertDialogTitle>Delete timeslot</AlertDialogTitle>
                   <AlertDialogDescription>
-                    {`Are you sure you want to delete the timeslot for "${props.slot.clientName}"?`}
+                    {`Are you sure you want to delete the timeslot for "${props.slot.client.name}"?`}
                   </AlertDialogDescription>
                   <AlertDialogFooter>
                     <AlertDialogCancel>Cancel</AlertDialogCancel>

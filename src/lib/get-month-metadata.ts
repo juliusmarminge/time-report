@@ -9,7 +9,7 @@ import type { Timeslot } from "~/trpc/datalayer";
 
 export const getMonthMetadata = cache(
   async (slots: Timeslot[], currency: CurrencyCode) => {
-    const billedClients = new Set(slots.map((slot) => slot.clientId)).size;
+    const billedClients = new Set(slots.map((slot) => slot.client.id)).size;
 
     const totalHours = slots.reduce((acc, slot) => {
       return acc + Number(slot.duration);

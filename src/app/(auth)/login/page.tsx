@@ -6,6 +6,7 @@ import { currentUser, signIn } from "~/auth";
 import { Badge } from "~/ui/badge";
 import { Button } from "~/ui/button";
 import { EmailSignIn } from "./email";
+import { PasskeyLogin } from "./passkey";
 
 export default async function LoginPage() {
   const user = await currentUser();
@@ -28,11 +29,13 @@ export default async function LoginPage() {
             await signIn("github", { redirectTo: "/report" });
           }}
         >
-          <Button type="submit" className="px-10">
-            <GitHubLogoIcon className="mr-2 h-4 w-4" />
+          <Button type="submit" className="w-full max-w-60">
+            <GitHubLogoIcon className="mr-2 size-4" />
             Sign in with GitHub
           </Button>
         </form>
+
+        <PasskeyLogin />
 
         {process.env.VERCEL_ENV !== "production" && (
           <div className="relative rounded border-2 border-dashed p-2">
