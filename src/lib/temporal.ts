@@ -52,7 +52,7 @@ export const formatOrdinal = (
 
 export const parseMonthParam = (month: string) => {
   // MMMyy => jan23 for example, parse it to a Temporal.PlainDate { 2023-01-01 }
-  const [monthCode, yearNr] = month.match(/\d+|\D+/g) as string[];
+  const [monthCode, yearNr] = month.match(/\d+|\D+/g) as [string, string];
   const monthNr =
     [
       "jan",

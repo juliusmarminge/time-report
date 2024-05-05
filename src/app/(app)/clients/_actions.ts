@@ -8,7 +8,6 @@ import * as z from "zod";
 import { e, edgedb } from "~/edgedb";
 import { CACHE_TAGS } from "~/lib/cache";
 import { toDate } from "~/lib/temporal";
-import type { CurrencyCode } from "~/monetary/math";
 import { normalizeAmount } from "~/monetary/math";
 import { protectedProcedure } from "~/trpc/init";
 import { createClientSchema, updateClientSchema } from "./_validators";
@@ -16,7 +15,7 @@ import { createClientSchema, updateClientSchema } from "./_validators";
 export const createClient = protectedProcedure
   .input(createClientSchema)
   .mutation(async ({ ctx, input }) => {
-    const currencyCode = input.currency as CurrencyCode;
+    const currencyCode = input.currency;
     const normalized = normalizeAmount(input.defaultCharge, currencyCode);
 
     const now = Temporal.Now.plainDateISO();
@@ -41,7 +40,7 @@ export const createClient = protectedProcedure
         ),
         client: e.insert(e.Client, {
           name: input.name,
-          currency: currencyCode as any,
+          currency: currencyCode,
           defaultCharge: normalized,
           defaultBillingPeriod: input.defaultBillingPeriod,
           image: input.image,
@@ -68,14 +67,14 @@ export const updateClient = protectedProcedure
       .run(edgedb);
     if (!existing) throw new Error("Unauthorized");
 
-    const currencyCode = input.currency as CurrencyCode;
+    const currencyCode = input.currency;
     const normalized = normalizeAmount(input.defaultCharge, currencyCode);
 
     await e
       .update(e.Client, (client) => ({
         set: {
           name: input.name,
-          currency: currencyCode as any,
+          currency: currencyCode,
           defaultCharge: normalized,
           defaultBillingPeriod: input.defaultBillingPeriod,
         },

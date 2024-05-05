@@ -13,7 +13,6 @@ export const CACHE_TAGS = {
 type CacheTag = (typeof CACHE_TAGS)[keyof typeof CACHE_TAGS];
 
 export async function withUnstableCache<
-  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   T extends (...args: any[]) => any,
 >(opts: { fn: T; args: Parameters<T>; tags: CacheTag[] }) {
   const user = await currentUser();

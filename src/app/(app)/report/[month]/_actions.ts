@@ -6,7 +6,6 @@ import * as z from "zod";
 
 import { e, edgedb } from "~/edgedb";
 import { CACHE_TAGS } from "~/lib/cache";
-import type { CurrencyCode } from "~/monetary/math";
 import { normalizeAmount } from "~/monetary/math";
 import { protectedProcedure } from "~/trpc/init";
 import {
@@ -30,7 +29,7 @@ export const reportTime = protectedProcedure
       .run(edgedb);
     if (!existingClient) throw new Error("Unauthorized");
 
-    const currencyCode = input.currency as CurrencyCode;
+    const currencyCode = input.currency;
     const normalized = normalizeAmount(input.chargeRate, currencyCode);
 
     const slotPeriod = await e
@@ -56,7 +55,7 @@ export const reportTime = protectedProcedure
         date: toDate(Temporal.PlainDate.from(input.date)),
         duration: String(input.duration),
         chargeRate: normalized,
-        currency: currencyCode as any,
+        currency: currencyCode,
         description: input.description,
         client: e.select(e.Client, (client) => ({
           filter_single: e.op(client.id, "=", e.uuid(input.clientId)),
@@ -96,13 +95,13 @@ export const deleteTimeslot = protectedProcedure
 export const updateTimeslot = protectedProcedure
   .input(updateSchema)
   .mutation(async ({ ctx, input }) => {
-    const currencyCode = input.currency as CurrencyCode;
+    const currencyCode = input.currency;
     const normalized = normalizeAmount(input.chargeRate, currencyCode);
 
     await e
       .update(e.Timeslot, (timeslot) => ({
         set: {
-          currency: currencyCode as any,
+          currency: currencyCode,
           duration: String(input.duration),
           chargeRate: normalized,
         },
