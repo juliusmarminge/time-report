@@ -5,7 +5,10 @@ export async function register() {
 
     const sdk = new BaselimeSDK({
       serverless: true,
-      service: "time-report",
+      service:
+        process.env.NODE_ENV === "production"
+          ? "time-report"
+          : "time-report-dev",
       instrumentations: [
         new BetterHttpInstrumentation({
           plugins: [
