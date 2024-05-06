@@ -9,7 +9,7 @@ import { getMonthMetadata } from "~/lib/get-month-metadata";
 import { isSameMonth, parseMonthParam } from "~/lib/temporal";
 import { tson } from "~/lib/tson";
 import { formatDiff, formatMoney } from "~/monetary/math";
-import type { Timeslot } from "~/trpc/datalayer";
+import type { Timeslot, Period } from "~/trpc/datalayer";
 import * as trpc from "~/trpc/datalayer";
 import { Card, CardContent, CardHeader, CardTitle } from "~/ui/card";
 import { CalendarAndSidePanel } from "./_components/calendar";
@@ -32,6 +32,15 @@ export default async function IndexPage(props: { params: { month: string } }) {
   }
 
   const date = parseMonthParam(props.params.month);
+
+  // const openPeriodsPromise = withUnstableCache({
+  //   fn: trpc.getOpenPeriods,
+  //   args: [],
+  //   tags: [CACHE_TAGS.PERIODS],
+  // });
+  // Start fetching open periods now but don't await it.
+  // We await it within a Suspense boundary below.
+  const openPeriodsPromise = trpc.getOpenPeriods();
 
   // const clients = await withUnstableCache({
   //   fn: trpc.getClients,
@@ -83,7 +92,7 @@ export default async function IndexPage(props: { params: { month: string } }) {
       className="gap-4"
       headerActions={[
         <Suspense>
-          <ClosePeriod />
+          <ClosePeriod openPeriods={openPeriodsPromise} />
         </Suspense>,
       ]}
     >
@@ -155,13 +164,8 @@ export default async function IndexPage(props: { params: { month: string } }) {
   );
 }
 
-async function ClosePeriod() {
-  // const openPeriods = await withUnstableCache({
-  //   fn: trpc.getOpenPeriods,
-  //   args: [],
-  //   tags: [CACHE_TAGS.PERIODS],
-  // });
-  const openPeriods = await trpc.getOpenPeriods();
+async function ClosePeriod(props: { openPeriods: Promise<Period[]> }) {
+  const openPeriods = await props.openPeriods;
 
   return <ClosePeriodSheet openPeriods={tson.serialize(openPeriods)} />;
 }
