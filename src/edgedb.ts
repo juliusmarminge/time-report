@@ -1,10 +1,8 @@
 import e from "@edgedb-gen/edgeql-js";
 import type { Temporal } from "@js-temporal/polyfill";
-import { createHttpClient } from "edgedb";
+import { createClient } from "edgedb";
 
-export const db = createHttpClient({
-  tlsSecurity: process.env.EDGEDB_SECRET_KEY ? "default" : "insecure",
-});
+export const db = createClient();
 
 export const plainDate = (date: Temporal.PlainDate) =>
   e.cal.local_date(date.toString());

@@ -3,19 +3,19 @@
 import { use, useMemo } from "react";
 import {
   Area,
-  YAxis,
-  ResponsiveContainer,
-  Line,
   ComposedChart,
+  Line,
+  ResponsiveContainer,
+  YAxis,
 } from "recharts";
-import type { Timeslot } from "~/trpc/datalayer";
-import { tson } from "~/lib/tson";
 import type { TsonSerialized } from "tupleson";
-import { slotsToDineros, sumDineros, toNumber } from "~/monetary/math";
+import { tson } from "~/lib/tson";
 import { ConverterContext } from "~/monetary/context";
+import { slotsToDineros, sumDineros, toNumber } from "~/monetary/math";
+import type { Timeslot } from "~/trpc/datalayer";
 
 /**
- * FIXME: This isn't the most responsive thing in the world...
+ * FIXME: This isn't the most responsive thing in the wor
  */
 
 export function ComparisonChart(
