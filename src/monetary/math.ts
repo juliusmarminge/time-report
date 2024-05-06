@@ -30,6 +30,11 @@ export function formatMoney(opts: {
   });
 }
 
+export function formatDiff(diff: number | string) {
+  const isNegative = String(diff).startsWith("-");
+  return isNegative ? `${diff}` : `+${diff}`;
+}
+
 export function normalizeAmount(
   amount: number,
   currency: CurrencyCode = "USD",
