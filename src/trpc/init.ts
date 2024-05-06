@@ -16,7 +16,6 @@ const base = t.procedure
     tracing({ collectInput: true, collectResult: true }),
   )
   .experimental_caller(async (opts) => {
-    console.log("opts", opts);
     const path = (opts._def.meta as Meta | undefined)?.span ?? "";
     switch (opts._def.type) {
       case "mutation": {

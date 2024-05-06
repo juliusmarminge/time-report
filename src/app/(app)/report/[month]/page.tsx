@@ -1,5 +1,5 @@
 import { Temporal } from "@js-temporal/polyfill";
-import { toDecimal } from "dinero.js";
+import { subtract, toDecimal } from "dinero.js";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 
@@ -8,12 +8,13 @@ import { currentUser } from "~/auth";
 import { getMonthMetadata } from "~/lib/get-month-metadata";
 import { isSameMonth, parseMonthParam } from "~/lib/temporal";
 import { tson } from "~/lib/tson";
-import { formatMoney } from "~/monetary/math";
+import { formatDiff, formatMoney } from "~/monetary/math";
 import type { Timeslot } from "~/trpc/datalayer";
 import * as trpc from "~/trpc/datalayer";
 import { Card, CardContent, CardHeader, CardTitle } from "~/ui/card";
 import { CalendarAndSidePanel } from "./_components/calendar";
 import { ClosePeriodSheet } from "./_components/close-periods";
+import { ComparisonChart } from "./_components/comparison-chart";
 
 export default async function IndexPage(props: { params: { month: string } }) {
   const user = await currentUser();
@@ -37,21 +38,33 @@ export default async function IndexPage(props: { params: { month: string } }) {
   //   args: [],
   //   tags: [CACHE_TAGS.CLIENTS],
   // });
-  const clients = await trpc.getClients();
-
   // const timeslots = await withUnstableCache({
   //   fn: trpc.getTimeslots,
   //   args: [{ date, mode: "month" }],
   //   tags: [CACHE_TAGS.TIMESLOTS],
   // });
-  const timeslots = await trpc.getTimeslots({ date, mode: "month" });
+
+  const lastMonthDate = date.subtract({ months: 1 });
+
+  const [clients, timeslots, lastMonthTimeslots] = await Promise.all([
+    trpc.getClients(),
+    trpc.getTimeslots({ date, mode: "month" }),
+    trpc.getTimeslots({ date: lastMonthDate, mode: "month" }),
+  ]);
 
   const monthSlots = timeslots.filter((slot) => isSameMonth(slot.date, date));
-
-  const { billedClients, totalHours, totalRevenue } = await getMonthMetadata(
-    monthSlots,
-    user.defaultCurrency,
+  const lastMonthSlots = lastMonthTimeslots.filter((slot) =>
+    isSameMonth(slot.date, lastMonthDate),
   );
+  const [
+    { billedClients, totalHours, totalRevenue },
+    { totalHours: lastMonthTotalHours, totalRevenue: lastMonthTotalRevenue },
+  ] = await Promise.all([
+    getMonthMetadata(monthSlots, user.defaultCurrency),
+    getMonthMetadata(lastMonthSlots, user.defaultCurrency),
+  ]);
+
+  const diff = subtract(totalRevenue, lastMonthTotalRevenue);
 
   const slotsByDate = timeslots.reduce<Record<string, Timeslot[]>>(
     (acc, slot) => {
@@ -75,18 +88,28 @@ export default async function IndexPage(props: { params: { month: string } }) {
       ]}
     >
       <section className="flex gap-4 overflow-x-scroll md:grid lg:grid-cols-3 md:grid-cols-2">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="font-medium text-sm">Total Revenue</CardTitle>
-          </CardHeader>
-          <CardContent className="w-max md:w-auto">
-            <div className="font-bold text-2xl">
-              {toDecimal(totalRevenue, formatMoney)}
-            </div>
-            <p className="text-muted-foreground text-xs">
-              +{toDecimal(totalRevenue, formatMoney)} since last month
-            </p>
-          </CardContent>
+        <Card className="flex gap-2">
+          <div className="flex-1">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="font-medium text-sm">
+                Total Revenue
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="w-max md:w-auto">
+              <div className="font-bold text-2xl">
+                {toDecimal(totalRevenue, formatMoney)}
+              </div>
+              <p className="text-muted-foreground text-xs">
+                {formatDiff(toDecimal(diff, formatMoney))} since last month
+              </p>
+            </CardContent>
+          </div>
+          <div className="p-6 pl-0">
+            <ComparisonChart
+              a={tson.serialize(monthSlots)}
+              b={tson.serialize(lastMonthSlots)}
+            />
+          </div>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -98,7 +121,8 @@ export default async function IndexPage(props: { params: { month: string } }) {
               <span className="ml-1 text-lg">hours</span>
             </div>
             <p className="text-muted-foreground text-xs">
-              +{totalHours} hours from last month
+              {formatDiff(totalHours - lastMonthTotalHours)} hours from last
+              month
             </p>
           </CardContent>
         </Card>
@@ -132,9 +156,6 @@ export default async function IndexPage(props: { params: { month: string } }) {
 }
 
 async function ClosePeriod() {
-  const user = await currentUser();
-  if (!user) return null;
-
   // const openPeriods = await withUnstableCache({
   //   fn: trpc.getOpenPeriods,
   //   args: [],

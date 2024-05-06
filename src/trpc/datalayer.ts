@@ -50,7 +50,8 @@ export const getTimeslots = cache(
 
       const range = [
         // to account for timeslots that start/end in the previous/next month
-        // pad the month with a week on either side
+        // pad the month with a week on either side so it shows in the calendar
+        // Could be more exact but should be fine...
         input.date.subtract({ days: date.day + 7 }),
         input.date.add({ days: date.daysInMonth - date.day + 7 }),
       ] as const;
