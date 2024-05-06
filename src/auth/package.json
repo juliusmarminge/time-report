@@ -1,8 +1,0 @@
-{
-  "exports": {
-    ".": {
-      "react-server": "./index.rsc.ts",
-      "default": "./index.ts"
-    }
-  }
-}

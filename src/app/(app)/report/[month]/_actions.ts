@@ -14,6 +14,7 @@ import {
 } from "./_validators";
 
 export const reportTime = protectedProcedure
+  .meta({ span: "reportTime" })
   .input(reportTimeSchema)
   .mutation(async ({ ctx, input }) => {
     const existingClient = await e
@@ -70,6 +71,7 @@ export const reportTime = protectedProcedure
   });
 
 export const deleteTimeslot = protectedProcedure
+  .meta({ span: "deleteTimeslot" })
   .input(z.string())
   .mutation(async ({ ctx, input }) => {
     await db.execute(
@@ -83,6 +85,7 @@ export const deleteTimeslot = protectedProcedure
   });
 
 export const updateTimeslot = protectedProcedure
+  .meta({ span: "updateTimeslot" })
   .input(updateSchema)
   .mutation(async ({ ctx, input }) => {
     await e
@@ -106,6 +109,7 @@ export const updateTimeslot = protectedProcedure
   });
 
 export const closePeriod = protectedProcedure
+  .meta({ span: "closePeriod" })
   .input(closePeriodSchema)
   .mutation(async ({ ctx, input }) => {
     const res = await e

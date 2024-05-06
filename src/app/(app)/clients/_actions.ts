@@ -12,6 +12,7 @@ import { protectedProcedure } from "~/trpc/init";
 import { createClientSchema, updateClientSchema } from "./_validators";
 
 export const createClient = protectedProcedure
+  .meta({ span: "createClient" })
   .input(createClientSchema)
   .mutation(async ({ ctx, input }) => {
     const now = Temporal.Now.plainDateISO();
@@ -49,6 +50,7 @@ export const createClient = protectedProcedure
   });
 
 export const updateClient = protectedProcedure
+  .meta({ span: "updateClient" })
   .input(updateClientSchema)
   .mutation(async ({ ctx, input }) => {
     await e
@@ -76,12 +78,14 @@ const deleteImageIfExists = async (image?: string | null) => {
 };
 
 export const deleteImageFromUT = protectedProcedure
+  .meta({ span: "deleteImageFromUT" })
   .input(z.string().optional())
   .mutation(async ({ input }) => {
     await deleteImageIfExists(input);
   });
 
 export const deleteClient = protectedProcedure
+  .meta({ span: "deleteClient" })
   .input(z.object({ id: z.string() }))
   .mutation(async ({ ctx, input }) => {
     const existing = await e
