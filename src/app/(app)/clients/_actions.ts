@@ -62,7 +62,7 @@ export const updateClient = protectedProcedure
         filter_single: e.op(
           e.op(client.id, "=", e.uuid(input.id)),
           "and",
-          e.op(client.tenantId, "=", e.uuid(ctx.user.id)),
+          e.op(client.tenant.id, "=", e.uuid(ctx.user.id)),
         ),
       }))
       .run(db);
@@ -95,7 +95,7 @@ export const deleteClient = protectedProcedure
         filter_single: e.op(
           e.op(client.id, "=", e.uuid(input.id)),
           "and",
-          e.op(client.tenantId, "=", e.uuid(ctx.user.id)),
+          e.op(client.tenant.id, "=", e.uuid(ctx.user.id)),
         ),
       }))
       .run(db);
