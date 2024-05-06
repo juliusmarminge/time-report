@@ -14,7 +14,7 @@ import * as trpc from "~/trpc/datalayer";
 import { Card, CardContent, CardHeader, CardTitle } from "~/ui/card";
 import { CalendarAndSidePanel } from "./_components/calendar";
 import { ClosePeriodSheet } from "./_components/close-periods";
-import { User } from "next-auth";
+import { ComparisonChart } from "./_components/comparison-chart";
 
 export default async function IndexPage(props: { params: { month: string } }) {
   const user = await currentUser();
@@ -88,18 +88,28 @@ export default async function IndexPage(props: { params: { month: string } }) {
       ]}
     >
       <section className="flex gap-4 overflow-x-scroll md:grid lg:grid-cols-3 md:grid-cols-2">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="font-medium text-sm">Total Revenue</CardTitle>
-          </CardHeader>
-          <CardContent className="w-max md:w-auto">
-            <div className="font-bold text-2xl">
-              {toDecimal(totalRevenue, formatMoney)}
-            </div>
-            <p className="text-muted-foreground text-xs">
-              {formatDiff(toDecimal(diff, formatMoney))} since last month
-            </p>
-          </CardContent>
+        <Card className="flex gap-2">
+          <div className="flex-1">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="font-medium text-sm">
+                Total Revenue
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="w-max md:w-auto">
+              <div className="font-bold text-2xl">
+                {toDecimal(totalRevenue, formatMoney)}
+              </div>
+              <p className="text-muted-foreground text-xs">
+                {formatDiff(toDecimal(diff, formatMoney))} since last month
+              </p>
+            </CardContent>
+          </div>
+          <div className="p-6 pl-0">
+            <ComparisonChart
+              a={tson.serialize(monthSlots)}
+              b={tson.serialize(lastMonthSlots)}
+            />
+          </div>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">

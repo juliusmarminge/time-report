@@ -1,4 +1,10 @@
-import { add, convert as convertCore, dinero, multiply } from "dinero.js";
+import {
+  add,
+  convert as convertCore,
+  dinero,
+  multiply,
+  toDecimal,
+} from "dinero.js";
 import type { Dinero, Rates } from "dinero.js";
 import { z } from "zod";
 
@@ -90,4 +96,8 @@ export function slotsToDineros(
       +s.duration,
     ),
   );
+}
+
+export function toNumber(dineroObject: Dinero<number>) {
+  return Number(toDecimal(dineroObject));
 }
