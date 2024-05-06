@@ -2,7 +2,8 @@ import { tracing } from "@baselime/node-opentelemetry/trpc";
 import { TRPCError, initTRPC } from "@trpc/server";
 import { currentUser } from "~/auth";
 
-export const t = initTRPC.create();
+type Meta = { span: string };
+export const t = initTRPC.meta<Meta>().create();
 
 const base = t.procedure
   .use(async (opts) => {
@@ -15,6 +16,8 @@ const base = t.procedure
     tracing({ collectInput: true, collectResult: true }),
   )
   .experimental_caller(async (opts) => {
+    console.log("opts", opts);
+    const path = (opts._def.meta as Meta | undefined)?.span ?? "";
     switch (opts._def.type) {
       case "mutation": {
         /**
@@ -26,10 +29,10 @@ const base = t.procedure
         const input = opts.args.length === 1 ? opts.args[0] : opts.args[1];
 
         return opts.invoke({
-          type: "query",
+          type: "mutation",
           ctx: {},
           getRawInput: async () => input,
-          path: "",
+          path,
           input,
         });
       }
@@ -39,7 +42,7 @@ const base = t.procedure
           type: "query",
           ctx: {},
           getRawInput: async () => input,
-          path: "",
+          path,
           input,
         });
       }

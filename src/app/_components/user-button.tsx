@@ -115,6 +115,7 @@ export function UserButton(props: {
             <DropdownMenuSubContent>
               {["dark", "light", "system"].map((t) => (
                 <DropdownMenuItem
+                  key={t}
                   className="cursor-pointer capitalize"
                   onClick={() => setTheme(t)}
                 >

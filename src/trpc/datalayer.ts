@@ -7,7 +7,7 @@ import { db, e, plainDate } from "~/edgedb";
 import { protectedProcedure } from "./init";
 
 export const getClients = cache(
-  protectedProcedure.query(async ({ ctx }) => {
+  protectedProcedure.meta({ span: "getClients" }).query(async ({ ctx }) => {
     const clients = await e
       .select(e.Client, (client) => ({
         ...client["*"],
@@ -38,6 +38,7 @@ export type Client = Awaited<ReturnType<typeof getClients>>[number];
 
 export const getTimeslots = cache(
   protectedProcedure
+    .meta({ span: "getTimeslots" })
     .input(
       z.object({
         date: z.instanceof(Temporal.PlainDate),
@@ -92,7 +93,7 @@ export const getTimeslots = cache(
 export type Timeslot = Awaited<ReturnType<typeof getTimeslots>>[number];
 
 export const getOpenPeriods = cache(
-  protectedProcedure.query(async ({ ctx }) => {
+  protectedProcedure.meta({ span: "getOpenPeriods" }).query(async ({ ctx }) => {
     const periods = await e
       .select(e.Period, (period) => ({
         ...period["*"],
