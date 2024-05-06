@@ -38,9 +38,10 @@ export default async function IndexPage(props: { params: { month: string } }) {
   //   args: [],
   //   tags: [CACHE_TAGS.PERIODS],
   // });
-  // Start fetching open periods now but don't await it.
+  // Start fetching clients and periods now but don't await it.
   // We await it within a Suspense boundary below.
   const openPeriodsPromise = trpc.getOpenPeriods();
+  const clientsPromise = trpc.getClients();
 
   // const clients = await withUnstableCache({
   //   fn: trpc.getClients,
@@ -55,8 +56,7 @@ export default async function IndexPage(props: { params: { month: string } }) {
 
   const lastMonthDate = date.subtract({ months: 1 });
 
-  const [clients, timeslots, lastMonthTimeslots] = await Promise.all([
-    trpc.getClients(),
+  const [timeslots, lastMonthTimeslots] = await Promise.all([
     trpc.getTimeslots({ date, mode: "month" }),
     trpc.getTimeslots({ date: lastMonthDate, mode: "month" }),
   ]);
@@ -85,6 +85,8 @@ export default async function IndexPage(props: { params: { month: string } }) {
     {},
   );
 
+  const clients = await clientsPromise;
+
   return (
     <DashboardShell
       title="Report Time"
@@ -108,7 +110,7 @@ export default async function IndexPage(props: { params: { month: string } }) {
               <div className="font-bold text-2xl">
                 {toDecimal(totalRevenue, formatMoney)}
               </div>
-              <p className="text-muted-foreground text-xs">
+              <p className="line-clamp-1 text-muted-foreground text-xs">
                 {formatDiff(toDecimal(diff, formatMoney))} since last month
               </p>
             </CardContent>
