@@ -36,6 +36,7 @@ export function DesktopSidebar(props: { className?: string }) {
               year: "2-digit",
             })
             .replace(" ", "")}`}
+          activeMatcher="starts-with-/report"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"

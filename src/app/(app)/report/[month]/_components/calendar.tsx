@@ -1,6 +1,6 @@
 "use client";
 
-import type { Temporal } from "@js-temporal/polyfill";
+import { Temporal } from "@js-temporal/polyfill";
 import { format } from "date-fns";
 import { useRouter } from "next/navigation";
 import { useRef, useState, useTransition } from "react";
@@ -17,13 +17,14 @@ import { fromDate, toDate } from "~/ui/calendar";
 import { Drawer, DrawerContent } from "~/ui/drawer";
 import { SidePanel } from "./side-panel";
 
-export function Calendar(props: {
+function Calendar(props: {
   date: Temporal.PlainDate;
   setDate: (date: Temporal.PlainDate) => void;
   onDayClick?: (date: Temporal.PlainDate | null) => void;
   timeslots: Record<string, Timeslot[]> | null;
 }) {
   const { timeslots } = props;
+  const today = Temporal.Now.plainDateISO();
   const [displayMonth, setDisplayMonth] = useState(props.date);
   const router = useRouter();
 
@@ -42,6 +43,7 @@ export function Calendar(props: {
         cell: "relative flex-1 p-0 text-sm focus-within:relative focus-within:z-20 [&:has([aria-selected])]:bg-accent rounded-md",
       }}
       mode="single"
+      toDate={toDate(today.with({ day: today.daysInMonth }))}
       selected={toDate(props.date)}
       month={toDate(displayMonth)}
       onMonthChange={(newMonth) => {

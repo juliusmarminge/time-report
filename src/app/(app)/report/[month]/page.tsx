@@ -15,6 +15,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "~/ui/card";
 import { CalendarAndSidePanel } from "./_components/calendar";
 import { ClosePeriodSheet } from "./_components/close-periods";
 import { ComparisonChart } from "./_components/comparison-chart";
+import { Tooltip } from "~/ui/tooltip";
+import { TrendBadge } from "~/ui/badge";
 
 export default async function IndexPage(props: { params: { month: string } }) {
   const user = await currentUser();
@@ -98,8 +100,8 @@ export default async function IndexPage(props: { params: { month: string } }) {
         </Suspense>,
       ]}
     >
-      <section className="flex gap-4 overflow-x-scroll md:grid lg:grid-cols-3 md:grid-cols-2">
-        <Card className="flex gap-2">
+      <section className="flex grid-cols-3 gap-4 overflow-x-scroll md:grid lg:grid-cols-7 md:grid-cols-2">
+        <Card className="flex gap-2 lg:col-span-3 md:col-span-2">
           <div className="flex-1">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="font-medium text-sm">
@@ -107,22 +109,28 @@ export default async function IndexPage(props: { params: { month: string } }) {
               </CardTitle>
             </CardHeader>
             <CardContent className="w-max md:w-auto">
+              <Tooltip
+                content={`Your revenue this month ${formatDiff(
+                  toDecimal(diff, formatMoney),
+                  "long",
+                )} compared to the previous month`}
+              >
+                <TrendBadge value={formatDiff(toDecimal(diff, formatMoney))} />
+              </Tooltip>
               <div className="font-bold text-2xl">
                 {toDecimal(totalRevenue, formatMoney)}
               </div>
-              <p className="line-clamp-1 text-muted-foreground text-xs">
-                {formatDiff(toDecimal(diff, formatMoney))} since last month
-              </p>
             </CardContent>
           </div>
           <div className="p-6 pl-0">
             <ComparisonChart
+              month={tson.serialize(date)}
               a={tson.serialize(monthSlots)}
               b={tson.serialize(lastMonthSlots)}
             />
           </div>
         </Card>
-        <Card>
+        <Card className="lg:col-span-2">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="font-medium text-sm">Billed time</CardTitle>
           </CardHeader>
@@ -137,7 +145,7 @@ export default async function IndexPage(props: { params: { month: string } }) {
             </p>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="lg:col-span-2">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="font-medium text-sm">
               Active Clients

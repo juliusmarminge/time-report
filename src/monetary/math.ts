@@ -36,9 +36,20 @@ export function formatMoney(opts: {
   });
 }
 
-export function formatDiff(diff: number | string) {
-  const isNegative = String(diff).startsWith("-");
-  return isNegative ? `${diff}` : `+${diff}`;
+export function formatDiff(
+  diff: number | string,
+  sign: "short" | "long" = "short",
+) {
+  const diffString = String(diff);
+  const isNegative = diffString.startsWith("-");
+
+  if (sign === "short") {
+    return isNegative ? `${diffString}` : `+${diffString}`;
+  }
+
+  return isNegative
+    ? `decreased with ${diffString.slice(1)}`
+    : `increased with ${diffString}`;
 }
 
 export function normalizeAmount(
