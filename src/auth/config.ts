@@ -46,6 +46,12 @@ export const authConfig = {
     ...(process.env.VERCEL_ENV !== "production" ? [mockEmail] : []),
   ],
   callbacks: {
+    signIn: ({ user, email }) => {
+      if (email?.verificationRequest) return true;
+
+      const whitelist = ["julius0216@outlook.com", "foo@bar.com"];
+      return !!user.email && whitelist.includes(user.email);
+    },
     authorized({ request, auth }) {
       const url = request.nextUrl;
 
