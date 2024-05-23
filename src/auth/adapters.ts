@@ -101,7 +101,7 @@ export const edgedbAdapter = {
   deleteSession: (token) =>
     tracer.startActiveSpan("deleteSession", async (span) => {
       span.setAttributes({ token });
-      await db.execute("delete Session filter .sessionToken = <uuid>$token", {
+      await db.execute("delete Session filter .sessionToken = $token", {
         token,
       });
       span.end();
