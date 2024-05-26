@@ -15,7 +15,7 @@ export const getClients = cache(
           ...period["*"],
           timeslots: (ts) => ts["*"],
         }),
-        filter: e.op(client.tenantId, "=", e.uuid(ctx.user.id)),
+        filter: e.op(client.tenant.id, "=", e.uuid(ctx.user.id)),
       }))
       .run(db);
 
@@ -71,7 +71,7 @@ export const getTimeslots = cache(
           tenantId: true,
 
           filter: e.op(
-            e.op(ts.tenantId, "=", e.uuid(ctx.user.id)),
+            e.op(ts.tenant.id, "=", e.uuid(ctx.user.id)),
             "and",
             mode === "exact"
               ? e.op(ts.date, "=", plainDate(date))
@@ -101,7 +101,7 @@ export const getOpenPeriods = cache(
         timeslots: (ts) => ts["*"],
         client: (client) => client["*"],
         filter: e.op(
-          e.op(period.tenantId, "=", e.uuid(ctx.user.id)),
+          e.op(period.tenant.id, "=", e.uuid(ctx.user.id)),
           "and",
           e.op(period.status, "=", e.PeriodStatus.open),
         ),

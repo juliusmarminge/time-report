@@ -22,7 +22,7 @@ export const reportTime = protectedProcedure
         filter: e.op(
           e.op(client.id, "=", e.uuid(input.clientId)),
           "and",
-          e.op(client.tenantId, "=", e.uuid(ctx.user.id)),
+          e.op(client.tenant.id, "=", e.uuid(ctx.user.id)),
         ),
       }))
       .run(db);
@@ -32,9 +32,9 @@ export const reportTime = protectedProcedure
       .select(e.Period, (period) => ({
         filter_single: e.all(
           e.set(
-            e.op(period.clientId, "=", e.uuid(input.clientId)),
+            e.op(period.client.id, "=", e.uuid(input.clientId)),
             e.op(period.status, "=", e.PeriodStatus.open),
-            e.op(period.tenantId, "=", e.uuid(ctx.user.id)),
+            e.op(period.tenant.id, "=", e.uuid(ctx.user.id)),
           ),
         ),
       }))
@@ -75,7 +75,7 @@ export const deleteTimeslot = protectedProcedure
   .input(z.string())
   .mutation(async ({ ctx, input }) => {
     await db.execute(
-      "delete Timeslot filter .id = <uuid>$id and .tenantId = <uuid>$tenantId",
+      "delete Timeslot filter .id = <uuid>$id and .tenant.id = <uuid>$tenantId",
       { id: input, tenantId: ctx.user.id },
     );
 
@@ -98,7 +98,7 @@ export const updateTimeslot = protectedProcedure
         filter_single: e.op(
           e.op(timeslot.id, "=", e.uuid(input.id)),
           "and",
-          e.op(timeslot.tenantId, "=", e.uuid(ctx.user.id)),
+          e.op(timeslot.tenant.id, "=", e.uuid(ctx.user.id)),
         ),
       }))
       .run(db);
@@ -119,7 +119,7 @@ export const closePeriod = protectedProcedure
           e.set(
             e.op(period.id, "=", e.uuid(input.id)),
             e.op(period.status, "=", e.PeriodStatus.open),
-            e.op(period.tenantId, "=", e.uuid(ctx.user.id)),
+            e.op(period.tenant.id, "=", e.uuid(ctx.user.id)),
           ),
         ),
       }))

@@ -5,7 +5,7 @@ import type * as React from "react";
 import { cn } from "~/lib/cn";
 
 const badgeVariants = cva(
-  "inline-flex items-center rounded-md border px-2.5 py-0.5 font-semibold text-xs transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
+  "inline-flex cursor-default items-center rounded-md border px-2.5 py-0.5 font-semibold text-xs transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
   {
     variants: {
       variant: {
@@ -15,6 +15,10 @@ const badgeVariants = cva(
           "border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80",
         destructive:
           "border-transparent bg-destructive text-destructive-foreground shadow hover:bg-destructive/80",
+        "trend-bad":
+          "border-transparent bg-rose-500/20 text-red-600 shadow dark:bg-rose-500/20",
+        "trend-good":
+          "dark:green-400/20 border-transparent bg-green-400/20 text-green-500 shadow",
         outline: "text-foreground",
       },
     },
@@ -34,4 +38,16 @@ function Badge({ className, variant, ...props }: BadgeProps) {
   );
 }
 
-export { Badge, badgeVariants };
+type TrendBadgeProps = BadgeProps & {
+  value: string;
+};
+function TrendBadge({ className, value, ...props }: TrendBadgeProps) {
+  const variant = value.startsWith("-") ? "trend-bad" : "trend-good";
+  return (
+    <Badge className={className} variant={variant} {...props}>
+      {value}
+    </Badge>
+  );
+}
+
+export { Badge, badgeVariants, TrendBadge };

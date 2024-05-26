@@ -27,7 +27,7 @@ export const edgedbAdapter = {
           filter_single: e.op(user.id, "=", e.uuid(id)),
         }))
         .run(db);
-      span.setAttributes(JSON.parse(JSON.stringify(user)));
+      span.setAttributes(JSON.parse(JSON.stringify(user ?? {})));
       span.end();
       return user;
     }),
@@ -44,7 +44,7 @@ export const edgedbAdapter = {
           ),
         }))
         .run(db);
-      span.setAttributes(JSON.parse(JSON.stringify(account?.user ?? null)));
+      span.setAttributes(JSON.parse(JSON.stringify(account?.user ?? {})));
       span.end();
       return account?.user ?? null;
     }),
@@ -57,7 +57,7 @@ export const edgedbAdapter = {
           filter_single: e.op(user.email, "=", email),
         }))
         .run(db);
-      span.setAttributes(JSON.parse(JSON.stringify(user)));
+      span.setAttributes(JSON.parse(JSON.stringify(user ?? {})));
       span.end();
       return user;
     }),
@@ -73,7 +73,7 @@ export const edgedbAdapter = {
           (user) => user["*"],
         )
         .run(db);
-      span.setAttributes(JSON.parse(JSON.stringify(user)));
+      span.setAttributes(JSON.parse(JSON.stringify(user ?? {})));
       span.end();
       if (!user) throw "user not found";
       return user;
@@ -93,7 +93,7 @@ export const edgedbAdapter = {
           (session) => session["*"],
         )
         .run(db);
-      span.setAttributes(JSON.parse(JSON.stringify(session)));
+      span.setAttributes(JSON.parse(JSON.stringify(session ?? {})));
       span.end();
       return session;
     });
@@ -101,7 +101,7 @@ export const edgedbAdapter = {
   deleteSession: (token) =>
     tracer.startActiveSpan("deleteSession", async (span) => {
       span.setAttributes({ token });
-      await db.execute("delete Session filter .sessionToken = <uuid>$token", {
+      await db.execute("delete Session filter .sessionToken = $token", {
         token,
       });
       span.end();
@@ -116,7 +116,7 @@ export const edgedbAdapter = {
           filter_single: e.op(session.sessionToken, "=", sessionToken),
         }))
         .run(db);
-      span.setAttributes(JSON.parse(JSON.stringify(session)));
+      span.setAttributes(JSON.parse(JSON.stringify(session ?? {})));
       span.end();
       if (!session) return null;
       const { user, ...sessionData } = session;
@@ -134,7 +134,7 @@ export const edgedbAdapter = {
           (session) => session["*"],
         )
         .run(db);
-      span.setAttributes(JSON.parse(JSON.stringify(session)));
+      span.setAttributes(JSON.parse(JSON.stringify(session ?? {})));
       span.end();
       if (!session) throw "session not found";
       return session;
@@ -151,7 +151,7 @@ export const edgedbAdapter = {
           })),
         })
         .run(db);
-      span.setAttributes(res);
+      span.setAttributes(JSON.parse(JSON.stringify(res ?? {})));
       span.end();
     });
   },
@@ -174,7 +174,7 @@ export const edgedbAdapter = {
           ),
         }))
         .run(db);
-      span.setAttributes(JSON.parse(JSON.stringify(account)));
+      span.setAttributes(JSON.parse(JSON.stringify(account ?? {})));
       span.end();
       return account as unknown as AdapterAccount | null;
     }),
@@ -190,7 +190,7 @@ export const edgedbAdapter = {
           (vt) => vt["*"],
         )
         .run(db);
-      span.setAttributes(JSON.parse(JSON.stringify(token)));
+      span.setAttributes(JSON.parse(JSON.stringify(token ?? {})));
       span.end();
       return token;
     }),
@@ -209,7 +209,7 @@ export const edgedbAdapter = {
           (vt) => vt["*"],
         )
         .run(db);
-      span.setAttributes(JSON.parse(JSON.stringify(usedToken)));
+      span.setAttributes(JSON.parse(JSON.stringify(usedToken ?? {})));
       span.end();
       return usedToken;
     }),
@@ -242,7 +242,7 @@ export const edgedbAdapter = {
           filter_single: e.op(auth.credentialID, "=", credentialId),
         }))
         .run(db);
-      span.setAttributes(JSON.parse(JSON.stringify(authenticator)));
+      span.setAttributes(JSON.parse(JSON.stringify(authenticator ?? {})));
       span.end();
       return authenticator;
     }),
@@ -271,7 +271,7 @@ export const edgedbAdapter = {
           (auth) => auth["*"],
         )
         .run(db);
-      span.setAttributes(JSON.parse(JSON.stringify(authenticator)));
+      span.setAttributes(JSON.parse(JSON.stringify(authenticator ?? {})));
       span.end();
       if (!authenticator) throw "authenticator not found";
       return authenticator;

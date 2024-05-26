@@ -1,44 +1,78 @@
 "use client";
 
+import { Temporal } from "@js-temporal/polyfill";
 import { use, useMemo } from "react";
 import {
-  Area,
-  YAxis,
-  ResponsiveContainer,
+  Label,
   Line,
-  ComposedChart,
+  LineChart,
+  ReferenceLine,
+  ResponsiveContainer,
+  XAxis,
+  YAxis,
 } from "recharts";
-import type { Timeslot } from "~/trpc/datalayer";
-import { tson } from "~/lib/tson";
 import type { TsonSerialized } from "tupleson";
-import { slotsToDineros, sumDineros, toNumber } from "~/monetary/math";
+import { isFuture } from "~/lib/temporal";
+import { tson } from "~/lib/tson";
 import { ConverterContext } from "~/monetary/context";
+import { slotsToDineros, sumDineros, toNumber } from "~/monetary/math";
+import type { Timeslot } from "~/trpc/datalayer";
+
+const getTicks = (
+  today: Temporal.PlainDate,
+  month: Temporal.PlainDate,
+  maxDay: number,
+) => {
+  const ticks = [1, 8, 15, 23, maxDay];
+  if (month.month !== today.month) return ticks;
+
+  // Replace the tick closest to the current day
+  // to avoid collision. TODO: Is there CSS for this?
+  const index = ticks.findIndex((t) => t >= today.day);
+  if (index === -1) return ticks;
+  delete ticks[index];
+  return ticks;
+};
 
 /**
- * FIXME: This isn't the most responsive thing in the world...
+ * FIXME: This isn't the most responsive thing in the wor
  */
 
 export function ComparisonChart(
   props: Readonly<{
+    month: TsonSerialized<Temporal.PlainDate>;
     a: TsonSerialized<Timeslot[]>;
     b: TsonSerialized<Timeslot[]>;
   }>,
 ) {
   const { convert, preferredCurrency } = use(ConverterContext);
+  const month = tson.deserialize(props.month);
   const a = tson.deserialize(props.a);
   const b = tson.deserialize(props.b);
+  const today = Temporal.Now.plainDateISO();
+
+  const maxDay = useMemo(
+    () =>
+      [...a, ...b].reduce(
+        (acc, slot) => Math.max(acc, slot.date.daysInMonth),
+        0,
+      ),
+    [a, b],
+  );
 
   const data = useMemo(() => {
     const points: Array<{
       dayInMonth: number; // 1-31
-      aSum: number; // accumulated until this day for this month
+      aSum: number | undefined; // accumulated until this day for this month
       bSum: number; // accumulated until this day for that month
     }> = [];
 
-    for (let i = 0; i < 31; i++) {
-      const dayInMonth = i + 1;
-      const aSlots = a.filter((s) => s.date.day === dayInMonth);
-      const bSlots = b.filter((s) => s.date.day === dayInMonth);
+    for (let day = 1; day <= maxDay; day++) {
+      const date = month.with({ day });
+      const aSlots = a.filter((s) => s.date.day === date.day);
+      const bSlots = b.filter((s) => s.date.day === date.day);
+
+      // TODO: Pad A with prediction slots for the remaining days using ARIMA forecasts
 
       const aSum = toNumber(
         sumDineros({
@@ -55,35 +89,28 @@ export function ComparisonChart(
         }),
       );
 
+      const aAcc = aSum + (points[day - 2]?.aSum ?? 0);
+      const bAcc = bSum + (points[day - 2]?.bSum ?? 0);
+
       points.push({
-        dayInMonth,
-        aSum: aSum + (points[i - 1]?.aSum ?? 0),
-        bSum: bSum + (points[i - 1]?.bSum ?? 0),
+        dayInMonth: date.day,
+        aSum: !isFuture(date) ? aAcc : undefined,
+        bSum: bAcc,
       });
     }
 
     return points;
-  }, [a, b, convert, preferredCurrency]);
+  }, [a, b, maxDay, month, convert, preferredCurrency]);
 
   return (
-    <ResponsiveContainer width={250} height="100%">
-      <ComposedChart data={data}>
-        <defs>
-          <linearGradient id="gradient" x1="0" y1="0" x2="0" y2="1">
-            <stop
-              offset="5%"
-              stopColor="hsl(var(--primary))"
-              stopOpacity={0.5}
-            />
-            <stop
-              offset="95%"
-              stopColor="hsl(var(--primary))"
-              stopOpacity={0}
-            />
-          </linearGradient>
-        </defs>
+    <ResponsiveContainer width={300} height="100%">
+      <LineChart data={data} margin={{ bottom: -10, top: 0 }}>
         {/* <Tooltip /> */}
-        {/* <XAxis dataKey="dayInMonth" fontSize={10} ticks={[1, 7, 14, 21, 28]} /> */}
+        <XAxis
+          dataKey="dayInMonth"
+          fontSize={10}
+          ticks={getTicks(today, month, maxDay)}
+        />
         <YAxis
           fontSize={10}
           tickFormatter={(v) => {
@@ -92,15 +119,28 @@ export function ComparisonChart(
             }).format(v);
           }}
         />
-        <Area
+        <Line
           type="monotone"
           dataKey="aSum"
           stroke="hsl(var(--primary))"
-          fillOpacity={1}
-          fill="url(#gradient)"
+          dot={false}
+          strokeWidth={2}
         />
-        <Line type="monotone" dataKey="bSum" stroke="#22c55e" dot={false} />
-      </ComposedChart>
+        {month.month === today.month && (
+          // @ts-expect-error - misaligned types
+          <ReferenceLine x={today.day} stroke="hsl(var(--muted-foreground))">
+            <Label value="Today" fontSize={10} position="bottom" />
+          </ReferenceLine>
+        )}
+        <Line
+          type="monotone"
+          dataKey="bSum"
+          stroke="hsl(var(--primary))"
+          strokeOpacity={0.5}
+          strokeDasharray="6 4"
+          dot={false}
+        />
+      </LineChart>
     </ResponsiveContainer>
   );
 }

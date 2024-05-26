@@ -9,12 +9,14 @@ import { getMonthMetadata } from "~/lib/get-month-metadata";
 import { isSameMonth, parseMonthParam } from "~/lib/temporal";
 import { tson } from "~/lib/tson";
 import { formatDiff, formatMoney } from "~/monetary/math";
-import type { Timeslot } from "~/trpc/datalayer";
+import type { Timeslot, Period } from "~/trpc/datalayer";
 import * as trpc from "~/trpc/datalayer";
 import { Card, CardContent, CardHeader, CardTitle } from "~/ui/card";
 import { CalendarAndSidePanel } from "./_components/calendar";
 import { ClosePeriodSheet } from "./_components/close-periods";
 import { ComparisonChart } from "./_components/comparison-chart";
+import { Tooltip } from "~/ui/tooltip";
+import { TrendBadge } from "~/ui/badge";
 
 export default async function IndexPage(props: { params: { month: string } }) {
   const user = await currentUser();
@@ -33,6 +35,16 @@ export default async function IndexPage(props: { params: { month: string } }) {
 
   const date = parseMonthParam(props.params.month);
 
+  // const openPeriodsPromise = withUnstableCache({
+  //   fn: trpc.getOpenPeriods,
+  //   args: [],
+  //   tags: [CACHE_TAGS.PERIODS],
+  // });
+  // Start fetching clients and periods now but don't await it.
+  // We await it within a Suspense boundary below.
+  const openPeriodsPromise = trpc.getOpenPeriods();
+  const clientsPromise = trpc.getClients();
+
   // const clients = await withUnstableCache({
   //   fn: trpc.getClients,
   //   args: [],
@@ -46,8 +58,7 @@ export default async function IndexPage(props: { params: { month: string } }) {
 
   const lastMonthDate = date.subtract({ months: 1 });
 
-  const [clients, timeslots, lastMonthTimeslots] = await Promise.all([
-    trpc.getClients(),
+  const [timeslots, lastMonthTimeslots] = await Promise.all([
     trpc.getTimeslots({ date, mode: "month" }),
     trpc.getTimeslots({ date: lastMonthDate, mode: "month" }),
   ]);
@@ -76,6 +87,8 @@ export default async function IndexPage(props: { params: { month: string } }) {
     {},
   );
 
+  const clients = await clientsPromise;
+
   return (
     <DashboardShell
       title="Report Time"
@@ -83,12 +96,12 @@ export default async function IndexPage(props: { params: { month: string } }) {
       className="gap-4"
       headerActions={[
         <Suspense>
-          <ClosePeriod />
+          <ClosePeriod openPeriods={openPeriodsPromise} />
         </Suspense>,
       ]}
     >
-      <section className="flex gap-4 overflow-x-scroll md:grid lg:grid-cols-3 md:grid-cols-2">
-        <Card className="flex gap-2">
+      <section className="flex grid-cols-3 gap-4 overflow-x-scroll md:grid lg:grid-cols-7 md:grid-cols-2">
+        <Card className="flex gap-2 lg:col-span-3 md:col-span-2">
           <div className="flex-1">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="font-medium text-sm">
@@ -96,22 +109,28 @@ export default async function IndexPage(props: { params: { month: string } }) {
               </CardTitle>
             </CardHeader>
             <CardContent className="w-max md:w-auto">
+              <Tooltip
+                content={`Your revenue this month ${formatDiff(
+                  toDecimal(diff, formatMoney),
+                  "long",
+                )} compared to the previous month`}
+              >
+                <TrendBadge value={formatDiff(toDecimal(diff, formatMoney))} />
+              </Tooltip>
               <div className="font-bold text-2xl">
                 {toDecimal(totalRevenue, formatMoney)}
               </div>
-              <p className="text-muted-foreground text-xs">
-                {formatDiff(toDecimal(diff, formatMoney))} since last month
-              </p>
             </CardContent>
           </div>
           <div className="p-6 pl-0">
             <ComparisonChart
+              month={tson.serialize(date)}
               a={tson.serialize(monthSlots)}
               b={tson.serialize(lastMonthSlots)}
             />
           </div>
         </Card>
-        <Card>
+        <Card className="lg:col-span-2">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="font-medium text-sm">Billed time</CardTitle>
           </CardHeader>
@@ -126,7 +145,7 @@ export default async function IndexPage(props: { params: { month: string } }) {
             </p>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="lg:col-span-2">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="font-medium text-sm">
               Active Clients
@@ -155,13 +174,8 @@ export default async function IndexPage(props: { params: { month: string } }) {
   );
 }
 
-async function ClosePeriod() {
-  // const openPeriods = await withUnstableCache({
-  //   fn: trpc.getOpenPeriods,
-  //   args: [],
-  //   tags: [CACHE_TAGS.PERIODS],
-  // });
-  const openPeriods = await trpc.getOpenPeriods();
+async function ClosePeriod(props: { openPeriods: Promise<Period[]> }) {
+  const openPeriods = await props.openPeriods;
 
   return <ClosePeriodSheet openPeriods={tson.serialize(openPeriods)} />;
 }
