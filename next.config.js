@@ -5,10 +5,11 @@ export default withBundleAnalyzer({
   openAnalyzer: false,
 })({
   eslint: { ignoreDuringBuilds: true },
+  serverExternalPackages: ["@trpc/server"],
   experimental: {
+    reactCompiler: true,
     ppr: true,
     instrumentationHook: true,
-    serverComponentsExternalPackages: ["@trpc/server"],
   },
   logging: {
     fetches: {
