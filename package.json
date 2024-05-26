@@ -55,7 +55,7 @@
     "react-day-picker": "^8.10.0",
     "react-dom": "^19.0.0-rc-f994737d14-20240522",
     "react-hook-form": "^7.51.5",
-    "recharts": "^2.12.7",
+    "recharts": "2.13.0-alpha.1",
     "server-only": "^0.0.1",
     "sonner": "^1.4.41",
     "tailwind-merge": "^2.2.0",
@@ -78,6 +78,9 @@
     "patchedDependencies": {
       "@radix-ui/react-slot@1.0.2": "patches/@radix-ui__react-slot@1.0.2.patch",
       "@radix-ui/react-presence@1.0.1": "patches/@radix-ui__react-presence@1.0.1.patch"
+    },
+    "overrides": {
+      "react-is": "^19.0.0-rc-f994737d14-20240522"
     }
   }
 }
