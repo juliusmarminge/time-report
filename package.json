@@ -1,7 +1,7 @@
 {
   "name": "time-report",
   "version": "0.1.0",
-  "packageManager": "pnpm@9.0.6",
+  "packageManager": "pnpm@9.0.4",
   "type": "module",
   "private": true,
   "scripts": {
