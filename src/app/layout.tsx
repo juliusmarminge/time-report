@@ -4,11 +4,17 @@ import { ThemeProvider } from "@juliusmarminge/next-themes";
 import { GeistMono } from "geist/font/mono";
 import { GeistSans } from "geist/font/sans";
 import type { Metadata, Viewport } from "next";
+import localFont from "next/font/local";
 
-import { DesktopSidebar, MobileNav } from "~/app/_components/nav";
 import { cn } from "~/lib/cn";
 import { Toaster } from "~/ui/sonner";
 import { TailwindIndicator } from "~/ui/tailwind-indicator";
+
+const fontCal = localFont({
+  src: "./calsans.ttf",
+  variable: "--font-cal",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://timeit.jumr.dev"),
@@ -32,25 +38,22 @@ export const viewport: Viewport = {
   ],
 };
 
-export default function RootLayout(props: { children: React.ReactNode }) {
+export default function RootLayout(
+  props: Readonly<{ children: React.ReactNode }>,
+) {
   return (
     <>
       <html lang="en" suppressHydrationWarning>
         <body
           className={cn(
-            "min-h-screen font-sans antialiased",
+            "min-h-screen font-sans antialiased dark:lg:bg-gray-950 lg:bg-accent",
             GeistSans.variable,
             GeistMono.variable,
+            fontCal.variable,
           )}
         >
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-            <div className="flex min-h-screen flex-col overflow-y-hidden bg-accent lg:flex-row">
-              <DesktopSidebar className="hidden lg:flex" />
-              <MobileNav className="lg:hidden" />
-              <div className="bg-background p-4 lg:ml-72 lg:w-full lg:p-6">
-                {props.children}
-              </div>
-            </div>
+            {props.children}
 
             <TailwindIndicator />
             <Toaster />

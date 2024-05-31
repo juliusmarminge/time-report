@@ -52,24 +52,6 @@ export const authConfig = {
       const whitelist = ["julius0216@outlook.com", "foo@bar.com"];
       return !!user.email && whitelist.includes(user.email);
     },
-    authorized({ request, auth }) {
-      const url = request.nextUrl;
-
-      if (!auth?.user) {
-        url.pathname = "/login";
-        return Response.redirect(url);
-      }
-
-      if (url.pathname === "/report" || url.pathname === "/report/") {
-        url.pathname = `/report/${Intl.DateTimeFormat("en-US", {
-          month: "short",
-          year: "2-digit",
-        })
-          .format(Date.now())
-          .replace(" ", "")}`;
-        return Response.redirect(url);
-      }
-    },
     session: (opts) => {
       if (!("session" in opts)) throw "unreachable for session strategy";
       const { session, user } = opts;
@@ -78,6 +60,7 @@ export const authConfig = {
         ...session,
         user: {
           id: user.id,
+          email: user.email,
           name: user.name,
           image: user.image,
           defaultCurrency: user.defaultCurrency,

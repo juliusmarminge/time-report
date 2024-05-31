@@ -1,50 +1,56 @@
-"use client";
-
-import * as AvatarPrimitive from "@radix-ui/react-avatar";
-import * as React from "react";
-
+import type React from "react";
 import { cn } from "~/lib/cn";
 
-const Avatar = React.forwardRef<
-  React.ElementRef<typeof AvatarPrimitive.Root>,
-  React.ComponentPropsWithoutRef<typeof AvatarPrimitive.Root>
->(({ className, ...props }, ref) => (
-  <AvatarPrimitive.Root
-    ref={ref}
-    className={cn(
-      "relative flex h-10 w-10 shrink-0 overflow-hidden rounded-full",
-      className,
-    )}
-    {...props}
-  />
-));
-Avatar.displayName = AvatarPrimitive.Root.displayName;
+type AvatarProps = {
+  src?: string | null;
+  square?: boolean;
+  initials?: string;
+  alt?: string;
+  className?: string;
+};
 
-const AvatarImage = React.forwardRef<
-  React.ElementRef<typeof AvatarPrimitive.Image>,
-  React.ComponentPropsWithoutRef<typeof AvatarPrimitive.Image>
->(({ className, ...props }, ref) => (
-  <AvatarPrimitive.Image
-    ref={ref}
-    className={cn("aspect-square h-full w-full", className)}
-    {...props}
-  />
-));
-AvatarImage.displayName = AvatarPrimitive.Image.displayName;
-
-const AvatarFallback = React.forwardRef<
-  React.ElementRef<typeof AvatarPrimitive.Fallback>,
-  React.ComponentPropsWithoutRef<typeof AvatarPrimitive.Fallback>
->(({ className, ...props }, ref) => (
-  <AvatarPrimitive.Fallback
-    ref={ref}
-    className={cn(
-      "flex h-full w-full items-center justify-center rounded-full bg-muted",
-      className,
-    )}
-    {...props}
-  />
-));
-AvatarFallback.displayName = AvatarPrimitive.Fallback.displayName;
-
-export { Avatar, AvatarImage, AvatarFallback };
+export function Avatar({
+  src = null,
+  square = false,
+  initials,
+  alt = "",
+  className,
+  ...props
+}: AvatarProps & React.ComponentPropsWithoutRef<"span">) {
+  return (
+    <span
+      data-slot="avatar"
+      {...props}
+      className={cn(
+        "inline-grid shrink-0 align-middle [--avatar-radius:20%] [--ring-opacity:20%] *:col-start-1 *:row-start-1",
+        "-outline-offset-1 outline outline-1 outline-black/[--ring-opacity] dark:outline-white/[--ring-opacity]",
+        square
+          ? "rounded-[--avatar-radius] *:rounded-[--avatar-radius]"
+          : "rounded-full *:rounded-full",
+        className,
+      )}
+    >
+      {initials && (
+        <svg
+          className="size-full select-none fill-current font-medium text-[48px] uppercase"
+          viewBox="0 0 100 100"
+          aria-hidden={alt ? undefined : "true"}
+        >
+          <title>{alt}</title>
+          {alt && <title>{alt}</title>}
+          <text
+            x="50%"
+            y="50%"
+            alignmentBaseline="middle"
+            dominantBaseline="middle"
+            textAnchor="middle"
+            dy=".125em"
+          >
+            {initials}
+          </text>
+        </svg>
+      )}
+      {src && <img className="size-full" src={src} alt={alt} />}
+    </span>
+  );
+}

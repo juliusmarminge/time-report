@@ -7,6 +7,7 @@ import { Badge } from "~/ui/badge";
 import { Button } from "~/ui/button";
 import { EmailSignIn } from "./email";
 import { PasskeyLogin } from "./passkey";
+import { toMonthParam } from "~/lib/temporal";
 
 export default async function LoginPage() {
   const user = await currentUser();
@@ -26,7 +27,9 @@ export default async function LoginPage() {
         <form
           action={async () => {
             "use server";
-            await signIn("github", { redirectTo: "/report" });
+            await signIn("github", {
+              redirectTo: `/report/${toMonthParam()}`,
+            });
           }}
         >
           <Button type="submit" className="w-full max-w-60">

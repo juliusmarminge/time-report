@@ -30,7 +30,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "~/ui/alert-dialog";
-import { Avatar, AvatarFallback, AvatarImage } from "~/ui/avatar";
+import { Avatar } from "~/ui/avatar";
 import { Badge } from "~/ui/badge";
 import { Button } from "~/ui/button";
 import { Card, CardContent, CardHeader } from "~/ui/card";
@@ -98,10 +98,11 @@ export function ClientCard(props: { client: TsonSerialized<Client> }) {
     <Card>
       <div className="flex items-start justify-between p-6">
         <CardHeader className="flex-row items-center gap-4 p-0">
-          <Avatar className="h-12 w-12 rounded-sm">
-            {client.image && <AvatarImage src={client.image} alt="" />}
-            <AvatarFallback>{client.name[0]}</AvatarFallback>
-          </Avatar>
+          <Avatar
+            className="h-12 w-12 rounded-sm"
+            src={client.image}
+            initials={client.name[0]}
+          />
           <div>
             <h2 className="font-bold text-xl">{client.name}</h2>
             <p className="text-muted-foreground text-sm">
@@ -209,10 +210,11 @@ function EditingClientCard(props: {
         >
           <div className="flex items-start gap-2 p-6">
             <CardHeader className="flex-row items-center gap-4 p-0">
-              <Avatar className="h-12 w-12 rounded-sm">
-                {client.image && <AvatarImage src={client.image} alt="" />}
-                <AvatarFallback>{client.name[0]}</AvatarFallback>
-              </Avatar>
+              <Avatar
+                className="h-12 w-12 rounded-sm"
+                src={client.image}
+                initials={client.name[0]}
+              />
               <FormField
                 control={form.control}
                 name="name"

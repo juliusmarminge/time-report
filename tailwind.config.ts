@@ -4,7 +4,7 @@ import { fontFamily } from "tailwindcss/defaultTheme";
 
 export default {
   darkMode: ["class"],
-  content: ["./src/**/*.tsx"],
+  content: ["./src/**/*.{tsx,mdx}"],
   future: { hoverOnlyWhenSupported: true },
   theme: {
     container: {
@@ -18,6 +18,8 @@ export default {
       fontFamily: {
         sans: ["var(--font-geist-sans)", ...fontFamily.sans],
         mono: ["var(--font-geist-mono)", ...fontFamily.mono],
+        cal: ["var(--font-cal)", ...fontFamily.sans],
+        display: ["var(--font-cal)"],
       },
       colors: {
         border: "hsl(var(--border))",
