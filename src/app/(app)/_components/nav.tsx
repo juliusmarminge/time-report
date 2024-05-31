@@ -42,7 +42,7 @@ import type { Session } from "next-auth";
 import { signOut } from "next-auth/react";
 import { usePathname } from "next/navigation";
 import { toMonthParam } from "~/lib/temporal";
-import { Logo } from "~/ui/logo";
+import { LogoIcon } from "~/ui/icons";
 
 function MobileSidebar({
   open,
@@ -140,7 +140,7 @@ export function MySidebar(
     <Sidebar>
       <SidebarHeader>
         <SidebarItem disabled>
-          <Logo className="size-8" />
+          <LogoIcon className="size-8" />
           <SidebarLabel className="font-cal text-3xl tracking-tight">
             Time Report
           </SidebarLabel>
