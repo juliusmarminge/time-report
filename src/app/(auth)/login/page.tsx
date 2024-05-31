@@ -1,8 +1,9 @@
-import { GitHubLogoIcon } from "@radix-ui/react-icons";
+import { GitHubIcon } from "~/ui/icons";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 
 import { currentUser, signIn } from "~/auth";
+import { toMonthParam } from "~/lib/temporal";
 import { Badge } from "~/ui/badge";
 import { Button } from "~/ui/button";
 import { EmailSignIn } from "./email";
@@ -26,11 +27,13 @@ export default async function LoginPage() {
         <form
           action={async () => {
             "use server";
-            await signIn("github", { redirectTo: "/report" });
+            await signIn("github", {
+              redirectTo: `/report/${toMonthParam()}`,
+            });
           }}
         >
           <Button type="submit" className="w-full max-w-60">
-            <GitHubLogoIcon className="mr-2 size-4" />
+            <GitHubIcon className="mr-2 size-4" />
             Sign in with GitHub
           </Button>
         </form>

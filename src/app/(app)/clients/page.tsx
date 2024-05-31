@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 
-import { DashboardShell } from "~/app/_components/dashboard-shell";
+import { DashboardShell } from "~/app/(app)/_components/shell";
 import { currentUser } from "~/auth";
 import { tson } from "~/lib/tson";
 import * as trpc from "~/trpc/datalayer";

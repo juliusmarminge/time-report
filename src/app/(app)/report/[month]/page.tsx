@@ -3,20 +3,20 @@ import { subtract, toDecimal } from "dinero.js";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 
-import { DashboardShell } from "~/app/_components/dashboard-shell";
+import { DashboardShell } from "~/app/(app)/_components/shell";
 import { currentUser } from "~/auth";
 import { getMonthMetadata } from "~/lib/get-month-metadata";
 import { isSameMonth, parseMonthParam } from "~/lib/temporal";
 import { tson } from "~/lib/tson";
 import { formatDiff, formatMoney } from "~/monetary/math";
-import type { Timeslot, Period } from "~/trpc/datalayer";
+import type { Period, Timeslot } from "~/trpc/datalayer";
 import * as trpc from "~/trpc/datalayer";
+import { TrendBadge } from "~/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "~/ui/card";
+import { Tooltip } from "~/ui/tooltip";
 import { CalendarAndSidePanel } from "./_components/calendar";
 import { ClosePeriodSheet } from "./_components/close-periods";
 import { ComparisonChart } from "./_components/comparison-chart";
-import { Tooltip } from "~/ui/tooltip";
-import { TrendBadge } from "~/ui/badge";
 
 export default async function IndexPage(props: { params: { month: string } }) {
   const user = await currentUser();
@@ -94,11 +94,11 @@ export default async function IndexPage(props: { params: { month: string } }) {
       title="Report Time"
       description="Browse how your business is doing this month and report time."
       className="gap-4"
-      headerActions={[
+      headerActions={
         <Suspense>
           <ClosePeriod openPeriods={openPeriodsPromise} />
-        </Suspense>,
-      ]}
+        </Suspense>
+      }
     >
       <section className="flex grid-cols-3 gap-4 overflow-x-scroll md:grid lg:grid-cols-7 md:grid-cols-2">
         <Card className="flex gap-2 lg:col-span-3 md:col-span-2">

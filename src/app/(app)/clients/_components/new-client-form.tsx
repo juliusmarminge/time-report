@@ -1,6 +1,6 @@
 "use client";
 
-import { Cross1Icon, PlusIcon } from "@radix-ui/react-icons";
+import { XMarkIcon, PlusIcon } from "@heroicons/react/16/solid";
 import { useDropzone } from "@uploadthing/react/hooks";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -156,7 +156,7 @@ export function NewClientForm(props: { afterSubmit?: () => void }) {
                       )}
                       variant="destructive"
                     >
-                      <Cross1Icon className="h-2 w-2" />
+                      <XMarkIcon className="size-3" />
                     </Button>
                     <img
                       src={imageDataUrl}

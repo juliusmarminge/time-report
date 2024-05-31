@@ -53,14 +53,15 @@ export const updateClient = protectedProcedure
   .meta({ span: "updateClient" })
   .input(updateClientSchema)
   .mutation(async ({ ctx, input }) => {
+    const { id, ...rest } = input;
     await e
       .update(e.Client, (client) => ({
         set: {
-          ...input,
+          ...rest,
           defaultCharge: normalizeAmount(input.defaultCharge, input.currency),
         },
         filter_single: e.op(
-          e.op(client.id, "=", e.uuid(input.id)),
+          e.op(client.id, "=", e.uuid(id)),
           "and",
           e.op(client.tenant.id, "=", e.uuid(ctx.user.id)),
         ),

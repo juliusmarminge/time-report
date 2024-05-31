@@ -1,7 +1,7 @@
 "use client";
 
 import type { Temporal } from "@js-temporal/polyfill";
-import { CalendarIcon } from "@radix-ui/react-icons";
+import { CalendarDaysIcon } from "@heroicons/react/16/solid";
 import { format } from "date-fns";
 
 import { cn } from "~/lib/cn";
@@ -32,7 +32,7 @@ export function DatePicker<TRequired extends boolean>(
             !props.date && "text-muted-foreground",
           )}
         >
-          <CalendarIcon className="mr-2 h-4 w-4" />
+          <CalendarDaysIcon className="mr-2 size-4" />
           {props.date ? (
             format(toDate(props.date), "PPP")
           ) : (

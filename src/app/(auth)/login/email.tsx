@@ -3,6 +3,7 @@
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import * as React from "react";
+import { toMonthParam } from "~/lib/temporal";
 
 import { Button } from "~/ui/button";
 import { Input } from "~/ui/input";
@@ -23,7 +24,10 @@ export function EmailSignIn() {
     setIsLoading(true);
 
     const email = new FormData(form).get("email") as string;
-    const cb = new URL(callbackUrl ?? "/report", window.location.href);
+    const cb = new URL(
+      callbackUrl ?? `/report/${toMonthParam()}`,
+      window.location.href,
+    );
     await signIn("email", {
       email,
       redirect: false,

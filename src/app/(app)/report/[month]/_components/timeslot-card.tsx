@@ -1,6 +1,7 @@
 "use client";
 
-import { CheckIcon, Pencil1Icon, TrashIcon } from "@radix-ui/react-icons";
+import { CheckIcon, TrashIcon } from "@heroicons/react/16/solid";
+import { PencilIcon } from "@heroicons/react/24/outline";
 import type { Dinero } from "dinero.js";
 import { dinero, toDecimal } from "dinero.js";
 import { useState } from "react";
@@ -71,7 +72,7 @@ export function TimeslotCard(props: { slot: Timeslot }) {
           size="icon"
           onClick={() => setIsEditing(true)}
         >
-          <Pencil1Icon className="h-4 w-4" />
+          <PencilIcon className="h-4 w-4" />
         </Button>
       </div>
       <CardContent>

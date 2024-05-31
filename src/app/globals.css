@@ -28,70 +28,12 @@
   --color-input: hsl(240 5.9% 90%);
   --color-ring: hsl(346.8 77.2% 49.8%);
   --radius: hsl(0.5rem);
-
-  /** Keyframes */
-  @keyframes accordion-down {
-    from {
-      height: 0;
-    }
-    to {
-      height: var(--radix-accordion-content-height);
-    }
-  }
-  @keyframes accordion-up {
-    from {
-      height: var(--radix-accordion-content-height);
-    }
-    to {
-      height: 0;
-    }
-  }
-
-  /* From tailwindcss-animate - https://github.com/jamiebuilds/tailwindcss-animate/blob/main/index.js */
-  --tw-enter-opacity: initial;
-  --tw-enter-scale: initial;
-  --tw-enter-rotate: initial;
-  --tw-enter-translate-x: initial;
-  --tw-enter-translate-y: initial;
-  --tw-exit-opacity: initial;
-  --tw-exit-scale: initial;
-  --tw-exit-rotate: initial;
-  --tw-exit-translate-x: initial;
-  --tw-exit-translate-y: initial;
-
-  @keyframes enter {
-    from {
-      opacity: var(--tw-enter-opacity, 1);
-      transform: translate3d(var(--tw-enter-translate-x, 0), var(--tw-enter-translate-y, 0), 0) scale3d(var(--tw-enter-scale, 1), var(--tw-enter-scale, 1), var(--tw-enter-scale, 1)) rotate(var(--tw-enter-rotate, 0));
-    }
-  }
-  @keyframes exit {
-    to {
-      opacity: var(--tw-exit-opacity, 1);
-      transform: translate3d(var(--tw-exit-translate-x, 0), var(--tw-exit-translate-y, 0), 0) scale3d(var(--tw-exit-scale, 1), var(--tw-exit-scale, 1), var(--tw-exit-scale, 1)) rotate(var(--tw-exit-rotate, 0));
-    }
-  }
-
-  /** Animations */
-  --animate-accordion-down: accordion-down 200ms ease-out;
-  --animate-accordion-up: accordion-up 200ms ease-out;
-  --animate-in: enter 200ms ease-out;
-  --animate-out: exit 200ms ease-out;
-}
-
-@layer utilities { 
-  .slide-in-from-right {
-    --tw-enter-translate-x: 100%
-  }
-  .slide-in-from-right-2 {
-    --tw-enter-translate-x: 0.5rem
-  }
 }
 
 .dark {
   --color-background: hsl(20 14.3% 4.1%);
   --color-foreground: hsl(0 0% 95%);
-  --color-card: hsl(24 9.8% 10%);
+  --color-card: hsl(241.82 10.838% 3.9474%);
   --color-card-foreground: hsl(0 0% 95%);
   --color-popover: hsl(0 0% 9%);
   --color-popover-foreground: hsl(0 0% 95%);
@@ -112,4 +54,65 @@
 
 * {
   border-color: var(--color-border); 
+}
+
+/**
+ * MDX Typography
+ */
+.typography {
+  --typography-body: theme(colors.gray.600);
+  --typography-headings: theme(colors.gray.900);
+  --typography-bold: theme(colors.gray.900);
+
+  .dark & {
+    --typography-body: theme(colors.gray.300);
+    --typography-headings: theme(colors.white);
+    --typography-bold: theme(colors.white);
+  }
+
+  color: var(--typography-body);
+  font-size: theme(fontSize.sm);
+  line-height: theme(lineHeight.6);
+
+  h2 {
+    font-family: theme(fontFamily.display);
+    color: var(--typography-headings);
+    font-weight: theme(fontWeight.semibold);
+    font-size: theme(fontSize.xl);
+    line-height: theme(lineHeight.8);
+  }
+
+  /* Headings */
+  h3 {
+    color: var(--typography-headings);
+    font-family: theme(fontFamily.display);
+    font-weight: theme(fontWeight.semibold);
+    font-size: theme(fontSize.base);
+    line-height: theme(lineHeight.6);
+    display: flex;
+    align-items: center;
+    column-gap: theme(gap.3);
+  }
+
+  /* Inline text */
+  strong {
+    font-weight: theme(fontWeight.semibold);
+  }
+
+  strong:not(a strong) {
+    color: var(--typography-bold);
+  }
+
+  /* Spacing */
+  > * {
+    margin-top: theme(margin.6);
+  }
+
+  :is(h2, h3, h4) {
+    margin-top: theme(margin.8);
+  }
+
+  :is(h2, h3, h4) + * {
+    margin-top: theme(margin.4);
+  }
 }
