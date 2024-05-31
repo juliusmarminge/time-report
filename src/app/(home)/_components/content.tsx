@@ -15,7 +15,7 @@ export function Hero(props: Readonly<{ children?: React.ReactNode }>) {
         </Link>
       </div>
 
-      <h1 className="mt-14 font-display font-light text-4xl/tight text-white">
+      <h1 className="mt-14 font-cal font-light text-4xl/tight text-white">
         Time Reporting App <br />
         <span className="text-red-300">for indie contractors</span>
       </h1>

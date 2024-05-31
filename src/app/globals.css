@@ -6,6 +6,8 @@
   'Segoe UI Symbol', 'Noto Color Emoji';
   --font-family-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono',
   'Courier New', monospace;
+  --font-family-cal: var(--font-cal);
+  --font-family-display: var(--font-cal);
 
   /* Colors */
   --color-background: hsl(0 0% 100%);
@@ -60,59 +62,61 @@
  * MDX Typography
  */
 .typography {
-  --typography-body: theme(colors.gray.600);
-  --typography-headings: theme(colors.gray.900);
-  --typography-bold: theme(colors.gray.900);
-
-  .dark & {
-    --typography-body: theme(colors.gray.300);
-    --typography-headings: theme(colors.white);
-    --typography-bold: theme(colors.white);
-  }
+  --typography-body: var(--color-gray-600); 
+  --typography-headings: var(--color-gray-900);
+  --typography-bold: var(--color-gray-900);
 
   color: var(--typography-body);
-  font-size: theme(fontSize.sm);
-  line-height: theme(lineHeight.6);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-6);
+}
 
-  h2 {
-    font-family: theme(fontFamily.display);
+.dark .typography {
+  --typography-body: var(--color-gray-300);
+  --typography-headings: var(--color-white);
+  --typography-bold: var(--color-white);
+}
+  
+
+  
+.typography h2 {
+    font-family: var(--font-cal);
     color: var(--typography-headings);
-    font-weight: theme(fontWeight.semibold);
-    font-size: theme(fontSize.xl);
-    line-height: theme(lineHeight.8);
-  }
+    font-weight: 600;
+    font-size: var(--font-size-xl);
+    line-height: var(--line-height-8);
+}
 
   /* Headings */
-  h3 {
+.typography  h3 {
     color: var(--typography-headings);
-    font-family: theme(fontFamily.display);
-    font-weight: theme(fontWeight.semibold);
-    font-size: theme(fontSize.base);
-    line-height: theme(lineHeight.6);
+    font-family: var(--font-cal);
+    font-weight: 600;
+    font-size: var(--font-size-base);
+    line-height: var(--line-height-6);
     display: flex;
     align-items: center;
-    column-gap: theme(gap.3);
+    column-gap: var(--spacing-3);
   }
 
   /* Inline text */
-  strong {
-    font-weight: theme(fontWeight.semibold);
+  .typography  strong {
+    font-weight: 600;
   }
 
-  strong:not(a strong) {
+  .typography strong:not(a strong) {
     color: var(--typography-bold);
   }
 
   /* Spacing */
-  > * {
-    margin-top: theme(margin.6);
+  .typography > * {
+    margin-top: var(--spacing-6);
   }
 
-  :is(h2, h3, h4) {
-    margin-top: theme(margin.8);
+  .typography :is(h2, h3, h4) {
+    margin-top: var(--spacing-8);
   }
 
-  :is(h2, h3, h4) + * {
-    margin-top: theme(margin.4);
+  .typography :is(h2, h3, h4) + * {
+    margin-top: var(--spacing-4);
   }
-}
