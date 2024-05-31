@@ -100,7 +100,8 @@ export function ClientCard(props: { client: TsonSerialized<Client> }) {
       <div className="flex items-start justify-between p-6">
         <CardHeader className="flex-row items-center gap-4 p-0">
           <Avatar
-            className="h-12 w-12 rounded-sm"
+            className="size-12 outline-0"
+            square
             src={client.image}
             initials={client.name[0]}
           />
