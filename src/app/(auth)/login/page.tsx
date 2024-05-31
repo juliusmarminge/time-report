@@ -1,4 +1,4 @@
-import { GitHubLogoIcon } from "@radix-ui/react-icons";
+import { GitHubIcon } from "~/ui/icons";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 
@@ -33,7 +33,7 @@ export default async function LoginPage() {
           }}
         >
           <Button type="submit" className="w-full max-w-60">
-            <GitHubLogoIcon className="mr-2 size-4" />
+            <GitHubIcon className="mr-2 size-4" />
             Sign in with GitHub
           </Button>
         </form>

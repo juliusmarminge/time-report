@@ -1,7 +1,7 @@
 "use client";
 
 import { Temporal } from "@js-temporal/polyfill";
-import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
+import { ExclamationTriangleIcon } from "@heroicons/react/16/solid";
 import { atom, useAtom } from "jotai";
 
 import { isFuture } from "~/lib/temporal";
@@ -240,7 +240,7 @@ export function ReportTimeSheet(props: {
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle className="flex items-center gap-2">
-            <ExclamationTriangleIcon className="h-4 w-4" />
+            <ExclamationTriangleIcon className="size-5" />
             Warning
           </AlertDialogTitle>
           <AlertDialogDescription>

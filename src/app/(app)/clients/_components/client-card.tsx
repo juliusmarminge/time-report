@@ -1,7 +1,8 @@
 "use client";
 
 import { Temporal } from "@js-temporal/polyfill";
-import { CheckIcon, Pencil1Icon, TrashIcon } from "@radix-ui/react-icons";
+import { CheckIcon, TrashIcon } from "@heroicons/react/16/solid";
+import { PencilIcon } from "@heroicons/react/24/outline";
 import { format } from "date-fns";
 import type { Dinero } from "dinero.js";
 import { dinero, toDecimal } from "dinero.js";
@@ -125,7 +126,7 @@ export function ClientCard(props: { client: TsonSerialized<Client> }) {
           size="icon"
           onClick={() => setIsEditing(true)}
         >
-          <Pencil1Icon className="h-4 w-4" />
+          <PencilIcon className="h-4 w-4" />
         </Button>
       </div>
       <CardContent className="flex flex-col gap-4 p-6 pt-0">
@@ -211,7 +212,7 @@ function EditingClientCard(props: {
           <div className="flex items-start gap-2 p-6">
             <CardHeader className="flex-row items-center gap-4 p-0">
               <Avatar
-                className="h-12 w-12 rounded-sm"
+                className="size-12 rounded-sm"
                 src={client.image}
                 initials={client.name[0]}
               />
@@ -237,15 +238,15 @@ function EditingClientCard(props: {
               className="ml-auto"
             >
               {form.formState.isSubmitting ? (
-                <LoadingDots className="h-5 w-5" />
+                <LoadingDots className="size-5" />
               ) : (
-                <CheckIcon className="h-5 w-5" />
+                <CheckIcon className="size-5" />
               )}
             </Button>
             <AlertDialog>
               <AlertDialogTrigger asChild>
                 <Button variant="destructive">
-                  <TrashIcon className="mr-2 h-4 w-4" />
+                  <TrashIcon className="mr-2 size-4" />
                   Delete
                 </Button>
               </AlertDialogTrigger>
