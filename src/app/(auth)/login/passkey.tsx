@@ -1,12 +1,20 @@
 "use client";
 
 import { signIn } from "next-auth/webauthn";
+import { toMonthParam } from "~/lib/temporal";
 import { Button } from "~/ui/button";
 
 export function PasskeyLogin() {
   return (
     <div>
-      <Button className="w-full max-w-60" onClick={() => signIn("passkey")}>
+      <Button
+        className="w-full max-w-60"
+        onClick={() =>
+          signIn("passkey", {
+            callbackUrl: `/report/${toMonthParam()}`,
+          })
+        }
+      >
         <svg
           className="mr-2 size-4"
           viewBox="0 0 327 318"

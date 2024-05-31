@@ -3,7 +3,7 @@ import { subtract, toDecimal } from "dinero.js";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 
-import { DashboardShell } from "~/app/_components/dashboard-shell";
+import { DashboardShell } from "~/app/(app)/_components/shell";
 import { currentUser } from "~/auth";
 import { getMonthMetadata } from "~/lib/get-month-metadata";
 import { isSameMonth, parseMonthParam } from "~/lib/temporal";
@@ -94,11 +94,11 @@ export default async function IndexPage(props: { params: { month: string } }) {
       title="Report Time"
       description="Browse how your business is doing this month and report time."
       className="gap-4"
-      headerActions={[
+      headerActions={
         <Suspense>
           <ClosePeriod openPeriods={openPeriodsPromise} />
-        </Suspense>,
-      ]}
+        </Suspense>
+      }
     >
       <section className="flex grid-cols-3 gap-4 overflow-x-scroll md:grid lg:grid-cols-7 md:grid-cols-2">
         <Card className="flex gap-2 lg:col-span-3 md:col-span-2">

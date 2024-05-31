@@ -41,6 +41,15 @@ export const formatOrdinal = (
   );
 };
 
+export const toMonthParam = (date?: Temporal.PlainDate) => {
+  return (date ?? Temporal.Now.plainDateISO())
+    .toLocaleString("en-US", {
+      month: "short",
+      year: "2-digit",
+    })
+    .replace(" ", "");
+};
+
 export const parseMonthParam = (month: string) => {
   // MMMyy => jan23 for example, parse it to a Temporal.PlainDate { 2023-01-01 }
   const [monthCode, yearNr] = month.match(/\d+|\D+/g) as [string, string];

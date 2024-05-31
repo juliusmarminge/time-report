@@ -29,7 +29,7 @@
   .dark {
     --background: 20 14.3% 4.1%;
     --foreground: 0 0% 95%;
-    --card: 24 9.8% 10%;
+    --card: 241.82, 10.838%, 3.9474%;
     --card-foreground: 0 0% 95%;
     --popover: 0 0% 9%;
     --popover-foreground: 0 0% 95%;
@@ -51,9 +51,70 @@
 
 @layer base {
   * {
-    @apply border-border;
+    @apply border-border ring-ring;
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+/**
+ * MDX Typography
+ */
+.typography {
+  --typography-body: theme(colors.gray.600);
+  --typography-headings: theme(colors.gray.900);
+  --typography-bold: theme(colors.gray.900);
+
+  .dark & {
+    --typography-body: theme(colors.gray.300);
+    --typography-headings: theme(colors.white);
+    --typography-bold: theme(colors.white);
+  }
+
+  color: var(--typography-body);
+  font-size: theme(fontSize.sm);
+  line-height: theme(lineHeight.6);
+
+  h2 {
+    font-family: theme(fontFamily.display);
+    color: var(--typography-headings);
+    font-weight: theme(fontWeight.semibold);
+    font-size: theme(fontSize.xl);
+    line-height: theme(lineHeight.8);
+  }
+
+  /* Headings */
+  h3 {
+    color: var(--typography-headings);
+    font-family: theme(fontFamily.display);
+    font-weight: theme(fontWeight.semibold);
+    font-size: theme(fontSize.base);
+    line-height: theme(lineHeight.6);
+    display: flex;
+    align-items: center;
+    column-gap: theme(gap.3);
+  }
+
+  /* Inline text */
+  strong {
+    font-weight: theme(fontWeight.semibold);
+  }
+
+  strong:not(a strong) {
+    color: var(--typography-bold);
+  }
+
+  /* Spacing */
+  > * {
+    margin-top: theme(margin.6);
+  }
+
+  :is(h2, h3, h4) {
+    margin-top: theme(margin.8);
+  }
+
+  :is(h2, h3, h4) + * {
+    margin-top: theme(margin.4);
   }
 }

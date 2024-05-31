@@ -1,0 +1,485 @@
+diff --git a/dist/components/tab/tab.d.ts b/dist/components/tab/tab.d.ts
+deleted file mode 100644
+index 660f811c0f1c02a314eedd9188cd05d93872d1d1..0000000000000000000000000000000000000000
+diff --git a/dist/components/tab/tab.js b/dist/components/tab/tab.js
+deleted file mode 100644
+index 71d1c68a07fedac752ccfd762c98dbe1f13dc2b4..0000000000000000000000000000000000000000
+diff --git a/dist/components/tab-group/tab-group.d.ts b/dist/components/tab-group/tab-group.d.ts
+deleted file mode 100644
+index f8ceaff09f2003955fcdf0e86840a33338f170e5..0000000000000000000000000000000000000000
+diff --git a/dist/components/tab-group/tab-group.js b/dist/components/tab-group/tab-group.js
+deleted file mode 100644
+index c4fb725524c092f03c012ea5a0cb4e4d3b24240c..0000000000000000000000000000000000000000
+diff --git a/dist/components/tab-list/tab-list.d.ts b/dist/components/tab-list/tab-list.d.ts
+deleted file mode 100644
+index fbf9a65697a9e2da5ac330762687e51008756114..0000000000000000000000000000000000000000
+diff --git a/dist/components/tab-list/tab-list.js b/dist/components/tab-list/tab-list.js
+deleted file mode 100644
+index ae0d8a369238204db02701cc74dbfe44f755f4d0..0000000000000000000000000000000000000000
+diff --git a/dist/components/tab-panel/tab-panel.d.ts b/dist/components/tab-panel/tab-panel.d.ts
+deleted file mode 100644
+index 4d45e717086db2a352cf15ed8da10a559ee9b964..0000000000000000000000000000000000000000
+diff --git a/dist/components/tab-panel/tab-panel.js b/dist/components/tab-panel/tab-panel.js
+deleted file mode 100644
+index d75d91ccadaa6b10e6f02d127e0c14c717ef199f..0000000000000000000000000000000000000000
+diff --git a/dist/components/tab-panels/tab-panels.d.ts b/dist/components/tab-panels/tab-panels.d.ts
+deleted file mode 100644
+index 6016daa7fb0e7cce24ccc565d8397a82749915ff..0000000000000000000000000000000000000000
+diff --git a/dist/components/tab-panels/tab-panels.js b/dist/components/tab-panels/tab-panels.js
+deleted file mode 100644
+index 426bb94a89aa08015f07492923e83436d08fd946..0000000000000000000000000000000000000000
+diff --git a/dist/components/tabs/tabs.d.ts b/dist/components/tabs/tabs.d.ts
+deleted file mode 100644
+index 494aa9c022bb1e14a0748bdd1a9aa0dade5c41e6..0000000000000000000000000000000000000000
+diff --git a/dist/components/tabs/tabs.js b/dist/components/tabs/tabs.js
+deleted file mode 100644
+index ccf6fe318748e3c3965d3db0d3bb1c42839befcd..0000000000000000000000000000000000000000
+diff --git a/dist/headlessui.dev.cjs b/dist/headlessui.dev.cjs
+index 452e9ae94909b79036fd653579357c57614b7404..8d4e2c80862ba1b3dec9c1ac75052d9c7e9eb1c9 100644
+--- a/dist/headlessui.dev.cjs
++++ b/dist/headlessui.dev.cjs
+@@ -11899,9 +11899,6 @@ var Switch = Object.assign(SwitchRoot, {
+   Description: SwitchDescription
+ });
+ 
+-// src/components/tabs/tabs.tsx
+-var import_react71 = __toESM(require("react"), 1);
+-
+ // src/internal/focus-sentinel.tsx
+ var import_react70 = __toESM(require("react"), 1);
+ function FocusSentinel({ onFocus }) {
+@@ -11999,420 +11996,6 @@ function useStableCollectionKey() {
+   return "$." + indexes.join(".");
+ }
+ 
+-// src/components/tabs/tabs.tsx
+-var reducers8 = {
+-  [0 /* SetSelectedIndex */](state, action) {
+-    var _a2;
+-    let tabs = sortByDomNode(state.tabs, (tab) => tab.current);
+-    let panels = sortByDomNode(state.panels, (panel) => panel.current);
+-    let focusableTabs = tabs.filter((tab) => {
+-      var _a3;
+-      return !((_a3 = tab.current) == null ? void 0 : _a3.hasAttribute("disabled"));
+-    });
+-    let nextState = { ...state, tabs, panels };
+-    if (
+-      // Underflow
+-      action.index < 0 || // Overflow
+-      action.index > tabs.length - 1
+-    ) {
+-      let direction = match(Math.sign(action.index - state.selectedIndex), {
+-        [-1 /* Less */]: () => 1 /* Backwards */,
+-        [0 /* Equal */]: () => {
+-          return match(Math.sign(action.index), {
+-            [-1 /* Less */]: () => 0 /* Forwards */,
+-            [0 /* Equal */]: () => 0 /* Forwards */,
+-            [1 /* Greater */]: () => 1 /* Backwards */
+-          });
+-        },
+-        [1 /* Greater */]: () => 0 /* Forwards */
+-      });
+-      if (focusableTabs.length === 0) {
+-        return nextState;
+-      }
+-      let nextSelectedIndex = match(direction, {
+-        [0 /* Forwards */]: () => tabs.indexOf(focusableTabs[0]),
+-        [1 /* Backwards */]: () => tabs.indexOf(focusableTabs[focusableTabs.length - 1])
+-      });
+-      return {
+-        ...nextState,
+-        selectedIndex: nextSelectedIndex === -1 ? state.selectedIndex : nextSelectedIndex
+-      };
+-    }
+-    let before = tabs.slice(0, action.index);
+-    let after = tabs.slice(action.index);
+-    let next = [...after, ...before].find((tab) => focusableTabs.includes(tab));
+-    if (!next)
+-      return nextState;
+-    let selectedIndex = (_a2 = tabs.indexOf(next)) != null ? _a2 : state.selectedIndex;
+-    if (selectedIndex === -1)
+-      selectedIndex = state.selectedIndex;
+-    return { ...nextState, selectedIndex };
+-  },
+-  [1 /* RegisterTab */](state, action) {
+-    if (state.tabs.includes(action.tab))
+-      return state;
+-    let activeTab = state.tabs[state.selectedIndex];
+-    let adjustedTabs = sortByDomNode([...state.tabs, action.tab], (tab) => tab.current);
+-    let selectedIndex = state.selectedIndex;
+-    if (!state.info.current.isControlled) {
+-      selectedIndex = adjustedTabs.indexOf(activeTab);
+-      if (selectedIndex === -1)
+-        selectedIndex = state.selectedIndex;
+-    }
+-    return { ...state, tabs: adjustedTabs, selectedIndex };
+-  },
+-  [2 /* UnregisterTab */](state, action) {
+-    return { ...state, tabs: state.tabs.filter((tab) => tab !== action.tab) };
+-  },
+-  [3 /* RegisterPanel */](state, action) {
+-    if (state.panels.includes(action.panel))
+-      return state;
+-    return {
+-      ...state,
+-      panels: sortByDomNode([...state.panels, action.panel], (panel) => panel.current)
+-    };
+-  },
+-  [4 /* UnregisterPanel */](state, action) {
+-    return { ...state, panels: state.panels.filter((panel) => panel !== action.panel) };
+-  }
+-};
+-var TabsDataContext = (0, import_react71.createContext)(null);
+-TabsDataContext.displayName = "TabsDataContext";
+-function useData4(component) {
+-  let context = (0, import_react71.useContext)(TabsDataContext);
+-  if (context === null) {
+-    let err = new Error(`<${component} /> is missing a parent <Tab.Group /> component.`);
+-    if (Error.captureStackTrace)
+-      Error.captureStackTrace(err, useData4);
+-    throw err;
+-  }
+-  return context;
+-}
+-var TabsActionsContext = (0, import_react71.createContext)(null);
+-TabsActionsContext.displayName = "TabsActionsContext";
+-function useActions4(component) {
+-  let context = (0, import_react71.useContext)(TabsActionsContext);
+-  if (context === null) {
+-    let err = new Error(`<${component} /> is missing a parent <Tab.Group /> component.`);
+-    if (Error.captureStackTrace)
+-      Error.captureStackTrace(err, useActions4);
+-    throw err;
+-  }
+-  return context;
+-}
+-function stateReducer8(state, action) {
+-  return match(action.type, reducers8, state, action);
+-}
+-var DEFAULT_TABS_TAG = "div";
+-function GroupFn4(props, ref) {
+-  let {
+-    defaultIndex = 0,
+-    vertical = false,
+-    manual = false,
+-    onChange,
+-    selectedIndex = null,
+-    ...theirProps
+-  } = props;
+-  const orientation = vertical ? "vertical" : "horizontal";
+-  const activation = manual ? "manual" : "auto";
+-  let isControlled = selectedIndex !== null;
+-  let info = useLatestValue({ isControlled });
+-  let tabsRef = useSyncRefs(ref);
+-  let [state, dispatch] = (0, import_react71.useReducer)(stateReducer8, {
+-    info,
+-    selectedIndex: selectedIndex != null ? selectedIndex : defaultIndex,
+-    tabs: [],
+-    panels: []
+-  });
+-  let slot = (0, import_react71.useMemo)(
+-    () => ({ selectedIndex: state.selectedIndex }),
+-    [state.selectedIndex]
+-  );
+-  let onChangeRef = useLatestValue(onChange || (() => {
+-  }));
+-  let stableTabsRef = useLatestValue(state.tabs);
+-  let tabsData = (0, import_react71.useMemo)(
+-    () => ({ orientation, activation, ...state }),
+-    [orientation, activation, state]
+-  );
+-  let registerTab = useEvent((tab) => {
+-    dispatch({ type: 1 /* RegisterTab */, tab });
+-    return () => dispatch({ type: 2 /* UnregisterTab */, tab });
+-  });
+-  let registerPanel = useEvent((panel) => {
+-    dispatch({ type: 3 /* RegisterPanel */, panel });
+-    return () => dispatch({ type: 4 /* UnregisterPanel */, panel });
+-  });
+-  let change = useEvent((index3) => {
+-    if (realSelectedIndex.current !== index3) {
+-      onChangeRef.current(index3);
+-    }
+-    if (!isControlled) {
+-      dispatch({ type: 0 /* SetSelectedIndex */, index: index3 });
+-    }
+-  });
+-  let realSelectedIndex = useLatestValue(isControlled ? props.selectedIndex : state.selectedIndex);
+-  let tabsActions = (0, import_react71.useMemo)(() => ({ registerTab, registerPanel, change }), []);
+-  useIsoMorphicEffect(() => {
+-    dispatch({ type: 0 /* SetSelectedIndex */, index: selectedIndex != null ? selectedIndex : defaultIndex });
+-  }, [
+-    selectedIndex
+-    /* Deliberately skipping defaultIndex */
+-  ]);
+-  useIsoMorphicEffect(() => {
+-    if (realSelectedIndex.current === void 0)
+-      return;
+-    if (state.tabs.length <= 0)
+-      return;
+-    let sorted = sortByDomNode(state.tabs, (tab) => tab.current);
+-    let didOrderChange = sorted.some((tab, i) => state.tabs[i] !== tab);
+-    if (didOrderChange) {
+-      change(sorted.indexOf(state.tabs[realSelectedIndex.current]));
+-    }
+-  });
+-  let ourProps = { ref: tabsRef };
+-  return /* @__PURE__ */ import_react71.default.createElement(StableCollection, null, /* @__PURE__ */ import_react71.default.createElement(TabsActionsContext.Provider, { value: tabsActions }, /* @__PURE__ */ import_react71.default.createElement(TabsDataContext.Provider, { value: tabsData }, tabsData.tabs.length <= 0 && /* @__PURE__ */ import_react71.default.createElement(
+-    FocusSentinel,
+-    {
+-      onFocus: () => {
+-        var _a2, _b;
+-        for (let tab of stableTabsRef.current) {
+-          if (((_a2 = tab.current) == null ? void 0 : _a2.tabIndex) === 0) {
+-            (_b = tab.current) == null ? void 0 : _b.focus();
+-            return true;
+-          }
+-        }
+-        return false;
+-      }
+-    }
+-  ), render({
+-    ourProps,
+-    theirProps,
+-    slot,
+-    defaultTag: DEFAULT_TABS_TAG,
+-    name: "Tabs"
+-  }))));
+-}
+-var DEFAULT_LIST_TAG = "div";
+-function ListFn(props, ref) {
+-  let { orientation, selectedIndex } = useData4("Tab.List");
+-  let listRef = useSyncRefs(ref);
+-  let slot = (0, import_react71.useMemo)(() => ({ selectedIndex }), [selectedIndex]);
+-  let theirProps = props;
+-  let ourProps = {
+-    ref: listRef,
+-    role: "tablist",
+-    "aria-orientation": orientation
+-  };
+-  return render({
+-    ourProps,
+-    theirProps,
+-    slot,
+-    defaultTag: DEFAULT_LIST_TAG,
+-    name: "Tabs.List"
+-  });
+-}
+-var DEFAULT_TAB_TAG = "button";
+-function TabFn(props, ref) {
+-  var _a2, _b;
+-  let internalId = (0, import_react14.useId)();
+-  let {
+-    id = `headlessui-tabs-tab-${internalId}`,
+-    disabled = false,
+-    autoFocus = false,
+-    ...theirProps
+-  } = props;
+-  let { orientation, activation, selectedIndex, tabs, panels } = useData4("Tab");
+-  let actions = useActions4("Tab");
+-  let data = useData4("Tab");
+-  let internalTabRef = (0, import_react71.useRef)(null);
+-  let tabRef = useSyncRefs(internalTabRef, ref);
+-  useIsoMorphicEffect(() => actions.registerTab(internalTabRef), [actions, internalTabRef]);
+-  let mySSRIndex = useStableCollectionIndex("tabs");
+-  let myIndex = tabs.indexOf(internalTabRef);
+-  if (myIndex === -1)
+-    myIndex = mySSRIndex;
+-  let selected = myIndex === selectedIndex;
+-  let activateUsing = useEvent((cb) => {
+-    var _a3;
+-    let result = cb();
+-    if (result === 2 /* Success */ && activation === "auto") {
+-      let newTab = (_a3 = getOwnerDocument(internalTabRef)) == null ? void 0 : _a3.activeElement;
+-      let idx = data.tabs.findIndex((tab) => tab.current === newTab);
+-      if (idx !== -1)
+-        actions.change(idx);
+-    }
+-    return result;
+-  });
+-  let handleKeyDown = useEvent((event) => {
+-    let list = tabs.map((tab) => tab.current).filter(Boolean);
+-    if (event.key === " " /* Space */ || event.key === "Enter" /* Enter */) {
+-      event.preventDefault();
+-      event.stopPropagation();
+-      actions.change(myIndex);
+-      return;
+-    }
+-    switch (event.key) {
+-      case "Home" /* Home */:
+-      case "PageUp" /* PageUp */:
+-        event.preventDefault();
+-        event.stopPropagation();
+-        return activateUsing(() => focusIn(list, 1 /* First */));
+-      case "End" /* End */:
+-      case "PageDown" /* PageDown */:
+-        event.preventDefault();
+-        event.stopPropagation();
+-        return activateUsing(() => focusIn(list, 8 /* Last */));
+-    }
+-    let result = activateUsing(() => {
+-      return match(orientation, {
+-        vertical() {
+-          if (event.key === "ArrowUp" /* ArrowUp */)
+-            return focusIn(list, 2 /* Previous */ | 16 /* WrapAround */);
+-          if (event.key === "ArrowDown" /* ArrowDown */)
+-            return focusIn(list, 4 /* Next */ | 16 /* WrapAround */);
+-          return 0 /* Error */;
+-        },
+-        horizontal() {
+-          if (event.key === "ArrowLeft" /* ArrowLeft */)
+-            return focusIn(list, 2 /* Previous */ | 16 /* WrapAround */);
+-          if (event.key === "ArrowRight" /* ArrowRight */)
+-            return focusIn(list, 4 /* Next */ | 16 /* WrapAround */);
+-          return 0 /* Error */;
+-        }
+-      });
+-    });
+-    if (result === 2 /* Success */) {
+-      return event.preventDefault();
+-    }
+-  });
+-  let ready = (0, import_react71.useRef)(false);
+-  let handleSelection = useEvent(() => {
+-    var _a3;
+-    if (ready.current)
+-      return;
+-    ready.current = true;
+-    (_a3 = internalTabRef.current) == null ? void 0 : _a3.focus({ preventScroll: true });
+-    actions.change(myIndex);
+-    microTask(() => {
+-      ready.current = false;
+-    });
+-  });
+-  let handleMouseDown = useEvent((event) => {
+-    event.preventDefault();
+-  });
+-  let { isFocusVisible: focus, focusProps } = $f7dceffc5ad7768b$export$4e328f61c538687f({ autoFocus });
+-  let { isHovered: hover, hoverProps } = $6179b936705e76d3$export$ae780daf29e6d456({ isDisabled: disabled });
+-  let { pressed: active, pressProps } = useActivePress({ disabled });
+-  let slot = (0, import_react71.useMemo)(() => {
+-    return {
+-      selected,
+-      hover,
+-      active,
+-      focus,
+-      autofocus: autoFocus,
+-      disabled
+-    };
+-  }, [selected, hover, focus, active, autoFocus, disabled]);
+-  let ourProps = mergeProps(
+-    {
+-      ref: tabRef,
+-      onKeyDown: handleKeyDown,
+-      onMouseDown: handleMouseDown,
+-      onClick: handleSelection,
+-      id,
+-      role: "tab",
+-      type: useResolveButtonType(props, internalTabRef),
+-      "aria-controls": (_b = (_a2 = panels[myIndex]) == null ? void 0 : _a2.current) == null ? void 0 : _b.id,
+-      "aria-selected": selected,
+-      tabIndex: selected ? 0 : -1,
+-      disabled: disabled || void 0,
+-      autoFocus
+-    },
+-    focusProps,
+-    hoverProps,
+-    pressProps
+-  );
+-  return render({
+-    ourProps,
+-    theirProps,
+-    slot,
+-    defaultTag: DEFAULT_TAB_TAG,
+-    name: "Tabs.Tab"
+-  });
+-}
+-var DEFAULT_PANELS_TAG = "div";
+-function PanelsFn(props, ref) {
+-  let { selectedIndex } = useData4("Tab.Panels");
+-  let panelsRef = useSyncRefs(ref);
+-  let slot = (0, import_react71.useMemo)(() => ({ selectedIndex }), [selectedIndex]);
+-  let theirProps = props;
+-  let ourProps = { ref: panelsRef };
+-  return render({
+-    ourProps,
+-    theirProps,
+-    slot,
+-    defaultTag: DEFAULT_PANELS_TAG,
+-    name: "Tabs.Panels"
+-  });
+-}
+-var DEFAULT_PANEL_TAG4 = "div";
+-var PanelRenderFeatures3 = 1 /* RenderStrategy */ | 2 /* Static */;
+-function PanelFn4(props, ref) {
+-  var _a2, _b, _c, _d;
+-  let internalId = (0, import_react14.useId)();
+-  let { id = `headlessui-tabs-panel-${internalId}`, tabIndex = 0, ...theirProps } = props;
+-  let { selectedIndex, tabs, panels } = useData4("Tab.Panel");
+-  let actions = useActions4("Tab.Panel");
+-  let internalPanelRef = (0, import_react71.useRef)(null);
+-  let panelRef = useSyncRefs(internalPanelRef, ref);
+-  useIsoMorphicEffect(() => actions.registerPanel(internalPanelRef), [actions, internalPanelRef]);
+-  let mySSRIndex = useStableCollectionIndex("panels");
+-  let myIndex = panels.indexOf(internalPanelRef);
+-  if (myIndex === -1)
+-    myIndex = mySSRIndex;
+-  let selected = myIndex === selectedIndex;
+-  let { isFocusVisible: focus, focusProps } = $f7dceffc5ad7768b$export$4e328f61c538687f();
+-  let slot = (0, import_react71.useMemo)(() => ({ selected, focus }), [selected, focus]);
+-  let ourProps = mergeProps(
+-    {
+-      ref: panelRef,
+-      id,
+-      role: "tabpanel",
+-      "aria-labelledby": (_b = (_a2 = tabs[myIndex]) == null ? void 0 : _a2.current) == null ? void 0 : _b.id,
+-      tabIndex: selected ? tabIndex : -1
+-    },
+-    focusProps
+-  );
+-  if (!selected && ((_c = theirProps.unmount) != null ? _c : true) && !((_d = theirProps.static) != null ? _d : false)) {
+-    return /* @__PURE__ */ import_react71.default.createElement(Hidden, { as: "span", "aria-hidden": "true", ...ourProps });
+-  }
+-  return render({
+-    ourProps,
+-    theirProps,
+-    slot,
+-    defaultTag: DEFAULT_PANEL_TAG4,
+-    features: PanelRenderFeatures3,
+-    visible: selected,
+-    name: "Tabs.Panel"
+-  });
+-}
+-var TabRoot = forwardRefWithAs(TabFn);
+-var TabGroup = forwardRefWithAs(GroupFn4);
+-var TabList = forwardRefWithAs(ListFn);
+-var TabPanels = forwardRefWithAs(PanelsFn);
+-var TabPanel = forwardRefWithAs(PanelFn4);
+-var Tab = Object.assign(TabRoot, {
+-  /** @deprecated use `<TabGroup>` instead of `<Tab.Group>` */
+-  Group: TabGroup,
+-  /** @deprecated use `<TabList>` instead of `<Tab.List>` */
+-  List: TabList,
+-  /** @deprecated use `<TabPanels>` instead of `<Tab.Panels>` */
+-  Panels: TabPanels,
+-  /** @deprecated use `<TabPanel>` instead of `<Tab.Panel>` */
+-  Panel: TabPanel
+-});
+-
+ // src/components/textarea/textarea.tsx
+ var import_react72 = require("react");
+ var DEFAULT_TEXTAREA_TAG = "textarea";
+diff --git a/dist/headlessui.esm.js b/dist/headlessui.esm.js
+index 9898e27d59a18aa89ed95ad27c496b00845c1d51..efa6ff8960630cbab1f3f66d2d7949275cbebc2d 100644
+--- a/dist/headlessui.esm.js
++++ b/dist/headlessui.esm.js
+@@ -1 +1 @@
+-export*from'./components/button/button.js';export*from'./components/checkbox/checkbox.js';export*from'./components/close-button/close-button.js';export*from'./components/combobox/combobox.js';export*from'./components/data-interactive/data-interactive.js';import{Description as x}from'./components/description/description.js';export*from'./components/dialog/dialog.js';export*from'./components/disclosure/disclosure.js';export*from'./components/field/field.js';export*from'./components/fieldset/fieldset.js';export*from'./components/focus-trap/focus-trap.js';export*from'./components/input/input.js';import{Label as n}from'./components/label/label.js';export*from'./components/legend/legend.js';export*from'./components/listbox/listbox.js';export*from'./components/menu/menu.js';export*from'./components/popover/popover.js';import{Portal as d}from'./components/portal/portal.js';export*from'./components/radio-group/radio-group.js';export*from'./components/select/select.js';export*from'./components/switch/switch.js';export*from'./components/tabs/tabs.js';export*from'./components/textarea/textarea.js';import{useClose as w}from'./internal/close-provider.js';export*from'./components/transition/transition.js';export{x as Description,n as Label,d as Portal,w as useClose};
++export*from'./components/button/button.js';export*from'./components/checkbox/checkbox.js';export*from'./components/close-button/close-button.js';export*from'./components/combobox/combobox.js';export*from'./components/data-interactive/data-interactive.js';import{Description as x}from'./components/description/description.js';export*from'./components/dialog/dialog.js';export*from'./components/disclosure/disclosure.js';export*from'./components/field/field.js';export*from'./components/fieldset/fieldset.js';export*from'./components/focus-trap/focus-trap.js';export*from'./components/input/input.js';import{Label as n}from'./components/label/label.js';export*from'./components/legend/legend.js';export*from'./components/listbox/listbox.js';export*from'./components/menu/menu.js';export*from'./components/popover/popover.js';import{Portal as d}from'./components/portal/portal.js';export*from'./components/radio-group/radio-group.js';export*from'./components/select/select.js';export*from'./components/switch/switch.js';export*from'./components/textarea/textarea.js';import{useClose as w}from'./internal/close-provider.js';export*from'./components/transition/transition.js';export{x as Description,n as Label,d as Portal,w as useClose};
+diff --git a/dist/index.js b/dist/index.js
+index 9898e27d59a18aa89ed95ad27c496b00845c1d51..efa6ff8960630cbab1f3f66d2d7949275cbebc2d 100644
+--- a/dist/index.js
++++ b/dist/index.js
+@@ -1 +1 @@
+-export*from'./components/button/button.js';export*from'./components/checkbox/checkbox.js';export*from'./components/close-button/close-button.js';export*from'./components/combobox/combobox.js';export*from'./components/data-interactive/data-interactive.js';import{Description as x}from'./components/description/description.js';export*from'./components/dialog/dialog.js';export*from'./components/disclosure/disclosure.js';export*from'./components/field/field.js';export*from'./components/fieldset/fieldset.js';export*from'./components/focus-trap/focus-trap.js';export*from'./components/input/input.js';import{Label as n}from'./components/label/label.js';export*from'./components/legend/legend.js';export*from'./components/listbox/listbox.js';export*from'./components/menu/menu.js';export*from'./components/popover/popover.js';import{Portal as d}from'./components/portal/portal.js';export*from'./components/radio-group/radio-group.js';export*from'./components/select/select.js';export*from'./components/switch/switch.js';export*from'./components/tabs/tabs.js';export*from'./components/textarea/textarea.js';import{useClose as w}from'./internal/close-provider.js';export*from'./components/transition/transition.js';export{x as Description,n as Label,d as Portal,w as useClose};
++export*from'./components/button/button.js';export*from'./components/checkbox/checkbox.js';export*from'./components/close-button/close-button.js';export*from'./components/combobox/combobox.js';export*from'./components/data-interactive/data-interactive.js';import{Description as x}from'./components/description/description.js';export*from'./components/dialog/dialog.js';export*from'./components/disclosure/disclosure.js';export*from'./components/field/field.js';export*from'./components/fieldset/fieldset.js';export*from'./components/focus-trap/focus-trap.js';export*from'./components/input/input.js';import{Label as n}from'./components/label/label.js';export*from'./components/legend/legend.js';export*from'./components/listbox/listbox.js';export*from'./components/menu/menu.js';export*from'./components/popover/popover.js';import{Portal as d}from'./components/portal/portal.js';export*from'./components/radio-group/radio-group.js';export*from'./components/select/select.js';export*from'./components/switch/switch.js';export*from'./components/textarea/textarea.js';import{useClose as w}from'./internal/close-provider.js';export*from'./components/transition/transition.js';export{x as Description,n as Label,d as Portal,w as useClose};
