@@ -1,13 +1,12 @@
-import type React from "react";
 import { cn } from "~/lib/cn";
 
-type AvatarProps = {
+interface AvatarProps {
   src?: string | null;
   square?: boolean;
   initials?: string;
   alt?: string;
   className?: string;
-};
+}
 
 export function Avatar({
   src = null,
