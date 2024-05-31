@@ -1,7 +1,7 @@
 import type { MDXComponents } from "mdx/types";
 
-import * as mdxComponents from "~/ui/mdx";
 import { Link } from "~/ui/link";
+import * as mdxComponents from "~/ui/mdx";
 
 export function useMDXComponents(components: MDXComponents) {
   return {

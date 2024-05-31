@@ -1,7 +1,6 @@
+import { Button } from "~/ui/button";
 import { Link } from "~/ui/link";
 import { Logo } from "~/ui/logo";
-import { Button } from "~/ui/button";
-import { Waitlist } from "./waitlist";
 
 export function Hero(props: Readonly<{ children?: React.ReactNode }>) {
   return (

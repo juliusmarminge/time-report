@@ -31,18 +31,18 @@ import {
   Cog8ToothIcon,
 } from "@heroicons/react/16/solid";
 import {
+  Bars2Icon,
+  CalendarDaysIcon,
   InboxIcon,
   MagnifyingGlassIcon,
-  Bars2Icon,
-  XMarkIcon,
-  CalendarDaysIcon,
   UsersIcon,
+  XMarkIcon,
 } from "@heroicons/react/20/solid";
 import type { Session } from "next-auth";
-import { Logo } from "~/ui/logo";
-import { toMonthParam } from "~/lib/temporal";
-import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
+import { usePathname } from "next/navigation";
+import { toMonthParam } from "~/lib/temporal";
+import { Logo } from "~/ui/logo";
 
 function MobileSidebar({
   open,
@@ -190,10 +190,10 @@ export function MyNavbar(props: {
     <Navbar>
       <NavbarSpacer />
       <NavbarSection>
-        <NavbarItem href="/search" aria-label="Search">
+        <NavbarItem href="/search" aria-label="Search" disabled>
           <MagnifyingGlassIcon />
         </NavbarItem>
-        <NavbarItem href="/inbox" aria-label="Inbox">
+        <NavbarItem href="/inbox" aria-label="Inbox" disabled>
           <InboxIcon />
         </NavbarItem>
       </NavbarSection>
@@ -207,6 +207,16 @@ export const MobileControlledNavigation = (props: {
 }) => {
   const [showSidebar, setShowSidebar] = React.useState(false);
 
+  React.useEffect(() => {
+    const listener = (e: TouchEvent) => {
+      console.log("touch", e);
+    };
+    document.addEventListener("touchstart", listener);
+    return () => {
+      document.removeEventListener("touchstart", listener);
+    };
+  }, []);
+
   return (
     <>
       <MobileSidebar open={showSidebar} close={() => setShowSidebar(false)}>
@@ -216,7 +226,10 @@ export const MobileControlledNavigation = (props: {
       <header className="flex items-center px-4 lg:hidden">
         <div className="py-2.5">
           <NavbarItem
-            onClick={() => setShowSidebar(true)}
+            onClick={() => {
+              console.log("Press");
+              setShowSidebar(true);
+            }}
             aria-label="Open navigation"
           >
             <Bars2Icon />

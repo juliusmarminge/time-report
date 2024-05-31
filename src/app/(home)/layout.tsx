@@ -2,14 +2,14 @@ import { BackgroundGradient } from "./_components/gradient";
 
 import { Link } from "~/ui/link";
 
-import { Waitlist } from "./_components/waitlist";
-import { buttonVariants } from "~/ui/button";
+import { ArrowRightIcon } from "@heroicons/react/16/solid";
 import { Suspense } from "react";
 import { SignedIn } from "~/auth";
 import { cn } from "~/lib/cn";
-import { ArrowRightIcon } from "@heroicons/react/16/solid";
-import { Footer, Hero } from "./_components/content";
 import { toMonthParam } from "~/lib/temporal";
+import { buttonVariants } from "~/ui/button";
+import { Footer, Hero } from "./_components/content";
+import { Waitlist } from "./_components/waitlist";
 
 export default function HomeLayout(
   props: Readonly<{ children: React.ReactNode }>,

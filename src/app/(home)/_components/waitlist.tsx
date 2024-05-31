@@ -2,10 +2,10 @@
 
 import { useActionState, useEffect, useId } from "react";
 
-import { Button } from "~/ui/button";
-import { joinWaitlist } from "../_action";
 import { toast } from "sonner";
+import { Button } from "~/ui/button";
 import { LoadingDots } from "~/ui/loading-dots";
+import { joinWaitlist } from "../_action";
 
 export function Waitlist() {
   const id = useId();

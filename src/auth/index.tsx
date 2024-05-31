@@ -1,4 +1,4 @@
-import NextAuth, { type Session, type User } from "next-auth";
+import NextAuth, { type Session } from "next-auth";
 import { redirect } from "next/navigation";
 import { cache } from "react";
 import { authConfig } from "./config";

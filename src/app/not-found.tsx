@@ -1,10 +1,10 @@
 import { Link } from "~/ui/link";
 
 import { DashboardShell } from "~/app/(app)/_components/shell";
-import { buttonVariants } from "~/ui/button";
-import { BackgroundGradient } from "./(home)/_components/gradient";
-import { Footer, Hero } from "./(home)/_components/content";
 import { cn } from "~/lib/cn";
+import { buttonVariants } from "~/ui/button";
+import { Footer, Hero } from "./(home)/_components/content";
+import { BackgroundGradient } from "./(home)/_components/gradient";
 
 export default function NotFound() {
   return (

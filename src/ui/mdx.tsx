@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
 import Image, { type ImageProps } from "next/image";
+import { useEffect, useRef, useState } from "react";
 import { cn } from "~/lib/cn";
 
 type ImagePropsWithOptionalAlt = Omit<ImageProps, "alt"> & { alt?: string };

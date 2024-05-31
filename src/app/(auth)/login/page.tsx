@@ -3,11 +3,11 @@ import { redirect } from "next/navigation";
 import { Suspense } from "react";
 
 import { currentUser, signIn } from "~/auth";
+import { toMonthParam } from "~/lib/temporal";
 import { Badge } from "~/ui/badge";
 import { Button } from "~/ui/button";
 import { EmailSignIn } from "./email";
 import { PasskeyLogin } from "./passkey";
-import { toMonthParam } from "~/lib/temporal";
 
 export default async function LoginPage() {
   const user = await currentUser();

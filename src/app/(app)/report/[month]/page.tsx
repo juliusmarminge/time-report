@@ -9,14 +9,14 @@ import { getMonthMetadata } from "~/lib/get-month-metadata";
 import { isSameMonth, parseMonthParam } from "~/lib/temporal";
 import { tson } from "~/lib/tson";
 import { formatDiff, formatMoney } from "~/monetary/math";
-import type { Timeslot, Period } from "~/trpc/datalayer";
+import type { Period, Timeslot } from "~/trpc/datalayer";
 import * as trpc from "~/trpc/datalayer";
+import { TrendBadge } from "~/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "~/ui/card";
+import { Tooltip } from "~/ui/tooltip";
 import { CalendarAndSidePanel } from "./_components/calendar";
 import { ClosePeriodSheet } from "./_components/close-periods";
 import { ComparisonChart } from "./_components/comparison-chart";
-import { Tooltip } from "~/ui/tooltip";
-import { TrendBadge } from "~/ui/badge";
 
 export default async function IndexPage(props: { params: { month: string } }) {
   const user = await currentUser();
