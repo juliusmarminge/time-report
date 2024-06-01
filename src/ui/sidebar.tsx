@@ -105,7 +105,7 @@ export function SidebarHeading({
     <h3
       {...props}
       className={cn(
-        "mb-1 px-2 font-display font-medium text-muted-foreground text-xs/6",
+        "mb-1 px-2 font-cal font-medium text-muted-foreground text-xs/6",
         className,
       )}
     />

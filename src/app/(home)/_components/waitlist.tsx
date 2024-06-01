@@ -37,7 +37,7 @@ export function Waitlist() {
         name="email"
         id={id}
         placeholder="Email address"
-        className="peer w-0 flex-auto bg-transparent px-4 py-2.5 text-base text-white placeholder:text-white/50 sm:text-[0.8125rem]/6 focus:outline-none"
+        className="peer w-0 flex-auto border-0 bg-transparent px-4 py-2.5 text-base text-white placeholder:text-white/50 sm:text-[0.8125rem]/6 focus:outline-none"
       />
       <Button type="submit" className="shrink-0">
         {pending && <LoadingDots className="mr-2 h-4 w-4" />}

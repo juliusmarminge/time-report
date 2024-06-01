@@ -103,7 +103,7 @@ export function DropdownHeading({
     <Headless.MenuHeading
       {...props}
       className={cn(
-        "col-span-full grid grid-cols-[1fr,auto] gap-x-12 px-3.5 pt-2 pb-1 font-display font-medium text-muted-foreground text-sm/5 sm:px-3 sm:text-xs/5",
+        "col-span-full grid grid-cols-[1fr,auto] gap-x-12 px-3.5 pt-2 pb-1 font-cal font-medium text-muted-foreground text-sm/5 sm:px-3 sm:text-xs/5",
         className,
       )}
     />
