@@ -10,6 +10,7 @@ import { toMonthParam } from "~/lib/temporal";
 import { buttonVariants } from "~/ui/button";
 import { Footer, Hero } from "./_components/content";
 import { Waitlist } from "./_components/waitlist";
+import * as Headless from "@headlessui/react";
 
 export default function HomeLayout(
   props: Readonly<{ children: React.ReactNode }>,
@@ -35,16 +36,24 @@ export default function HomeLayout(
       </div>
       <Suspense>
         <SignedIn>
-          <Link
-            className={cn(
-              buttonVariants(),
-              "absolute top-8 right-8 z-50 gap-2 text-sm lg:top-16 lg:right-16",
-            )}
-            href={`/report/${toMonthParam()}`}
+          <Headless.Transition
+            appear
+            show
+            enter="transition-opacity duration-500"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
           >
-            Go to App
-            <ArrowRightIcon className="size-4" />
-          </Link>
+            <Link
+              className={cn(
+                buttonVariants(),
+                "absolute top-8 right-8 z-50 gap-2 text-sm lg:top-16 lg:right-16",
+              )}
+              href={`/report/${toMonthParam()}`}
+            >
+              Go to App
+              <ArrowRightIcon className="size-4" />
+            </Link>
+          </Headless.Transition>
         </SignedIn>
       </Suspense>
       <div className="relative flex-auto">
