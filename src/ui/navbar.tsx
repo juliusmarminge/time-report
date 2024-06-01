@@ -2,7 +2,7 @@
 
 import * as Headless from "@headlessui/react";
 import { LayoutGroup, motion } from "framer-motion";
-import React, { useId } from "react";
+import * as React from "react";
 import { cn } from "~/lib/cn";
 import { TouchTarget } from "~/ui/button";
 import { Link } from "~/ui/link";
@@ -23,7 +23,7 @@ export function NavbarSection({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
-  const id = useId();
+  const id = React.useId();
 
   return (
     <LayoutGroup id={id}>

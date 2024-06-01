@@ -43,10 +43,14 @@ export default function RootLayout(
 ) {
   return (
     <>
-      <html lang="en" suppressHydrationWarning>
+      <html
+        lang="en"
+        suppressHydrationWarning
+        className="antialiased dark:lg:bg-gray-950 lg:bg-accent"
+      >
         <body
           className={cn(
-            "min-h-screen font-sans antialiased dark:lg:bg-gray-950 lg:bg-accent",
+            "min-h-svh font-sans",
             GeistSans.variable,
             GeistMono.variable,
             fontCal.variable,

@@ -3,7 +3,7 @@
 import * as Headless from "@headlessui/react";
 
 import { LayoutGroup, motion } from "framer-motion";
-import React, { Fragment, useId } from "react";
+import * as React from "react";
 import { cn } from "~/lib/cn";
 import { TouchTarget } from "~/ui/button";
 import { Link } from "~/ui/link";
@@ -64,7 +64,7 @@ export function SidebarSection({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
-  const id = useId();
+  const id = React.useId();
 
   return (
     <LayoutGroup id={id}>
@@ -154,7 +154,7 @@ export const SidebarItem = React.forwardRef(function SidebarItem(
         />
       )}
       {"href" in props ? (
-        <Headless.CloseButton as={Fragment} ref={ref}>
+        <Headless.CloseButton as={React.Fragment} ref={ref}>
           <Link
             className={cn(classes)}
             {...props}

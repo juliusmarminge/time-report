@@ -84,7 +84,8 @@
     "patchedDependencies": {
       "@radix-ui/react-slot@1.0.2": "patches/@radix-ui__react-slot@1.0.2.patch",
       "@radix-ui/react-presence@1.0.1": "patches/@radix-ui__react-presence@1.0.1.patch",
-      "@headlessui/react@2.0.4": "patches/@headlessui__react@2.0.4.patch"
+      "@headlessui/react@2.0.4": "patches/@headlessui__react@2.0.4.patch",
+      "@trpc/server@11.0.0-rc.377": "patches/@trpc__server@11.0.0-rc.377.patch"
     },
     "overrides": {
       "react-is": "^19.0.0-rc-f994737d14-20240522"

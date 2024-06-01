@@ -2,8 +2,7 @@
 
 import * as Headless from "@headlessui/react";
 
-import type React from "react";
-import { useId } from "react";
+import * as React from "react";
 import { cn } from "~/lib/cn";
 import { Button } from "./button";
 import { Link } from "./link";
@@ -164,7 +163,7 @@ export function DropdownShortcut({
   Headless.DescriptionProps<"kbd">,
   "className"
 >) {
-  const id = useId();
+  const id = React.useId();
   return (
     <Headless.Description
       as="kbd"

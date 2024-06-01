@@ -17,6 +17,9 @@ patchedDependencies:
   '@radix-ui/react-slot@1.0.2':
     hash: ssni3sb5i7tzyvcsyfcz2pyw5a
     path: patches/@radix-ui__react-slot@1.0.2.patch
+  '@trpc/server@11.0.0-rc.377':
+    hash: psqs7egtbmktiuwgewjpaajine
+    path: patches/@trpc__server@11.0.0-rc.377.patch
 
 importers:
 
@@ -24,7 +27,7 @@ importers:
     dependencies:
       '@baselime/node-opentelemetry':
         specifier: ^0.5.8
-        version: 0.5.8(@trpc/server@11.0.0-rc.377)
+        version: 0.5.8(@trpc/server@11.0.0-rc.377(patch_hash=psqs7egtbmktiuwgewjpaajine))
       '@headlessui/react':
         specifier: ^2.0.4
         version: 2.0.4(patch_hash=fawnfnqz57klhpq6tsrqmpklye)(react-dom@19.0.0-rc-f994737d14-20240522(react@19.0.0-rc-f994737d14-20240522))(react@19.0.0-rc-f994737d14-20240522)
@@ -96,16 +99,16 @@ importers:
         version: 5.39.0(react@19.0.0-rc-f994737d14-20240522)
       '@trpc/client':
         specifier: ^11.0.0-rc.377
-        version: 11.0.0-rc.377(@trpc/server@11.0.0-rc.377)
+        version: 11.0.0-rc.377(@trpc/server@11.0.0-rc.377(patch_hash=psqs7egtbmktiuwgewjpaajine))
       '@trpc/next':
         specifier: ^11.0.0-rc.377
-        version: 11.0.0-rc.377(@tanstack/react-query@5.39.0(react@19.0.0-rc-f994737d14-20240522))(@trpc/client@11.0.0-rc.377(@trpc/server@11.0.0-rc.377))(@trpc/react-query@11.0.0-rc.377(@tanstack/react-query@5.39.0(react@19.0.0-rc-f994737d14-20240522))(@trpc/client@11.0.0-rc.377(@trpc/server@11.0.0-rc.377))(@trpc/server@11.0.0-rc.377)(react-dom@19.0.0-rc-f994737d14-20240522(react@19.0.0-rc-f994737d14-20240522))(react@19.0.0-rc-f994737d14-20240522))(@trpc/server@11.0.0-rc.377)(next@15.0.0-rc.0(@opentelemetry/api@1.8.0)(babel-plugin-react-compiler@0.0.0-experimental-592953e-20240517)(react-dom@19.0.0-rc-f994737d14-20240522(react@19.0.0-rc-f994737d14-20240522))(react@19.0.0-rc-f994737d14-20240522))(react-dom@19.0.0-rc-f994737d14-20240522(react@19.0.0-rc-f994737d14-20240522))(react@19.0.0-rc-f994737d14-20240522)
+        version: 11.0.0-rc.377(@tanstack/react-query@5.39.0(react@19.0.0-rc-f994737d14-20240522))(@trpc/client@11.0.0-rc.377(@trpc/server@11.0.0-rc.377(patch_hash=psqs7egtbmktiuwgewjpaajine)))(@trpc/react-query@11.0.0-rc.377(@tanstack/react-query@5.39.0(react@19.0.0-rc-f994737d14-20240522))(@trpc/client@11.0.0-rc.377(@trpc/server@11.0.0-rc.377(patch_hash=psqs7egtbmktiuwgewjpaajine)))(@trpc/server@11.0.0-rc.377(patch_hash=psqs7egtbmktiuwgewjpaajine))(react-dom@19.0.0-rc-f994737d14-20240522(react@19.0.0-rc-f994737d14-20240522))(react@19.0.0-rc-f994737d14-20240522))(@trpc/server@11.0.0-rc.377(patch_hash=psqs7egtbmktiuwgewjpaajine))(next@15.0.0-rc.0(@opentelemetry/api@1.8.0)(babel-plugin-react-compiler@0.0.0-experimental-592953e-20240517)(react-dom@19.0.0-rc-f994737d14-20240522(react@19.0.0-rc-f994737d14-20240522))(react@19.0.0-rc-f994737d14-20240522))(react-dom@19.0.0-rc-f994737d14-20240522(react@19.0.0-rc-f994737d14-20240522))(react@19.0.0-rc-f994737d14-20240522)
       '@trpc/react-query':
         specifier: ^11.0.0-rc.377
-        version: 11.0.0-rc.377(@tanstack/react-query@5.39.0(react@19.0.0-rc-f994737d14-20240522))(@trpc/client@11.0.0-rc.377(@trpc/server@11.0.0-rc.377))(@trpc/server@11.0.0-rc.377)(react-dom@19.0.0-rc-f994737d14-20240522(react@19.0.0-rc-f994737d14-20240522))(react@19.0.0-rc-f994737d14-20240522)
+        version: 11.0.0-rc.377(@tanstack/react-query@5.39.0(react@19.0.0-rc-f994737d14-20240522))(@trpc/client@11.0.0-rc.377(@trpc/server@11.0.0-rc.377(patch_hash=psqs7egtbmktiuwgewjpaajine)))(@trpc/server@11.0.0-rc.377(patch_hash=psqs7egtbmktiuwgewjpaajine))(react-dom@19.0.0-rc-f994737d14-20240522(react@19.0.0-rc-f994737d14-20240522))(react@19.0.0-rc-f994737d14-20240522)
       '@trpc/server':
         specifier: ^11.0.0-rc.377
-        version: 11.0.0-rc.377
+        version: 11.0.0-rc.377(patch_hash=psqs7egtbmktiuwgewjpaajine)
       '@uploadthing/react':
         specifier: ^6.6.0
         version: 6.6.0(next@15.0.0-rc.0(@opentelemetry/api@1.8.0)(babel-plugin-react-compiler@0.0.0-experimental-592953e-20240517)(react-dom@19.0.0-rc-f994737d14-20240522(react@19.0.0-rc-f994737d14-20240522))(react@19.0.0-rc-f994737d14-20240522))(react@19.0.0-rc-f994737d14-20240522)(uploadthing@6.12.0(next@15.0.0-rc.0(@opentelemetry/api@1.8.0)(babel-plugin-react-compiler@0.0.0-experimental-592953e-20240517)(react-dom@19.0.0-rc-f994737d14-20240522(react@19.0.0-rc-f994737d14-20240522))(react@19.0.0-rc-f994737d14-20240522))(tailwindcss@3.4.3))
@@ -3173,7 +3176,7 @@ snapshots:
       '@babel/helper-validator-identifier': 7.24.6
       to-fast-properties: 2.0.0
 
-  '@baselime/node-opentelemetry@0.5.8(@trpc/server@11.0.0-rc.377)':
+  '@baselime/node-opentelemetry@0.5.8(@trpc/server@11.0.0-rc.377(patch_hash=psqs7egtbmktiuwgewjpaajine))':
     dependencies:
       '@opentelemetry/api': 1.8.0
       '@opentelemetry/exporter-trace-otlp-http': 0.50.0(@opentelemetry/api@1.8.0)
@@ -3183,7 +3186,7 @@ snapshots:
       '@opentelemetry/resources': 1.24.0(@opentelemetry/api@1.8.0)
       '@opentelemetry/sdk-node': 0.50.0(@opentelemetry/api@1.8.0)
       '@opentelemetry/sdk-trace-node': 1.24.0(@opentelemetry/api@1.8.0)
-      '@trpc/server': 11.0.0-rc.377
+      '@trpc/server': 11.0.0-rc.377(patch_hash=psqs7egtbmktiuwgewjpaajine)
       '@types/aws-lambda': 8.10.137
       axios: 1.6.8
       flat: 6.0.1
@@ -4286,30 +4289,30 @@ snapshots:
 
   '@tanstack/virtual-core@3.5.0': {}
 
-  '@trpc/client@11.0.0-rc.377(@trpc/server@11.0.0-rc.377)':
+  '@trpc/client@11.0.0-rc.377(@trpc/server@11.0.0-rc.377(patch_hash=psqs7egtbmktiuwgewjpaajine))':
     dependencies:
-      '@trpc/server': 11.0.0-rc.377
+      '@trpc/server': 11.0.0-rc.377(patch_hash=psqs7egtbmktiuwgewjpaajine)
 
-  '@trpc/next@11.0.0-rc.377(@tanstack/react-query@5.39.0(react@19.0.0-rc-f994737d14-20240522))(@trpc/client@11.0.0-rc.377(@trpc/server@11.0.0-rc.377))(@trpc/react-query@11.0.0-rc.377(@tanstack/react-query@5.39.0(react@19.0.0-rc-f994737d14-20240522))(@trpc/client@11.0.0-rc.377(@trpc/server@11.0.0-rc.377))(@trpc/server@11.0.0-rc.377)(react-dom@19.0.0-rc-f994737d14-20240522(react@19.0.0-rc-f994737d14-20240522))(react@19.0.0-rc-f994737d14-20240522))(@trpc/server@11.0.0-rc.377)(next@15.0.0-rc.0(@opentelemetry/api@1.8.0)(babel-plugin-react-compiler@0.0.0-experimental-592953e-20240517)(react-dom@19.0.0-rc-f994737d14-20240522(react@19.0.0-rc-f994737d14-20240522))(react@19.0.0-rc-f994737d14-20240522))(react-dom@19.0.0-rc-f994737d14-20240522(react@19.0.0-rc-f994737d14-20240522))(react@19.0.0-rc-f994737d14-20240522)':
+  '@trpc/next@11.0.0-rc.377(@tanstack/react-query@5.39.0(react@19.0.0-rc-f994737d14-20240522))(@trpc/client@11.0.0-rc.377(@trpc/server@11.0.0-rc.377(patch_hash=psqs7egtbmktiuwgewjpaajine)))(@trpc/react-query@11.0.0-rc.377(@tanstack/react-query@5.39.0(react@19.0.0-rc-f994737d14-20240522))(@trpc/client@11.0.0-rc.377(@trpc/server@11.0.0-rc.377(patch_hash=psqs7egtbmktiuwgewjpaajine)))(@trpc/server@11.0.0-rc.377(patch_hash=psqs7egtbmktiuwgewjpaajine))(react-dom@19.0.0-rc-f994737d14-20240522(react@19.0.0-rc-f994737d14-20240522))(react@19.0.0-rc-f994737d14-20240522))(@trpc/server@11.0.0-rc.377(patch_hash=psqs7egtbmktiuwgewjpaajine))(next@15.0.0-rc.0(@opentelemetry/api@1.8.0)(babel-plugin-react-compiler@0.0.0-experimental-592953e-20240517)(react-dom@19.0.0-rc-f994737d14-20240522(react@19.0.0-rc-f994737d14-20240522))(react@19.0.0-rc-f994737d14-20240522))(react-dom@19.0.0-rc-f994737d14-20240522(react@19.0.0-rc-f994737d14-20240522))(react@19.0.0-rc-f994737d14-20240522)':
     dependencies:
-      '@trpc/client': 11.0.0-rc.377(@trpc/server@11.0.0-rc.377)
-      '@trpc/server': 11.0.0-rc.377
+      '@trpc/client': 11.0.0-rc.377(@trpc/server@11.0.0-rc.377(patch_hash=psqs7egtbmktiuwgewjpaajine))
+      '@trpc/server': 11.0.0-rc.377(patch_hash=psqs7egtbmktiuwgewjpaajine)
       next: 15.0.0-rc.0(@opentelemetry/api@1.8.0)(babel-plugin-react-compiler@0.0.0-experimental-592953e-20240517)(react-dom@19.0.0-rc-f994737d14-20240522(react@19.0.0-rc-f994737d14-20240522))(react@19.0.0-rc-f994737d14-20240522)
       react: 19.0.0-rc-f994737d14-20240522
       react-dom: 19.0.0-rc-f994737d14-20240522(react@19.0.0-rc-f994737d14-20240522)
     optionalDependencies:
       '@tanstack/react-query': 5.39.0(react@19.0.0-rc-f994737d14-20240522)
-      '@trpc/react-query': 11.0.0-rc.377(@tanstack/react-query@5.39.0(react@19.0.0-rc-f994737d14-20240522))(@trpc/client@11.0.0-rc.377(@trpc/server@11.0.0-rc.377))(@trpc/server@11.0.0-rc.377)(react-dom@19.0.0-rc-f994737d14-20240522(react@19.0.0-rc-f994737d14-20240522))(react@19.0.0-rc-f994737d14-20240522)
+      '@trpc/react-query': 11.0.0-rc.377(@tanstack/react-query@5.39.0(react@19.0.0-rc-f994737d14-20240522))(@trpc/client@11.0.0-rc.377(@trpc/server@11.0.0-rc.377(patch_hash=psqs7egtbmktiuwgewjpaajine)))(@trpc/server@11.0.0-rc.377(patch_hash=psqs7egtbmktiuwgewjpaajine))(react-dom@19.0.0-rc-f994737d14-20240522(react@19.0.0-rc-f994737d14-20240522))(react@19.0.0-rc-f994737d14-20240522)
 
-  '@trpc/react-query@11.0.0-rc.377(@tanstack/react-query@5.39.0(react@19.0.0-rc-f994737d14-20240522))(@trpc/client@11.0.0-rc.377(@trpc/server@11.0.0-rc.377))(@trpc/server@11.0.0-rc.377)(react-dom@19.0.0-rc-f994737d14-20240522(react@19.0.0-rc-f994737d14-20240522))(react@19.0.0-rc-f994737d14-20240522)':
+  '@trpc/react-query@11.0.0-rc.377(@tanstack/react-query@5.39.0(react@19.0.0-rc-f994737d14-20240522))(@trpc/client@11.0.0-rc.377(@trpc/server@11.0.0-rc.377(patch_hash=psqs7egtbmktiuwgewjpaajine)))(@trpc/server@11.0.0-rc.377(patch_hash=psqs7egtbmktiuwgewjpaajine))(react-dom@19.0.0-rc-f994737d14-20240522(react@19.0.0-rc-f994737d14-20240522))(react@19.0.0-rc-f994737d14-20240522)':
     dependencies:
       '@tanstack/react-query': 5.39.0(react@19.0.0-rc-f994737d14-20240522)
-      '@trpc/client': 11.0.0-rc.377(@trpc/server@11.0.0-rc.377)
-      '@trpc/server': 11.0.0-rc.377
+      '@trpc/client': 11.0.0-rc.377(@trpc/server@11.0.0-rc.377(patch_hash=psqs7egtbmktiuwgewjpaajine))
+      '@trpc/server': 11.0.0-rc.377(patch_hash=psqs7egtbmktiuwgewjpaajine)
       react: 19.0.0-rc-f994737d14-20240522
       react-dom: 19.0.0-rc-f994737d14-20240522(react@19.0.0-rc-f994737d14-20240522)
 
-  '@trpc/server@11.0.0-rc.377': {}
+  '@trpc/server@11.0.0-rc.377(patch_hash=psqs7egtbmktiuwgewjpaajine)': {}
 
   '@types/acorn@4.0.6':
     dependencies:

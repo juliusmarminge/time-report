@@ -1,9 +1,19 @@
 import { tracing } from "@baselime/node-opentelemetry/trpc";
 import { TRPCError, initTRPC } from "@trpc/server";
+import { experimental_nextAppDirCaller } from "@trpc/server/adapters/next-app-dir";
 import { currentUser } from "~/auth";
 
 type Meta = { span: string };
 export const t = initTRPC.meta<Meta>().create();
+
+/**
+ * Temporary little type hack to cast a trpc action
+ * when passing the action to `useActionState`
+ * @example useActionState(createBoard as MakeAction<typeof createBoard>)
+ */
+export type MakeAction<T> = T extends (...args: any[]) => Promise<infer U>
+  ? (state: any, fd: FormData) => Promise<U>
+  : never;
 
 const base = t.procedure
   .use(async (opts) => {
@@ -15,44 +25,11 @@ const base = t.procedure
     // Add tracing to all procedures
     tracing({ collectInput: true, collectResult: true }),
   )
-  .experimental_caller(async (opts) => {
-    const path = (opts._def.meta as Meta | undefined)?.span ?? "";
-    switch (opts._def.type) {
-      case "mutation": {
-        /**
-         * When you wrap an action with useFormState, it gets an extra argument as its first argument.
-         * The submitted form data is therefore its second argument instead of its first as it would usually be.
-         * The new first argument that gets added is the current state of the form.
-         * @see https://react.dev/reference/react-dom/hooks/useFormState#my-action-can-no-longer-read-the-submitted-form-data
-         */
-        const input = opts.args.length === 1 ? opts.args[0] : opts.args[1];
-
-        return opts.invoke({
-          type: "mutation",
-          ctx: {},
-          getRawInput: async () => input,
-          path,
-          input,
-        });
-      }
-      case "query": {
-        const input = opts.args[0];
-        return opts.invoke({
-          type: "query",
-          ctx: {},
-          getRawInput: async () => input,
-          path,
-          input,
-        });
-      }
-      default: {
-        throw new TRPCError({
-          code: "NOT_IMPLEMENTED",
-          message: `Not implemented for type ${opts._def.type}`,
-        });
-      }
-    }
-  });
+  .experimental_caller(
+    experimental_nextAppDirCaller({
+      pathExtractor: (opts: { meta: Meta }) => opts.meta.span,
+    }),
+  );
 
 export const protectedProcedure = base.use((opts) => {
   if (!opts.ctx.user) {

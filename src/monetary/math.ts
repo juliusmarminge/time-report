@@ -13,13 +13,14 @@ export interface Currency {
   readonly code: CurrencyCode;
   readonly base: number;
   readonly exponent: number;
+  readonly symbol: string;
 }
 
 export const currencies: Record<CurrencyCode, Currency> = {
-  EUR: { code: "EUR", base: 10, exponent: 2 },
-  USD: { code: "USD", base: 10, exponent: 2 },
-  GBP: { code: "GBP", base: 10, exponent: 2 },
-  SEK: { code: "SEK", base: 10, exponent: 2 },
+  EUR: { code: "EUR", base: 10, exponent: 2, symbol: "€" },
+  USD: { code: "USD", base: 10, exponent: 2, symbol: "$" },
+  GBP: { code: "GBP", base: 10, exponent: 2, symbol: "£" },
+  SEK: { code: "SEK", base: 10, exponent: 2, symbol: "kr" },
 };
 
 export const currencySchema = z

@@ -18,4 +18,6 @@ export const setDefaultCurrency = protectedProcedure
       .run(db);
 
     revalidateTag("/");
+
+    return { ok: true };
   });

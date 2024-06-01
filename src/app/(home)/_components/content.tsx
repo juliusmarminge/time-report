@@ -33,11 +33,11 @@ export function Hero(props: Readonly<{ children?: React.ReactNode }>) {
 export function Footer() {
   return (
     <p className="flex items-center gap-x-2 text-[0.8125rem]/6 text-gray-500">
-      Brought to you by{" "}
+      Created with ❤️ by
       <Button asChild variant={"ghost"}>
         <Link href="https://x.com/jullerino">
           <XIcon className="mr-2 size-4" />
-          Julius Marminge
+          Julius
         </Link>
       </Button>
     </p>
