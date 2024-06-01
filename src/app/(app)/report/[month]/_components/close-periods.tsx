@@ -26,19 +26,11 @@ import {
 import { Badge } from "~/ui/badge";
 import { Button } from "~/ui/button";
 import { DatePicker } from "~/ui/date-picker";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "~/ui/dialog";
 import { Label } from "~/ui/label";
 import { useResponsiveSheet } from "~/ui/responsive-sheet";
 import { Separator } from "~/ui/separator";
 import { closePeriod } from "../_actions";
+import { useLocalStorage } from "~/lib/utility-hooks";
 
 function PeriodCard(props: { period: Period }) {
   const { period } = props;
@@ -114,40 +106,46 @@ export function ClosePeriodConfirmationModal(props: { period: Period }) {
         : newPeriodStart.add({ weeks: 1 }),
   );
 
+  const { Root, Trigger, Content, Header, Title, Description, Body } =
+    useResponsiveSheet();
+
   return (
-    <Dialog open={newPeriodDialogOpen} onOpenChange={setNewPeriodDialogOpen}>
-      <DialogTrigger asChild>
+    <Root open={newPeriodDialogOpen} onOpenChange={setNewPeriodDialogOpen}>
+      <Trigger asChild>
         <Button>Close Period</Button>
-      </DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Close Period</DialogTitle>
-          <DialogDescription>
+      </Trigger>
+      <Content>
+        <Header>
+          <Title>Close Period</Title>
+          <Description>
             Closing a period marks the end of this billing period. You can
             choose to open a new one for the upcoming billing period, or close
             this one without opening a new one.
-          </DialogDescription>
-        </DialogHeader>
-        <div className="flex flex-col gap-4">
+          </Description>
+        </Header>
+        <Body className="flex flex-col gap-4">
           <div className="flex flex-col gap-1">
             <Label>New Period Start</Label>
             <DatePicker
+              buttonClassName="w-full"
               required
               date={newPeriodStart}
               setDate={setNewPeriodStart}
             />
           </div>
-          <div className="flex flex-col gap-1">
+          <div className="flex flex-col gap-1 lg:w-full">
             <Label>New Period End</Label>
             <DatePicker
+              buttonClassName="w-full"
               required
               date={newPeriodEnd}
               setDate={setNewPeriodEnd}
             />
           </div>
-        </div>
-        <DialogFooter>
+        </Body>
+        <div className="mt-8 flex flex-col-reverse items-center justify-end gap-3 *:w-full sm:*:w-auto sm:flex-row">
           <Button
+            className="flex-1"
             variant="secondary"
             onClick={async () => {
               await closePeriod({
@@ -160,6 +158,7 @@ export function ClosePeriodConfirmationModal(props: { period: Period }) {
             Close Period
           </Button>
           <Button
+            className="flex-1"
             onClick={async () => {
               await closePeriod({
                 id: props.period.id,
@@ -171,26 +170,12 @@ export function ClosePeriodConfirmationModal(props: { period: Period }) {
               setNewPeriodDialogOpen(false);
             }}
           >
-            Close and Open New Period
+            Close and Open New
           </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+        </div>
+      </Content>
+    </Root>
   );
-}
-
-function useLocalStorage<T>(key: string, initialValue: T) {
-  const [value, setValue] = useState<T>(() => {
-    if (typeof window === "undefined") return initialValue;
-    const item = window.localStorage.getItem(key);
-    return item ? JSON.parse(item) : initialValue;
-  });
-
-  useEffect(() => {
-    window.localStorage.setItem(key, JSON.stringify(value));
-  }, [key, value]);
-
-  return [value, setValue] as const;
 }
 
 export function ClosePeriodSheet(props: {
@@ -213,7 +198,7 @@ export function ClosePeriodSheet(props: {
     setDialogOpen(hasExpiredPeriods);
   }, [openPeriods, hasDismissed]);
 
-  const { Root, Trigger, Content, Header, Title, Description } =
+  const { Root, Trigger, Content, Header, Title, Description, Body } =
     useResponsiveSheet();
 
   return (
@@ -228,14 +213,14 @@ export function ClosePeriodSheet(props: {
             {`You have ${openPeriods.length} open periods.`}
           </Description>
         </Header>
-        <div className="flex flex-col gap-4 pt-4">
+        <Body className="flex flex-col gap-4">
           {openPeriods.map((period, idx) => (
             <Fragment key={period.id}>
               <PeriodCard period={period} />
               {idx < openPeriods.length - 1 && <Separator />}
             </Fragment>
           ))}
-        </div>
+        </Body>
       </Content>
 
       <AlertDialog open={dialogOpen} onOpenChange={setDialogOpen}>

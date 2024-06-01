@@ -9,7 +9,7 @@ import type { TsonSerialized } from "tupleson";
 
 import { cn } from "~/lib/cn";
 import { tson } from "~/lib/tson";
-import { useIsDesktop } from "~/lib/use-media-query";
+import { useIsDesktop } from "~/lib/utility-hooks";
 import type { Client, Timeslot } from "~/trpc/datalayer";
 import { Button } from "~/ui/button";
 import { Calendar as CalendarCore } from "~/ui/calendar";

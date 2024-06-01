@@ -19,3 +19,17 @@ export function useMediaQuery(query: string) {
 }
 
 export const useIsDesktop = () => useMediaQuery("(min-width: 1024px)");
+
+export const useLocalStorage = <T,>(key: string, initialValue: T) => {
+  const [value, setValue] = React.useState<T>(() => {
+    if (typeof window === "undefined") return initialValue;
+    const item = window.localStorage.getItem(key);
+    return item ? JSON.parse(item) : initialValue;
+  });
+
+  React.useEffect(() => {
+    window.localStorage.setItem(key, JSON.stringify(value));
+  }, [key, value]);
+
+  return [value, setValue] as const;
+};

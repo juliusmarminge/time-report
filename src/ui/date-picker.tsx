@@ -15,11 +15,13 @@ export function DatePicker<TRequired extends boolean>(
         required: true;
         date: Temporal.PlainDate;
         setDate: (date: Temporal.PlainDate) => void;
+        buttonClassName?: string;
       }
     : {
         required?: false;
         date?: Temporal.PlainDate;
         setDate: (date?: Temporal.PlainDate) => void;
+        buttonClassName?: string;
       },
 ) {
   return (
@@ -30,6 +32,7 @@ export function DatePicker<TRequired extends boolean>(
           className={cn(
             "w-[280px] justify-start text-left font-normal",
             !props.date && "text-muted-foreground",
+            props.buttonClassName,
           )}
         >
           <CalendarDaysIcon className="mr-2 size-4" />
