@@ -24,7 +24,7 @@ importers:
     dependencies:
       '@baselime/node-opentelemetry':
         specifier: ^0.5.8
-        version: 0.5.8(@trpc/server@11.0.0-alpha-tmp-rethrow-next-errors.385)
+        version: 0.5.8(@trpc/server@11.0.0-rc.383)
       '@headlessui/react':
         specifier: ^2.0.4
         version: 2.0.4(patch_hash=fawnfnqz57klhpq6tsrqmpklye)(react-dom@19.0.0-rc-f994737d14-20240522(react@19.0.0-rc-f994737d14-20240522))(react@19.0.0-rc-f994737d14-20240522)
@@ -95,14 +95,14 @@ importers:
         specifier: ^5.39.0
         version: 5.39.0(react@19.0.0-rc-f994737d14-20240522)
       '@trpc/client':
-        specifier: 11.0.0-alpha-tmp-rethrow-next-errors.385
-        version: 11.0.0-alpha-tmp-rethrow-next-errors.385(@trpc/server@11.0.0-alpha-tmp-rethrow-next-errors.385)
+        specifier: ^11.0.0-rc.383
+        version: 11.0.0-rc.383(@trpc/server@11.0.0-rc.383)
       '@trpc/react-query':
-        specifier: 11.0.0-alpha-tmp-rethrow-next-errors.385
-        version: 11.0.0-alpha-tmp-rethrow-next-errors.385(@tanstack/react-query@5.39.0(react@19.0.0-rc-f994737d14-20240522))(@trpc/client@11.0.0-alpha-tmp-rethrow-next-errors.385(@trpc/server@11.0.0-alpha-tmp-rethrow-next-errors.385))(@trpc/server@11.0.0-alpha-tmp-rethrow-next-errors.385)(react-dom@19.0.0-rc-f994737d14-20240522(react@19.0.0-rc-f994737d14-20240522))(react@19.0.0-rc-f994737d14-20240522)
+        specifier: ^11.0.0-rc.383
+        version: 11.0.0-rc.383(@tanstack/react-query@5.39.0(react@19.0.0-rc-f994737d14-20240522))(@trpc/client@11.0.0-rc.383(@trpc/server@11.0.0-rc.383))(@trpc/server@11.0.0-rc.383)(react-dom@19.0.0-rc-f994737d14-20240522(react@19.0.0-rc-f994737d14-20240522))(react@19.0.0-rc-f994737d14-20240522)
       '@trpc/server':
-        specifier: 11.0.0-alpha-tmp-rethrow-next-errors.385
-        version: 11.0.0-alpha-tmp-rethrow-next-errors.385
+        specifier: ^11.0.0-rc.383
+        version: 11.0.0-rc.383
       '@uploadthing/react':
         specifier: ^6.6.0
         version: 6.6.0(next@15.0.0-rc.0(@opentelemetry/api@1.8.0)(babel-plugin-react-compiler@0.0.0-experimental-592953e-20240517)(react-dom@19.0.0-rc-f994737d14-20240522(react@19.0.0-rc-f994737d14-20240522))(react@19.0.0-rc-f994737d14-20240522))(react@19.0.0-rc-f994737d14-20240522)(uploadthing@6.12.0(next@15.0.0-rc.0(@opentelemetry/api@1.8.0)(babel-plugin-react-compiler@0.0.0-experimental-592953e-20240517)(react-dom@19.0.0-rc-f994737d14-20240522(react@19.0.0-rc-f994737d14-20240522))(react@19.0.0-rc-f994737d14-20240522))(tailwindcss@3.4.3))
@@ -1298,22 +1298,22 @@ packages:
   '@tanstack/virtual-core@3.5.0':
     resolution: {integrity: sha512-KnPRCkQTyqhanNC0K63GBG3wA8I+D1fQuVnAvcBF8f13akOKeQp1gSbu6f77zCxhEk727iV5oQnbHLYzHrECLg==}
 
-  '@trpc/client@11.0.0-alpha-tmp-rethrow-next-errors.385':
-    resolution: {integrity: sha512-RbsoeDYrqkbwcGPX0jtWB070Cp6Ue3kHll3IBte89d4vDkPCvjPidkpFB7R1x5LuXZHdxC5hHuUbb13nQg4zsQ==}
+  '@trpc/client@11.0.0-rc.383':
+    resolution: {integrity: sha512-b/XqFflqIgNs2sdz1i92yQh2Uy4zZsSI7cZXugMOcELEQVlJ3bJjHLF2KmjiyG4j4XMtDwTZJxOPEt+GYCdQ9Q==}
     peerDependencies:
-      '@trpc/server': 11.0.0-alpha-tmp-rethrow-next-errors.385+b1c8fe83e
+      '@trpc/server': 11.0.0-rc.383+f8e40bff5
 
-  '@trpc/react-query@11.0.0-alpha-tmp-rethrow-next-errors.385':
-    resolution: {integrity: sha512-8ISI5dGmhNBWKkB7n9qugVfe3kbApBOwyoLN0HH+7Z968CLz5f5RRa+BawkkNrACOlYa9cBKZwwNYSJbKLmxPA==}
+  '@trpc/react-query@11.0.0-rc.383':
+    resolution: {integrity: sha512-Rtd0VGqPgBsLgwDLYecukFKJ2nxzemdUfR56nI2lX0wWKp337H3MDeV1y9znnMnEm+5UrCjSzZPyOylzhJVH4w==}
     peerDependencies:
       '@tanstack/react-query': ^5.25.0
-      '@trpc/client': 11.0.0-alpha-tmp-rethrow-next-errors.385+b1c8fe83e
-      '@trpc/server': 11.0.0-alpha-tmp-rethrow-next-errors.385+b1c8fe83e
+      '@trpc/client': 11.0.0-rc.383+f8e40bff5
+      '@trpc/server': 11.0.0-rc.383+f8e40bff5
       react: '>=18.2.0'
       react-dom: '>=18.2.0'
 
-  '@trpc/server@11.0.0-alpha-tmp-rethrow-next-errors.385':
-    resolution: {integrity: sha512-4X/Wd9iSlo7Vqrb9yf2BlEkK1sqcV15AYdGRVbOSxLDETkIbcgJAEeQoW/GKLjgPRzRsHQKMfErX4lddvM8A3w==}
+  '@trpc/server@11.0.0-rc.383':
+    resolution: {integrity: sha512-jZ/D12WvY4t/cgTD32kD9YmoTy2ork9WYIpuT8AvZYRtYZHddCl297Im5RA8u+USDbmhB/A4ehOpbX803cMvQw==}
 
   '@types/acorn@4.0.6':
     resolution: {integrity: sha512-veQTnWP+1D/xbxVrPC3zHnCZRjSrKfhbMUlEA43iMZLu7EsnTtkJklIuwrCPbOi8YkvDQAiW05VQQFvvz9oieQ==}
@@ -3154,7 +3154,7 @@ snapshots:
       '@babel/helper-validator-identifier': 7.24.6
       to-fast-properties: 2.0.0
 
-  '@baselime/node-opentelemetry@0.5.8(@trpc/server@11.0.0-alpha-tmp-rethrow-next-errors.385)':
+  '@baselime/node-opentelemetry@0.5.8(@trpc/server@11.0.0-rc.383)':
     dependencies:
       '@opentelemetry/api': 1.8.0
       '@opentelemetry/exporter-trace-otlp-http': 0.50.0(@opentelemetry/api@1.8.0)
@@ -3164,7 +3164,7 @@ snapshots:
       '@opentelemetry/resources': 1.24.0(@opentelemetry/api@1.8.0)
       '@opentelemetry/sdk-node': 0.50.0(@opentelemetry/api@1.8.0)
       '@opentelemetry/sdk-trace-node': 1.24.0(@opentelemetry/api@1.8.0)
-      '@trpc/server': 11.0.0-alpha-tmp-rethrow-next-errors.385
+      '@trpc/server': 11.0.0-rc.383
       '@types/aws-lambda': 8.10.137
       axios: 1.6.8
       flat: 6.0.1
@@ -4267,19 +4267,19 @@ snapshots:
 
   '@tanstack/virtual-core@3.5.0': {}
 
-  '@trpc/client@11.0.0-alpha-tmp-rethrow-next-errors.385(@trpc/server@11.0.0-alpha-tmp-rethrow-next-errors.385)':
+  '@trpc/client@11.0.0-rc.383(@trpc/server@11.0.0-rc.383)':
     dependencies:
-      '@trpc/server': 11.0.0-alpha-tmp-rethrow-next-errors.385
+      '@trpc/server': 11.0.0-rc.383
 
-  '@trpc/react-query@11.0.0-alpha-tmp-rethrow-next-errors.385(@tanstack/react-query@5.39.0(react@19.0.0-rc-f994737d14-20240522))(@trpc/client@11.0.0-alpha-tmp-rethrow-next-errors.385(@trpc/server@11.0.0-alpha-tmp-rethrow-next-errors.385))(@trpc/server@11.0.0-alpha-tmp-rethrow-next-errors.385)(react-dom@19.0.0-rc-f994737d14-20240522(react@19.0.0-rc-f994737d14-20240522))(react@19.0.0-rc-f994737d14-20240522)':
+  '@trpc/react-query@11.0.0-rc.383(@tanstack/react-query@5.39.0(react@19.0.0-rc-f994737d14-20240522))(@trpc/client@11.0.0-rc.383(@trpc/server@11.0.0-rc.383))(@trpc/server@11.0.0-rc.383)(react-dom@19.0.0-rc-f994737d14-20240522(react@19.0.0-rc-f994737d14-20240522))(react@19.0.0-rc-f994737d14-20240522)':
     dependencies:
       '@tanstack/react-query': 5.39.0(react@19.0.0-rc-f994737d14-20240522)
-      '@trpc/client': 11.0.0-alpha-tmp-rethrow-next-errors.385(@trpc/server@11.0.0-alpha-tmp-rethrow-next-errors.385)
-      '@trpc/server': 11.0.0-alpha-tmp-rethrow-next-errors.385
+      '@trpc/client': 11.0.0-rc.383(@trpc/server@11.0.0-rc.383)
+      '@trpc/server': 11.0.0-rc.383
       react: 19.0.0-rc-f994737d14-20240522
       react-dom: 19.0.0-rc-f994737d14-20240522(react@19.0.0-rc-f994737d14-20240522)
 
-  '@trpc/server@11.0.0-alpha-tmp-rethrow-next-errors.385': {}
+  '@trpc/server@11.0.0-rc.383': {}
 
   '@types/acorn@4.0.6':
     dependencies:
