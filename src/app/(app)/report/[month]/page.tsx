@@ -14,7 +14,6 @@ import { TrendBadge } from "~/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "~/ui/card";
 import { Tooltip } from "~/ui/tooltip";
 import { CalendarAndSidePanel } from "./_components/calendar";
-import { ClosePeriodSheetTrigger } from "../../_components/close-periods";
 import { ComparisonChart } from "./_components/comparison-chart";
 
 export default async function IndexPage(props: { params: { month: string } }) {
@@ -92,7 +91,6 @@ export default async function IndexPage(props: { params: { month: string } }) {
       title="Report Time"
       description="Browse how your business is doing this month and report time."
       className="gap-4"
-      headerActions={<ClosePeriodSheetTrigger />}
     >
       <section className="flex grid-cols-3 gap-4 overflow-x-scroll md:grid lg:grid-cols-7 md:grid-cols-2">
         <Card className="flex gap-2 lg:col-span-3 md:col-span-2">

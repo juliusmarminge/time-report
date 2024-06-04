@@ -32,7 +32,7 @@ import { Separator } from "~/ui/separator";
 import { closePeriod } from "../_actions";
 import { useLocalStorage } from "~/lib/utility-hooks";
 import { closePeriodSheetOpen } from "~/lib/atoms";
-import { useAtom, useSetAtom } from "jotai";
+import { useAtom } from "jotai";
 import { Temporal } from "@js-temporal/polyfill";
 
 function PeriodCard(props: { period: Period }) {
@@ -184,7 +184,9 @@ export function ClosePeriodConfirmationModal(props: { period: Period }) {
 export function ClosePeriodSheet(props: {
   openPeriodsPromise: Promise<TsonSerialized<Period[]>>;
 }) {
-  const openPeriods = tson.deserialize(use(props.openPeriodsPromise));
+  const expiredPeriods = tson
+    .deserialize(use(props.openPeriodsPromise))
+    .filter((period) => isPast(period.endDate));
   const [hasDismissed, setHasDismissed] = useLocalStorage<number | null>(
     "close-period-sheet-dismissed",
     null,
@@ -193,37 +195,30 @@ export function ClosePeriodSheet(props: {
 
   const [dialogOpen, setDialogOpen] = useState(false);
   useEffect(() => {
-    const hasExpiredPeriods = openPeriods.some((period) =>
+    const hasExpiredPeriods = expiredPeriods.some((period) =>
       isPast(period.endDate),
     );
     const dismissed = hasDismissed ? new Date(hasDismissed) : null;
     const oneHourAgo = new Date(Date.now() - 1000 * 60 * 60);
     if (hasExpiredPeriods && dismissed && dismissed > oneHourAgo) return;
     setDialogOpen(hasExpiredPeriods);
-  }, [openPeriods, hasDismissed]);
+  }, [expiredPeriods, hasDismissed]);
 
-  const { Root, Trigger, Content, Header, Title, Description, Body } =
-    useResponsiveSheet();
+  const { Root, Trigger, Content, Header, Title, Body } = useResponsiveSheet();
 
   return (
     <Root open={open} onOpenChange={setOpen}>
-      <Trigger asChild>
-        <Button>Periods</Button>
-      </Trigger>
       <Content>
         <Header className="mb-4">
-          <Title>Open Periods</Title>
-          <Description>
-            {`You have ${openPeriods.length} open periods.`}
-          </Description>
+          <Title>Expired Periods</Title>
         </Header>
         <Body className="flex flex-col gap-4">
-          {openPeriods
+          {expiredPeriods
             .sort((a, b) => Temporal.PlainDate.compare(a.endDate, b.endDate))
             .map((period, idx) => (
               <Fragment key={period.id}>
                 <PeriodCard period={period} />
-                {idx < openPeriods.length - 1 && <Separator />}
+                {idx < expiredPeriods.length - 1 && <Separator />}
               </Fragment>
             ))}
         </Body>
@@ -253,10 +248,4 @@ export function ClosePeriodSheet(props: {
       </AlertDialog>
     </Root>
   );
-}
-
-export function ClosePeriodSheetTrigger() {
-  const setClosePeriodSheetOpen = useSetAtom(closePeriodSheetOpen);
-
-  return <Button onClick={() => setClosePeriodSheetOpen(true)}>Periods</Button>;
 }
