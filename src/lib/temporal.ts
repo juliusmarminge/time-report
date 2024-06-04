@@ -14,6 +14,21 @@ export const isSameMonth = (a: Temporal.PlainDate, b: Temporal.PlainDate) => {
   return a.year === b.year && a.month === b.month;
 };
 
+const MONTHS = [
+  "jan",
+  "feb",
+  "mar",
+  "apr",
+  "may",
+  "jun",
+  "jul",
+  "aug",
+  "sep",
+  "oct",
+  "nov",
+  "dec",
+];
+
 export const formatOrdinal = (
   date: Temporal.PlainDate,
   opts: Intl.DateTimeFormatOptions = {
@@ -53,21 +68,7 @@ export const toMonthParam = (date?: Temporal.PlainDate) => {
 export const parseMonthParam = (month: string) => {
   // MMMyy => jan23 for example, parse it to a Temporal.PlainDate { 2023-01-01 }
   const [monthCode, yearNr] = month.match(/\d+|\D+/g) as [string, string];
-  const monthNr =
-    [
-      "jan",
-      "feb",
-      "mar",
-      "apr",
-      "may",
-      "jun",
-      "jul",
-      "aug",
-      "sep",
-      "oct",
-      "nov",
-      "dec",
-    ].indexOf(monthCode.toLowerCase()) + 1;
+  const monthNr = MONTHS.indexOf(monthCode.toLowerCase()) + 1;
 
   const today = Temporal.Now.plainDateISO();
   const temporal = Temporal.PlainDate.from({

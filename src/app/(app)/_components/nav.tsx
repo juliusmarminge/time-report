@@ -29,6 +29,7 @@ import {
   ArrowRightStartOnRectangleIcon,
   ChevronUpIcon,
   Cog8ToothIcon,
+  ExclamationCircleIcon,
 } from "@heroicons/react/16/solid";
 import {
   Bars2Icon,
@@ -41,9 +42,13 @@ import {
 import type { Session } from "next-auth";
 import { signOut } from "next-auth/react";
 import { usePathname } from "next/navigation";
-import { toMonthParam } from "~/lib/temporal";
+import { isPast, toMonthParam } from "~/lib/temporal";
 import { LogoIcon } from "~/ui/icons";
 import { UserCircleIcon } from "@heroicons/react/20/solid";
+import type { Period } from "~/trpc/datalayer";
+import type { TsonSerialized } from "tupleson";
+import { tson } from "~/lib/tson";
+import { Temporal } from "@js-temporal/polyfill";
 
 function MobileSidebar({
   open,
@@ -138,6 +143,7 @@ function UserButton(props: {
 export function MySidebar(
   props: Readonly<{
     userPromise: Promise<Session["user"]>;
+    periodPromise: Promise<TsonSerialized<Period[]>>;
   }>,
 ) {
   const pn = usePathname();
@@ -177,7 +183,11 @@ export function MySidebar(
         </SidebarSection>
         <SidebarSection className="max-lg:hidden">
           <SidebarHeading>Ongoing Periods</SidebarHeading>
-          <SidebarItem>T3 Tools - May 24</SidebarItem>
+          <React.Suspense
+            fallback={<SidebarItem>Loading Periods...</SidebarItem>}
+          >
+            <OpenPeriods periodPromise={props.periodPromise} />
+          </React.Suspense>
         </SidebarSection>
         <SidebarSpacer />
       </SidebarBody>
@@ -186,6 +196,32 @@ export function MySidebar(
       </SidebarFooter>
     </Sidebar>
   );
+}
+
+function OpenPeriods(props: {
+  periodPromise: Promise<TsonSerialized<Period[]>>;
+}) {
+  const periods = tson.deserialize(React.use(props.periodPromise));
+
+  return periods
+    .sort((a, b) => Temporal.PlainDate.compare(b.endDate, a.endDate))
+    .map((p) => (
+      <SidebarItem
+        key={p.id}
+        href={`/period/${p.id}`}
+        disabled
+        className="capitalize"
+      >
+        <span>
+          {p.client.name} -{" "}
+          {p.endDate.toLocaleString(undefined, {
+            month: "short",
+            year: "2-digit",
+          })}
+        </span>
+        {isPast(p.endDate) && <ExclamationCircleIcon className="ml-1" />}
+      </SidebarItem>
+    ));
 }
 
 export function MyNavbar(props: {
@@ -209,32 +245,23 @@ export function MyNavbar(props: {
 
 export const MobileControlledNavigation = (props: {
   userPromise: Promise<Session["user"]>;
+  periodPromise: Promise<TsonSerialized<Period[]>>;
 }) => {
   const [showSidebar, setShowSidebar] = React.useState(false);
-
-  React.useEffect(() => {
-    const listener = (e: TouchEvent) => {
-      console.log("touch", e);
-    };
-    document.addEventListener("touchstart", listener);
-    return () => {
-      document.removeEventListener("touchstart", listener);
-    };
-  }, []);
 
   return (
     <>
       <MobileSidebar open={showSidebar} close={() => setShowSidebar(false)}>
-        <MySidebar userPromise={props.userPromise} />
+        <MySidebar
+          userPromise={props.userPromise}
+          periodPromise={props.periodPromise}
+        />
       </MobileSidebar>
 
       <header className="flex items-center px-4 lg:hidden">
         <div className="py-2.5">
           <NavbarItem
-            onClick={() => {
-              console.log("Press");
-              setShowSidebar(true);
-            }}
+            onClick={() => setShowSidebar(true)}
             aria-label="Open navigation"
           >
             <Bars2Icon />
