@@ -240,7 +240,15 @@ export function ClosePeriodSheet(props: {
             </AlertDialogCancel>
             <AlertDialogAction asChild>
               <Trigger asChild>
-                <Button variant="secondary">Manage</Button>
+                <Button
+                  variant="secondary"
+                  onClick={() => {
+                    setHasDismissed(Date.now());
+                    setDialogOpen(false);
+                  }}
+                >
+                  Manage
+                </Button>
               </Trigger>
             </AlertDialogAction>
           </AlertDialogFooter>
