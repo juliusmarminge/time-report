@@ -49,6 +49,9 @@ import type { Period } from "~/trpc/datalayer";
 import type { TsonSerialized } from "tupleson";
 import { tson } from "~/lib/tson";
 import { Temporal } from "@js-temporal/polyfill";
+import { Badge } from "~/ui/badge";
+import { closePeriodSheetOpen } from "~/lib/atoms";
+import { useSetAtom } from "jotai";
 
 function MobileSidebar({
   open,
@@ -148,6 +151,8 @@ export function MySidebar(
   }>,
 ) {
   const pn = usePathname();
+  const setClosePeriodSheetOpen = useSetAtom(closePeriodSheetOpen);
+
   return (
     <Sidebar>
       <SidebarHeader>
@@ -162,9 +167,13 @@ export function MySidebar(
             <MagnifyingGlassIcon />
             <SidebarLabel>Search</SidebarLabel>
           </SidebarItem>
-          <SidebarItem href="/inbox" disabled>
+
+          <SidebarItem onClick={() => setClosePeriodSheetOpen(true)}>
             <InboxIcon />
             <SidebarLabel>Inbox</SidebarLabel>
+            <React.Suspense fallback={null}>
+              <InboxCount openPeriodsPromise={props.openPeriodsPromise} />
+            </React.Suspense>
           </SidebarItem>
         </SidebarSection>
       </SidebarHeader>
@@ -212,6 +221,23 @@ export function MySidebar(
         <UserButton userPromise={props.userPromise} />
       </SidebarFooter>
     </Sidebar>
+  );
+}
+
+function InboxCount(
+  props: Readonly<{
+    openPeriodsPromise: Promise<TsonSerialized<Period[]>>;
+  }>,
+) {
+  const periods = tson.deserialize(React.use(props.openPeriodsPromise));
+  const expired = periods.filter((p) => isPast(p.endDate)).length;
+
+  if (expired === 0) return null;
+
+  return (
+    <Badge data-slot="icon" className="justify-center">
+      {expired}
+    </Badge>
   );
 }
 

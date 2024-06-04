@@ -19,8 +19,9 @@ import {
   CardTitle,
 } from "~/ui/card";
 import { ScrollArea } from "~/ui/scroll-area";
-import { ReportTimeSheet, reportTimeSheetOpen } from "./report-time-form";
+import { ReportTimeSheet } from "./report-time-form";
 import { TimeslotCard } from "./timeslot-card";
+import { reportTimeSheetOpen } from "~/lib/atoms";
 
 export function SidePanel(props: {
   date: Temporal.PlainDate;

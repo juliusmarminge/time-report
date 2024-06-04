@@ -31,6 +31,9 @@ import { useResponsiveSheet } from "~/ui/responsive-sheet";
 import { Separator } from "~/ui/separator";
 import { closePeriod } from "../_actions";
 import { useLocalStorage } from "~/lib/utility-hooks";
+import { closePeriodSheetOpen } from "~/lib/atoms";
+import { useAtom } from "jotai";
+import { Temporal } from "@js-temporal/polyfill";
 
 function PeriodCard(props: { period: Period }) {
   const { period } = props;
@@ -186,6 +189,7 @@ export function ClosePeriodSheet(props: {
     "close-period-sheet-dismissed",
     null,
   );
+  const [open, setOpen] = useAtom(closePeriodSheetOpen);
 
   const [dialogOpen, setDialogOpen] = useState(false);
   useEffect(() => {
@@ -202,7 +206,7 @@ export function ClosePeriodSheet(props: {
     useResponsiveSheet();
 
   return (
-    <Root>
+    <Root open={open} onOpenChange={setOpen}>
       <Trigger asChild>
         <Button>Periods</Button>
       </Trigger>
@@ -214,12 +218,14 @@ export function ClosePeriodSheet(props: {
           </Description>
         </Header>
         <Body className="flex flex-col gap-4">
-          {openPeriods.map((period, idx) => (
-            <Fragment key={period.id}>
-              <PeriodCard period={period} />
-              {idx < openPeriods.length - 1 && <Separator />}
-            </Fragment>
-          ))}
+          {openPeriods
+            .sort((a, b) => Temporal.PlainDate.compare(a.endDate, b.endDate))
+            .map((period, idx) => (
+              <Fragment key={period.id}>
+                <PeriodCard period={period} />
+                {idx < openPeriods.length - 1 && <Separator />}
+              </Fragment>
+            ))}
         </Body>
       </Content>
 

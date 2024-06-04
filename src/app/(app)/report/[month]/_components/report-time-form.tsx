@@ -2,7 +2,7 @@
 
 import { Temporal } from "@js-temporal/polyfill";
 import { ExclamationTriangleIcon } from "@heroicons/react/16/solid";
-import { atom, useAtom } from "jotai";
+import { useAtom } from "jotai";
 
 import { isFuture } from "~/lib/temporal";
 import { currencies } from "~/monetary/math";
@@ -43,6 +43,7 @@ import {
 import { Textarea } from "~/ui/textarea";
 import { reportTime } from "../_actions";
 import { reportTimeSchema } from "../_validators";
+import { reportTimeSheetOpen } from "~/lib/atoms";
 
 export function ReportTimeForm(props: {
   clients: Client[];
@@ -202,7 +203,6 @@ export function ReportTimeForm(props: {
   );
 }
 
-export const reportTimeSheetOpen = atom(false);
 export function ReportTimeSheet(props: {
   date: Temporal.PlainDate;
   clients: Client[];
