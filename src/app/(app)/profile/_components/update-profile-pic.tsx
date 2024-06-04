@@ -21,7 +21,7 @@ import { toast } from "sonner";
 import { generateMimeTypes } from "uploadthing/client";
 import type { ExpandedRouteConfig } from "uploadthing/types";
 
-import { updateUserImage } from "~/auth/actions";
+import { updateUserImage } from "~/app/(app)/_actions";
 import { XMarkIcon } from "@heroicons/react/16/solid";
 import { PhotoIcon } from "@heroicons/react/24/outline";
 

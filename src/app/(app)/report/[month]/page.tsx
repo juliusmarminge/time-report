@@ -1,7 +1,6 @@
 import { Temporal } from "@js-temporal/polyfill";
 import { subtract, toDecimal } from "dinero.js";
 import { redirect } from "next/navigation";
-import { Suspense } from "react";
 
 import { DashboardShell } from "~/app/(app)/_components/shell";
 import { currentUser } from "~/auth";
@@ -9,13 +8,13 @@ import { getMonthMetadata } from "~/lib/get-month-metadata";
 import { isSameMonth, parseMonthParam } from "~/lib/temporal";
 import { tson } from "~/lib/tson";
 import { formatDiff, formatMoney } from "~/monetary/math";
-import type { Period, Timeslot } from "~/trpc/datalayer";
+import type { Timeslot } from "~/trpc/datalayer";
 import * as trpc from "~/trpc/datalayer";
 import { TrendBadge } from "~/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "~/ui/card";
 import { Tooltip } from "~/ui/tooltip";
 import { CalendarAndSidePanel } from "./_components/calendar";
-import { ClosePeriodSheet } from "./_components/close-periods";
+import { ClosePeriodSheetTrigger } from "../../_components/close-periods";
 import { ComparisonChart } from "./_components/comparison-chart";
 
 export default async function IndexPage(props: { params: { month: string } }) {
@@ -42,7 +41,6 @@ export default async function IndexPage(props: { params: { month: string } }) {
   // });
   // Start fetching clients and periods now but don't await it.
   // We await it within a Suspense boundary below.
-  const openPeriodsPromise = trpc.getOpenPeriods();
   const clientsPromise = trpc.getClients();
 
   // const clients = await withUnstableCache({
@@ -94,11 +92,7 @@ export default async function IndexPage(props: { params: { month: string } }) {
       title="Report Time"
       description="Browse how your business is doing this month and report time."
       className="gap-4"
-      headerActions={
-        <Suspense>
-          <ClosePeriod openPeriods={openPeriodsPromise} />
-        </Suspense>
-      }
+      headerActions={<ClosePeriodSheetTrigger />}
     >
       <section className="flex grid-cols-3 gap-4 overflow-x-scroll md:grid lg:grid-cols-7 md:grid-cols-2">
         <Card className="flex gap-2 lg:col-span-3 md:col-span-2">
@@ -172,10 +166,4 @@ export default async function IndexPage(props: { params: { month: string } }) {
       </section>
     </DashboardShell>
   );
-}
-
-async function ClosePeriod(props: { openPeriods: Promise<Period[]> }) {
-  const openPeriods = await props.openPeriods;
-
-  return <ClosePeriodSheet openPeriods={tson.serialize(openPeriods)} />;
 }

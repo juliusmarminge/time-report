@@ -4,6 +4,7 @@ import { getCurrencyRates } from "~/monetary/rsc";
 import { MobileControlledNavigation, MySidebar } from "./_components/nav";
 import * as trpc from "~/trpc/datalayer";
 import { tson } from "~/lib/tson";
+import { ClosePeriodSheet } from "./_components/close-periods";
 
 export default function AppLayout(
   props: Readonly<{ children: React.ReactNode }>,
@@ -36,6 +37,8 @@ export default function AppLayout(
           </div>
         </main>
       </div>
+
+      <ClosePeriodSheet openPeriodsPromise={openPeriodsPromise} />
     </ConverterProvider>
   );
 }

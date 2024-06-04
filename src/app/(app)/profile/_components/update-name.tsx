@@ -6,7 +6,7 @@ import { Input } from "~/ui/input";
 import type { User } from "next-auth";
 import { toast } from "sonner";
 
-import { updateDisplayName } from "~/auth/actions";
+import { updateDisplayName } from "~/app/(app)/_actions";
 
 export function UpdateNameForm(props: { user: User }) {
   return (

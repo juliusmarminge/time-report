@@ -32,7 +32,7 @@ import { Separator } from "~/ui/separator";
 import { closePeriod } from "../_actions";
 import { useLocalStorage } from "~/lib/utility-hooks";
 import { closePeriodSheetOpen } from "~/lib/atoms";
-import { useAtom } from "jotai";
+import { useAtom, useSetAtom } from "jotai";
 import { Temporal } from "@js-temporal/polyfill";
 
 function PeriodCard(props: { period: Period }) {
@@ -182,9 +182,9 @@ export function ClosePeriodConfirmationModal(props: { period: Period }) {
 }
 
 export function ClosePeriodSheet(props: {
-  openPeriods: TsonSerialized<Period[]>;
+  openPeriodsPromise: Promise<TsonSerialized<Period[]>>;
 }) {
-  const openPeriods = tson.deserialize(props.openPeriods);
+  const openPeriods = tson.deserialize(use(props.openPeriodsPromise));
   const [hasDismissed, setHasDismissed] = useLocalStorage<number | null>(
     "close-period-sheet-dismissed",
     null,
@@ -253,4 +253,10 @@ export function ClosePeriodSheet(props: {
       </AlertDialog>
     </Root>
   );
+}
+
+export function ClosePeriodSheetTrigger() {
+  const setClosePeriodSheetOpen = useSetAtom(closePeriodSheetOpen);
+
+  return <Button onClick={() => setClosePeriodSheetOpen(true)}>Periods</Button>;
 }
