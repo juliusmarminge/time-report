@@ -9,17 +9,25 @@ export default function AppLayout(
   props: Readonly<{ children: React.ReactNode }>,
 ) {
   const userPromise = currentUser({ redirect: true });
-  const periodPromise = trpc.getOpenPeriods().then(tson.serialize);
+  const openPeriodsPromise = trpc.getOpenPeriods().then(tson.serialize);
+  const recentPeriodsPromise = trpc
+    .getRecentlyClosedPeriods()
+    .then(tson.serialize);
   return (
     <ConverterProvider user={userPromise} rates={getCurrencyRates()}>
       <div className="relative isolate flex min-h-svh w-full bg-white max-lg:flex-col dark:bg-zinc-900 dark:lg:bg-zinc-950 lg:bg-zinc-100">
         {/* Desktop sidebar, Mobile navigation */}
         <div className="fixed inset-y-0 left-0 w-64 max-lg:hidden">
-          <MySidebar userPromise={userPromise} periodPromise={periodPromise} />
+          <MySidebar
+            userPromise={userPromise}
+            openPeriodsPromise={openPeriodsPromise}
+            recentPeriodsPromise={recentPeriodsPromise}
+          />
         </div>
         <MobileControlledNavigation
           userPromise={userPromise}
-          periodPromise={periodPromise}
+          openPeriodsPromise={openPeriodsPromise}
+          recentPeriodsPromise={recentPeriodsPromise}
         />
 
         <main className="flex flex-1 flex-col pb-2 lg:min-w-0 lg:pt-2 lg:pr-2 lg:pl-64">

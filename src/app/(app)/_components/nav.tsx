@@ -143,7 +143,8 @@ function UserButton(props: {
 export function MySidebar(
   props: Readonly<{
     userPromise: Promise<Session["user"]>;
-    periodPromise: Promise<TsonSerialized<Period[]>>;
+    openPeriodsPromise: Promise<TsonSerialized<Period[]>>;
+    recentPeriodsPromise: Promise<TsonSerialized<Period[]>>;
   }>,
 ) {
   const pn = usePathname();
@@ -184,9 +185,25 @@ export function MySidebar(
         <SidebarSection className="max-lg:hidden">
           <SidebarHeading>Ongoing Periods</SidebarHeading>
           <React.Suspense
-            fallback={<SidebarItem>Loading Periods...</SidebarItem>}
+            fallback={
+              <SidebarItem disabled className="text-muted-foreground text-sm">
+                Loading Open Periods...
+              </SidebarItem>
+            }
           >
-            <OpenPeriods periodPromise={props.periodPromise} />
+            <PeriodItems periodsPromise={props.openPeriodsPromise} />
+          </React.Suspense>
+        </SidebarSection>
+        <SidebarSection className="max-lg:hidden">
+          <SidebarHeading>Recently Closed Periods</SidebarHeading>
+          <React.Suspense
+            fallback={
+              <SidebarItem disabled className="text-muted-foreground text-sm">
+                Loading Recent Periods...
+              </SidebarItem>
+            }
+          >
+            <PeriodItems periodsPromise={props.recentPeriodsPromise} />
           </React.Suspense>
         </SidebarSection>
         <SidebarSpacer />
@@ -198,10 +215,10 @@ export function MySidebar(
   );
 }
 
-function OpenPeriods(props: {
-  periodPromise: Promise<TsonSerialized<Period[]>>;
+function PeriodItems(props: {
+  periodsPromise: Promise<TsonSerialized<Period[]>>;
 }) {
-  const periods = tson.deserialize(React.use(props.periodPromise));
+  const periods = tson.deserialize(React.use(props.periodsPromise));
 
   return periods
     .sort((a, b) => Temporal.PlainDate.compare(b.endDate, a.endDate))
@@ -219,7 +236,9 @@ function OpenPeriods(props: {
             year: "2-digit",
           })}
         </span>
-        {isPast(p.endDate) && <ExclamationCircleIcon className="ml-1" />}
+        {isPast(p.endDate) && p.status === "open" && (
+          <ExclamationCircleIcon className="ml-1" />
+        )}
       </SidebarItem>
     ));
 }
@@ -245,7 +264,8 @@ export function MyNavbar(props: {
 
 export const MobileControlledNavigation = (props: {
   userPromise: Promise<Session["user"]>;
-  periodPromise: Promise<TsonSerialized<Period[]>>;
+  openPeriodsPromise: Promise<TsonSerialized<Period[]>>;
+  recentPeriodsPromise: Promise<TsonSerialized<Period[]>>;
 }) => {
   const [showSidebar, setShowSidebar] = React.useState(false);
 
@@ -254,7 +274,8 @@ export const MobileControlledNavigation = (props: {
       <MobileSidebar open={showSidebar} close={() => setShowSidebar(false)}>
         <MySidebar
           userPromise={props.userPromise}
-          periodPromise={props.periodPromise}
+          openPeriodsPromise={props.openPeriodsPromise}
+          recentPeriodsPromise={props.recentPeriodsPromise}
         />
       </MobileSidebar>
 

@@ -121,3 +121,36 @@ export const getOpenPeriods = cache(
   }),
 );
 export type Period = Awaited<ReturnType<typeof getOpenPeriods>>[number];
+
+export const getRecentlyClosedPeriods = cache(
+  protectedProcedure
+    .meta({ span: "getRecentlyClosedPeriods" })
+    .query(async ({ ctx }) => {
+      const periods = await e
+        .select(e.Period, (period) => ({
+          ...period["*"],
+          timeslots: (ts) => ts["*"],
+          client: (client) => client["*"],
+          filter: e.all(
+            e.set(
+              e.op(period.tenant.id, "=", e.uuid(ctx.user.id)),
+              e.op(period.status, "=", e.PeriodStatus.closed),
+              e.op(period.endDate, "<", plainDate(Temporal.Now.plainDateISO())),
+            ),
+          ),
+          limit: 5,
+        }))
+        .run(db);
+
+      // FIXME: Would be nice to handle this in the db-driver
+      return periods.map((period) => ({
+        ...period,
+        startDate: Temporal.PlainDate.from(period.startDate),
+        endDate: Temporal.PlainDate.from(period.endDate),
+        timeslots: period.timeslots.map((ts) => ({
+          ...ts,
+          date: Temporal.PlainDate.from(ts.date),
+        })),
+      }));
+    }),
+);
