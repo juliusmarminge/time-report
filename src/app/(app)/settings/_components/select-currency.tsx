@@ -2,7 +2,7 @@
 import * as React from "react";
 import { toast } from "sonner";
 
-import { setDefaultCurrency } from "~/lib/user-actions";
+import { setDefaultCurrency } from "~/auth/actions";
 import { currencies, type CurrencyCode } from "~/monetary/math";
 import {
   Select,

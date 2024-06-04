@@ -1,8 +1,9 @@
 import type { FileRouter } from "uploadthing/next";
 import { createUploadthing } from "uploadthing/next";
-import { UTApi } from "uploadthing/server";
+import { UTApi, UploadThingError } from "uploadthing/server";
 
-import { currentUser } from "~/auth";
+import { auth, currentUser } from "~/auth";
+import { db, e } from "~/edgedb";
 
 export const utapi = new UTApi({
   // logLevel: "debug",
@@ -33,6 +34,42 @@ export const uploadRouter = {
     })
     .onUploadComplete((file) => {
       console.log("Uploaded file:", file);
+    }),
+  profilePicture: f({
+    image: {
+      maxFileSize: "4MB",
+      maxFileCount: 1,
+      additionalProperties: {
+        width: 200,
+        aspectRatio: 1,
+      },
+    },
+  })
+    .middleware(async () => {
+      const user = (await auth())?.user;
+      if (!user) throw new UploadThingError("Unauthorized");
+
+      const currentImageKey = user.image?.split("/f/")[1];
+
+      return { userId: user.id, currentImageKey };
+    })
+    .onUploadComplete(async ({ file, metadata }) => {
+      /**
+       * Update the user's image in the database
+       */
+      await e
+        .update(e.User, () => ({
+          set: { image: file.url },
+          filter_single: e.op(e.User.id, "=", e.uuid(metadata.userId)),
+        }))
+        .run(db);
+
+      /**
+       * Delete the old image if it exists
+       */
+      if (metadata.currentImageKey) {
+        await utapi.deleteFiles(metadata.currentImageKey);
+      }
     }),
 } satisfies FileRouter;
 

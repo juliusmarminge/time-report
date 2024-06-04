@@ -43,6 +43,7 @@ import { signOut } from "next-auth/react";
 import { usePathname } from "next/navigation";
 import { toMonthParam } from "~/lib/temporal";
 import { LogoIcon } from "~/ui/icons";
+import { UserCircleIcon } from "@heroicons/react/20/solid";
 
 function MobileSidebar({
   open,
@@ -119,6 +120,10 @@ function UserButton(props: {
         <DropdownItem href="/settings">
           <Cog8ToothIcon />
           <DropdownLabel>Settings</DropdownLabel>
+        </DropdownItem>
+        <DropdownItem href="/profile">
+          <UserCircleIcon />
+          <DropdownLabel>Profile</DropdownLabel>
         </DropdownItem>
         <DropdownDivider />
         <DropdownItem onClick={() => signOut()}>

@@ -13,6 +13,10 @@
     "enabled": true,
     "rules": {
       "recommended": true,
+      "a11y": {
+        "noRedundantAlt": "off",
+        "useKeyWithClickEvents": "off"
+      },
       "correctness": {
         "noUnusedVariables": "warn",
         "noUnusedImports": "off"
