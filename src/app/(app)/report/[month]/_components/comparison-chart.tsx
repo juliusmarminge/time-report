@@ -128,7 +128,10 @@ export function ComparisonChart(
         />
         {month.month === today.month && (
           // @ts-expect-error - misaligned types
-          <ReferenceLine x={today.day} stroke="hsl(var(--muted-foreground))">
+          <ReferenceLine
+            x={today.day - 1}
+            stroke="hsl(var(--muted-foreground))"
+          >
             <Label value="Today" fontSize={10} position="bottom" />
           </ReferenceLine>
         )}
