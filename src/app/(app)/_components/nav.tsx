@@ -52,6 +52,7 @@ import { Temporal } from "@js-temporal/polyfill";
 import { Badge } from "~/ui/badge";
 import { closePeriodSheetOpen } from "~/lib/atoms";
 import { useSetAtom } from "jotai";
+import { cn } from "~/lib/cn";
 
 function MobileSidebar({
   open,
@@ -191,7 +192,7 @@ export function MySidebar(
             <SidebarLabel>Clients</SidebarLabel>
           </SidebarItem>
         </SidebarSection>
-        <SidebarSection className="max-lg:hidden">
+        <SidebarSection>
           <SidebarHeading>Ongoing Periods</SidebarHeading>
           <React.Suspense
             fallback={
@@ -203,7 +204,7 @@ export function MySidebar(
             <PeriodItems periodsPromise={props.openPeriodsPromise} />
           </React.Suspense>
         </SidebarSection>
-        <SidebarSection className="max-lg:hidden">
+        <SidebarSection>
           <SidebarHeading>Recently Closed Periods</SidebarHeading>
           <React.Suspense
             fallback={
@@ -227,6 +228,7 @@ export function MySidebar(
 function InboxCount(
   props: Readonly<{
     openPeriodsPromise: Promise<TsonSerialized<Period[]>>;
+    className?: string;
   }>,
 ) {
   const periods = tson.deserialize(React.use(props.openPeriodsPromise));
@@ -235,7 +237,10 @@ function InboxCount(
   if (expired === 0) return null;
 
   return (
-    <Badge data-slot="icon" className="justify-center">
+    <Badge
+      data-slot="icon"
+      className={cn("justify-center p-0.5", props.className)}
+    >
       {expired}
     </Badge>
   );
@@ -245,14 +250,15 @@ function PeriodItems(props: {
   periodsPromise: Promise<TsonSerialized<Period[]>>;
 }) {
   const periods = tson.deserialize(React.use(props.periodsPromise));
+  const pn = usePathname();
 
   return periods
     .sort((a, b) => Temporal.PlainDate.compare(b.endDate, a.endDate))
     .map((p) => (
       <SidebarItem
         key={p.id}
-        href={`/period/${p.id}`}
-        disabled
+        href={`/periods/${p.id}`}
+        current={pn === `/periods/${p.id}`}
         className="capitalize"
       >
         <span>
@@ -271,7 +277,9 @@ function PeriodItems(props: {
 
 export function MyNavbar(props: {
   userPromise: Promise<Session["user"]>;
+  openPeriodsPromise: Promise<TsonSerialized<Period[]>>;
 }) {
+  const setClosePeriodSheetOpen = useSetAtom(closePeriodSheetOpen);
   return (
     <Navbar>
       <NavbarSpacer />
@@ -279,8 +287,18 @@ export function MyNavbar(props: {
         <NavbarItem href="/search" aria-label="Search" disabled>
           <MagnifyingGlassIcon />
         </NavbarItem>
-        <NavbarItem href="/inbox" aria-label="Inbox" disabled>
+        <NavbarItem
+          className="relative"
+          aria-label="Inbox"
+          onClick={() => setClosePeriodSheetOpen(true)}
+        >
           <InboxIcon />
+          <React.Suspense fallback={null}>
+            <InboxCount
+              openPeriodsPromise={props.openPeriodsPromise}
+              className="absolute top-0 right-0"
+            />
+          </React.Suspense>
         </NavbarItem>
       </NavbarSection>
       <UserButton userPromise={props.userPromise} />
@@ -315,7 +333,10 @@ export const MobileControlledNavigation = (props: {
           </NavbarItem>
         </div>
         <div className="min-w-0 flex-1">
-          <MyNavbar userPromise={props.userPromise} />
+          <MyNavbar
+            userPromise={props.userPromise}
+            openPeriodsPromise={props.openPeriodsPromise}
+          />
         </div>
       </header>
     </>
