@@ -6,7 +6,7 @@ import { useAtom } from "jotai";
 
 import { isFuture } from "~/lib/temporal";
 import { currencies } from "~/monetary/math";
-import type { Client } from "~/trpc/datalayer";
+import type { Client } from "~/trpc/router";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -45,11 +45,13 @@ import { reportTime } from "../_actions";
 import { reportTimeSchema } from "../_validators";
 import { reportTimeSheetOpen } from "~/lib/atoms";
 
-export function ReportTimeForm(props: {
-  clients: Client[];
-  date?: Temporal.PlainDate;
-  afterSubmit?: () => void;
-}) {
+export function ReportTimeForm(
+  props: Readonly<{
+    clients: Client[];
+    date?: Temporal.PlainDate;
+    afterSubmit?: () => void;
+  }>,
+) {
   const form = useForm({
     schema: reportTimeSchema,
     defaultValues: {
@@ -203,10 +205,12 @@ export function ReportTimeForm(props: {
   );
 }
 
-export function ReportTimeSheet(props: {
-  date: Temporal.PlainDate;
-  clients: Client[];
-}) {
+export function ReportTimeSheet(
+  props: Readonly<{
+    date: Temporal.PlainDate;
+    clients: Client[];
+  }>,
+) {
   const [open, setOpen] = useAtom(reportTimeSheetOpen);
 
   const { Root, Trigger, Content, Header, Title } = useResponsiveSheet();

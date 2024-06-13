@@ -19,7 +19,7 @@ import {
   slotsToDineros,
   sumDineros,
 } from "~/monetary/math";
-import type { Client } from "~/trpc/datalayer";
+import type { Client } from "~/trpc/router";
 import {
   AlertDialog,
   AlertDialogAction,

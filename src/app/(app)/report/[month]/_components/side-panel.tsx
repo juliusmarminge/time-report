@@ -10,7 +10,7 @@ import { cn } from "~/lib/cn";
 import { formatOrdinal } from "~/lib/temporal";
 import { ConverterContext } from "~/monetary/context";
 import { formatMoney, slotsToDineros, sumDineros } from "~/monetary/math";
-import type { Client, Timeslot } from "~/trpc/datalayer";
+import type { Client, Timeslot } from "~/trpc/router";
 import {
   Card,
   CardContent,

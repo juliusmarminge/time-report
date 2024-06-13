@@ -1,6 +1,6 @@
 "use server";
 
-import { protectedProcedure } from "~/trpc/init";
+import { protectedAction } from "~/trpc/init";
 import { closePeriodSchema } from "./report/[month]/_validators";
 import { db, e } from "~/edgedb";
 import { revalidatePath, revalidateTag } from "next/cache";
@@ -8,7 +8,7 @@ import { CACHE_TAGS } from "~/lib/cache";
 import { currencySchema } from "~/monetary/math";
 import { z } from "zod";
 
-export const setDefaultCurrency = protectedProcedure
+export const setDefaultCurrency = protectedAction
   .meta({ span: "setDefaultCurrency" })
   .input(currencySchema)
   .mutation(async ({ ctx, input }) => {
@@ -24,7 +24,7 @@ export const setDefaultCurrency = protectedProcedure
     return { ok: true };
   });
 
-export const updateDisplayName = protectedProcedure
+export const updateDisplayName = protectedAction
   .meta({ span: "updateDisplayName" })
   .input(z.string().min(1, "Name must be at least 1 character long"))
   .mutation(async ({ ctx, input }) => {
@@ -40,7 +40,7 @@ export const updateDisplayName = protectedProcedure
     return { ok: true };
   });
 
-export const updateUserImage = protectedProcedure
+export const updateUserImage = protectedAction
   .meta({ span: "updateUserImage" })
   .input(z.string().url())
   .mutation(async ({ ctx, input }) => {
@@ -54,7 +54,7 @@ export const updateUserImage = protectedProcedure
     return { ok: true };
   });
 
-export const closePeriod = protectedProcedure
+export const closePeriod = protectedAction
   .meta({ span: "closePeriod" })
   .input(closePeriodSchema)
   .mutation(async ({ ctx, input }) => {

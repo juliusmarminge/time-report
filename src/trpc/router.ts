@@ -1,13 +1,17 @@
 import "server-only";
 
 import { Temporal } from "@js-temporal/polyfill";
-import { cache } from "react";
 import * as z from "zod";
 import { db, e, plainDate } from "~/edgedb";
-import { protectedProcedure } from "./init";
+import { protectedProcedure, router } from "./init";
+import {
+  TRPCError,
+  type inferRouterInputs,
+  type inferRouterOutputs,
+} from "@trpc/server";
 
-export const getClients = cache(
-  protectedProcedure.meta({ span: "getClients" }).query(async ({ ctx }) => {
+export const appRouter = router({
+  listClients: protectedProcedure.query(async ({ ctx }) => {
     const clients = await e
       .select(e.Client, (client) => ({
         ...client["*"],
@@ -33,12 +37,8 @@ export const getClients = cache(
       })),
     }));
   }),
-);
-export type Client = Awaited<ReturnType<typeof getClients>>[number];
 
-export const getTimeslots = cache(
-  protectedProcedure
-    .meta({ span: "getTimeslots" })
+  getTimeslots: protectedProcedure
     .input(
       z.object({
         date: z.instanceof(Temporal.PlainDate),
@@ -90,42 +90,40 @@ export const getTimeslots = cache(
         date: Temporal.PlainDate.from(slot.date),
       }));
     }),
-);
-export type Timeslot = Awaited<ReturnType<typeof getTimeslots>>[number];
 
-export const getOpenPeriods = cache(
-  protectedProcedure.meta({ span: "getOpenPeriods" }).query(async ({ ctx }) => {
-    const periods = await e
-      .select(e.Period, (period) => ({
-        ...period["*"],
-        timeslots: (ts) => ts["*"],
-        client: (client) => client["*"],
-        filter: e.op(
-          e.op(period.tenant.id, "=", e.uuid(ctx.user.id)),
-          "and",
-          e.op(period.status, "=", e.PeriodStatus.open),
-        ),
-      }))
-      .run(db);
+  getPeriod: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const period = await e
+        .select(e.Period, (period) => ({
+          ...period["*"],
+          timeslots: (ts) => ts["*"],
+          client: (client) => client["*"],
+          filter_single: e.op(
+            e.op(period.tenant.id, "=", e.uuid(ctx.user.id)),
+            "and",
+            e.op(period.id, "=", e.uuid(input.id)),
+          ),
+        }))
+        .run(db);
 
-    // FIXME: Would be nice to handle this in the db-driver
-    return periods.map((period) => ({
-      ...period,
-      startDate: Temporal.PlainDate.from(period.startDate),
-      endDate: Temporal.PlainDate.from(period.endDate),
-      timeslots: period.timeslots.map((ts) => ({
-        ...ts,
-        date: Temporal.PlainDate.from(ts.date),
-      })),
-    }));
-  }),
-);
-export type Period = Awaited<ReturnType<typeof getOpenPeriods>>[number];
+      if (!period) return null;
 
-export const getRecentlyClosedPeriods = cache(
-  protectedProcedure
-    .meta({ span: "getRecentlyClosedPeriods" })
-    .query(async ({ ctx }) => {
+      // FIXME: Would be nice to handle this in the db-driver
+      return {
+        ...period,
+        startDate: Temporal.PlainDate.from(period.startDate),
+        endDate: Temporal.PlainDate.from(period.endDate),
+        timeslots: period.timeslots.map((ts) => ({
+          ...ts,
+          date: Temporal.PlainDate.from(ts.date),
+        })),
+      };
+    }),
+
+  listPeriods: protectedProcedure
+    .input(z.object({ filter: z.enum(["open", "recently-closed"]) }))
+    .query(async ({ ctx, input }) => {
       const periods = await e
         .select(e.Period, (period) => ({
           ...period["*"],
@@ -134,11 +132,27 @@ export const getRecentlyClosedPeriods = cache(
           filter: e.all(
             e.set(
               e.op(period.tenant.id, "=", e.uuid(ctx.user.id)),
-              e.op(period.status, "=", e.PeriodStatus.closed),
-              e.op(period.endDate, "<", plainDate(Temporal.Now.plainDateISO())),
+              ...(input.filter === "open"
+                ? [
+                    e.op(period.tenant.id, "=", e.uuid(ctx.user.id)),
+                    e.op(period.status, "=", e.PeriodStatus.open),
+                  ]
+                : [
+                    e.op(period.status, "=", e.PeriodStatus.closed),
+                    e.op(
+                      period.endDate,
+                      "<",
+                      plainDate(Temporal.Now.plainDateISO()),
+                    ),
+                  ]),
             ),
           ),
-          limit: 5,
+          ...(input.filter === "recently-closed"
+            ? {
+                limit: 5,
+                order_by: { expression: period.endDate, direction: e.DESC },
+              }
+            : {}),
         }))
         .run(db);
 
@@ -153,4 +167,12 @@ export const getRecentlyClosedPeriods = cache(
         })),
       }));
     }),
-);
+});
+
+export type TRPCRouter = typeof appRouter;
+export type RouterInputs = inferRouterInputs<TRPCRouter>;
+export type RouterOutputs = inferRouterOutputs<TRPCRouter>;
+
+export type Client = RouterOutputs["listClients"][number];
+export type Timeslot = RouterOutputs["getTimeslots"][number];
+export type Period = RouterOutputs["listPeriods"][number];

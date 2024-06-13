@@ -1,7 +1,5 @@
 import { Suspense } from "react";
 import { DashboardShell } from "../../_components/shell";
-import * as trpc from "~/trpc/datalayer";
-import { notFound } from "next/navigation";
 import { formatOrdinal, isPast } from "~/lib/temporal";
 import { Badge } from "~/ui/badge";
 import { dinero, toDecimal } from "dinero.js";
@@ -13,10 +11,14 @@ import {
 } from "~/monetary/math";
 import { createConverter } from "~/monetary/rsc";
 import { currentUser } from "~/auth";
+import { trpc } from "~/trpc/server";
+import { notFound } from "next/navigation";
 
-export default function PeriodsDetailsPage(props: {
-  params: { periodId: string };
-}) {
+export default function PeriodsDetailsPage(
+  props: Readonly<{
+    params: { periodId: string };
+  }>,
+) {
   return (
     <DashboardShell
       title="Period"
@@ -34,11 +36,7 @@ async function PeriodsInformation(
     id: string;
   }>,
 ) {
-  /**
-   * FIXME: Fetch by id
-   */
-  const periods = await trpc.getOpenPeriods();
-  const period = periods.find((p) => p.id === props.id);
+  const period = await trpc.getPeriod({ id: props.id });
   if (!period) notFound();
 
   const nSlots = period.timeslots.length;

@@ -10,19 +10,21 @@ import type { TsonSerialized } from "tupleson";
 import { cn } from "~/lib/cn";
 import { tson } from "~/lib/tson";
 import { useIsDesktop } from "~/lib/utility-hooks";
-import type { Client, Timeslot } from "~/trpc/datalayer";
+import type { Client, Timeslot } from "~/trpc/router";
 import { Button } from "~/ui/button";
 import { Calendar as CalendarCore } from "~/ui/calendar";
 import { fromDate, toDate } from "~/ui/calendar";
 import { Drawer, DrawerContent } from "~/ui/drawer";
 import { SidePanel } from "./side-panel";
 
-function Calendar(props: {
-  date: Temporal.PlainDate;
-  setDate: (date: Temporal.PlainDate) => void;
-  onDayClick?: (date: Temporal.PlainDate | null) => void;
-  timeslots: Record<string, Timeslot[]> | null;
-}) {
+function Calendar(
+  props: Readonly<{
+    date: Temporal.PlainDate;
+    setDate: (date: Temporal.PlainDate) => void;
+    onDayClick?: (date: Temporal.PlainDate | null) => void;
+    timeslots: Record<string, Timeslot[]> | null;
+  }>,
+) {
   const { timeslots } = props;
   const today = Temporal.Now.plainDateISO();
   const [displayMonth, setDisplayMonth] = useState(props.date);
@@ -125,11 +127,13 @@ function Calendar(props: {
   );
 }
 
-export function CalendarAndSidePanel(props: {
-  referenceDate: TsonSerialized<Temporal.PlainDate>;
-  timeslots: TsonSerialized<Record<string, Timeslot[]> | null>;
-  clients: TsonSerialized<Client[]>;
-}) {
+export function CalendarAndSidePanel(
+  props: Readonly<{
+    referenceDate: TsonSerialized<Temporal.PlainDate>;
+    timeslots: TsonSerialized<Record<string, Timeslot[]> | null>;
+    clients: TsonSerialized<Client[]>;
+  }>,
+) {
   const clients = tson.deserialize(props.clients);
   const temporal = tson.deserialize(props.referenceDate);
   const timeslots = tson.deserialize(props.timeslots);
