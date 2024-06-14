@@ -4,10 +4,12 @@ import { CheckIcon, TrashIcon } from "@heroicons/react/16/solid";
 import { PencilIcon } from "@heroicons/react/24/outline";
 import type { Dinero } from "dinero.js";
 import { dinero, toDecimal } from "dinero.js";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import * as z from "zod";
 
 import { currencies, formatMoney } from "~/monetary/math";
+import { trpc } from "~/trpc/client";
 import type { Timeslot } from "~/trpc/router";
 import {
   AlertDialog,
@@ -41,7 +43,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/ui/select";
-import { deleteTimeslot, updateTimeslot } from "../_actions";
 
 export function TimeslotCard(props: { slot: Timeslot }) {
   const [isEditing, setIsEditing] = useState(false);
@@ -105,7 +106,16 @@ function EditingTimeslotCard(props: {
     },
   });
 
-  const [deleting, setDeleting] = useState(false);
+  const router = useRouter();
+  const utils = trpc.useUtils();
+  const { mutate: deleteTimeslot, isPending: deleting } =
+    trpc.deleteTimeslot.useMutation({
+      onSuccess: async () => {
+        await utils.invalidate();
+        router.refresh();
+      },
+    });
+  const { mutateAsync: updateTimeslot } = trpc.updateTimeslot.useMutation();
 
   return (
     <Card>
@@ -120,6 +130,8 @@ function EditingTimeslotCard(props: {
               // @ts-expect-error unsure how to get input_in working with Valibot
               chargeRate: data.chargeRate,
             });
+            await utils.invalidate();
+            router.refresh();
             props.setIsEditing(false);
           })}
         >
@@ -193,16 +205,16 @@ function EditingTimeslotCard(props: {
               className="ml-auto"
             >
               {form.formState.isSubmitting ? (
-                <LoadingDots className="h-4 w-4" />
+                <LoadingDots className="size-4" />
               ) : (
-                <CheckIcon className="h-4 w-4" />
+                <CheckIcon className="size-4" />
               )}
             </Button>
 
             <AlertDialog>
               <AlertDialogTrigger asChild>
                 <Button variant="destructive" size="icon">
-                  <TrashIcon className="h-4 w-4" />
+                  <TrashIcon className="size-4" />
                 </Button>
               </AlertDialogTrigger>
               <AlertDialogContent>
@@ -215,14 +227,10 @@ function EditingTimeslotCard(props: {
                     <AlertDialogCancel>Cancel</AlertDialogCancel>
                     <AlertDialogAction
                       asChild
-                      onClick={async () => {
-                        setDeleting(true);
-                        await deleteTimeslot(props.slot.id);
-                        setDeleting(false);
-                      }}
+                      onClick={() => deleteTimeslot(props.slot.id)}
                     >
                       <Button variant="destructive">
-                        {deleting && <LoadingDots className="mr-2 h-4 w-4" />}
+                        {deleting && <LoadingDots className="mr-2 size-4" />}
                         Yes, Delete
                       </Button>
                     </AlertDialogAction>

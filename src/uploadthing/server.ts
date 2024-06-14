@@ -9,6 +9,13 @@ export const utapi = new UTApi({
   // logLevel: "debug",
 });
 
+export const deleteImageIfExists = async (image?: string | null) => {
+  const imageKey = image?.split("/f/")[1];
+  if (imageKey) {
+    await utapi.deleteFiles([imageKey]);
+  }
+};
+
 const f = createUploadthing({
   errorFormatter: (err) => {
     console.log("Error", err);

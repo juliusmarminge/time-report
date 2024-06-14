@@ -1,9 +1,9 @@
-import * as React from "react";
+import { useEffect, useState } from "react";
 
 export function useMediaQuery(query: string) {
-  const [value, setValue] = React.useState<boolean | undefined>(undefined);
+  const [value, setValue] = useState<boolean | undefined>(undefined);
 
-  React.useEffect(() => {
+  useEffect(() => {
     function onChange(event: MediaQueryListEvent) {
       setValue(event.matches);
     }
@@ -21,13 +21,13 @@ export function useMediaQuery(query: string) {
 export const useIsDesktop = () => useMediaQuery("(min-width: 1024px)");
 
 export const useLocalStorage = <T,>(key: string, initialValue: T) => {
-  const [value, setValue] = React.useState<T>(() => {
+  const [value, setValue] = useState<T>(() => {
     if (typeof window === "undefined") return initialValue;
     const item = window.localStorage.getItem(key);
     return item ? JSON.parse(item) : initialValue;
   });
 
-  React.useEffect(() => {
+  useEffect(() => {
     window.localStorage.setItem(key, JSON.stringify(value));
   }, [key, value]);
 

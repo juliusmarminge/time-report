@@ -1,7 +1,6 @@
 "use client";
 
 import * as Headless from "@headlessui/react";
-import * as React from "react";
 
 import { Avatar } from "~/ui/avatar";
 import {
@@ -52,6 +51,7 @@ import { useSetAtom } from "jotai";
 import { cn } from "~/lib/cn";
 import { trpc } from "~/trpc/client";
 import type { RouterInputs } from "~/trpc/router";
+import { Suspense, use, useState } from "react";
 
 function MobileSidebar(
   props: Readonly<{
@@ -105,7 +105,7 @@ function UserButton(
     userPromise: Promise<Session["user"]>;
   }>,
 ) {
-  const user = React.use(props.userPromise);
+  const user = use(props.userPromise);
 
   return (
     <Dropdown>
@@ -173,9 +173,9 @@ export function MySidebar(
           <SidebarItem onClick={() => setClosePeriodSheetOpen(true)}>
             <InboxIcon />
             <SidebarLabel>Inbox</SidebarLabel>
-            <React.Suspense fallback={null}>
+            <Suspense fallback={null}>
               <InboxCount />
-            </React.Suspense>
+            </Suspense>
           </SidebarItem>
         </SidebarSection>
       </SidebarHeader>
@@ -195,7 +195,7 @@ export function MySidebar(
         </SidebarSection>
         <SidebarSection>
           <SidebarHeading>Ongoing Periods</SidebarHeading>
-          <React.Suspense
+          <Suspense
             fallback={
               <SidebarItem disabled className="text-muted-foreground text-sm">
                 Loading Open Periods...
@@ -203,11 +203,11 @@ export function MySidebar(
             }
           >
             <PeriodItems filter="open" />
-          </React.Suspense>
+          </Suspense>
         </SidebarSection>
         <SidebarSection>
           <SidebarHeading>Recently Closed Periods</SidebarHeading>
-          <React.Suspense
+          <Suspense
             fallback={
               <SidebarItem disabled className="text-muted-foreground text-sm">
                 Loading Recent Periods...
@@ -215,7 +215,7 @@ export function MySidebar(
             }
           >
             <PeriodItems filter="recently-closed" />
-          </React.Suspense>
+          </Suspense>
         </SidebarSection>
         <SidebarSpacer />
       </SidebarBody>
@@ -296,9 +296,9 @@ export function MyNavbar(
           onClick={() => setClosePeriodSheetOpen(true)}
         >
           <InboxIcon />
-          <React.Suspense fallback={null}>
+          <Suspense fallback={null}>
             <InboxCount className="absolute top-0 right-0" />
-          </React.Suspense>
+          </Suspense>
         </NavbarItem>
       </NavbarSection>
       <UserButton userPromise={props.userPromise} />
@@ -311,7 +311,7 @@ export const MobileControlledNavigation = (
     userPromise: Promise<Session["user"]>;
   }>,
 ) => {
-  const [showSidebar, setShowSidebar] = React.useState(false);
+  const [showSidebar, setShowSidebar] = useState(false);
 
   return (
     <>

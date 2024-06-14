@@ -27,14 +27,17 @@ import { DatePicker } from "~/ui/date-picker";
 import { Label } from "~/ui/label";
 import { useResponsiveSheet } from "~/ui/responsive-sheet";
 import { Separator } from "~/ui/separator";
-import { closePeriod } from "../_actions";
 import { useLocalStorage } from "~/lib/utility-hooks";
 import { closePeriodSheetOpen } from "~/lib/atoms";
 import { useAtom } from "jotai";
 import { Temporal } from "@js-temporal/polyfill";
 import { trpc } from "~/trpc/client";
 
-function PeriodCard(props: { period: Period }) {
+function PeriodCard(
+  props: Readonly<{
+    period: Period;
+  }>,
+) {
   const { period } = props;
 
   const nSlots = period.timeslots.length;
@@ -115,6 +118,14 @@ export function ClosePeriodConfirmationModal(
   const { Root, Trigger, Content, Header, Title, Description, Body } =
     useResponsiveSheet();
 
+  const utils = trpc.useUtils();
+  const { mutate: closePeriod } = trpc.closePeriod.useMutation({
+    onSuccess: async () => {
+      await utils.invalidate();
+      setNewPeriodDialogOpen(false);
+    },
+  });
+
   return (
     <Root open={newPeriodDialogOpen} onOpenChange={setNewPeriodDialogOpen}>
       <Trigger asChild>
@@ -154,11 +165,10 @@ export function ClosePeriodConfirmationModal(
             className="flex-1"
             variant="secondary"
             onClick={async () => {
-              await closePeriod({
+              closePeriod({
                 id: props.period.id,
                 openNewPeriod: false,
               });
-              setNewPeriodDialogOpen(false);
             }}
           >
             Close Period
@@ -166,14 +176,13 @@ export function ClosePeriodConfirmationModal(
           <Button
             className="flex-1"
             onClick={async () => {
-              await closePeriod({
+              closePeriod({
                 id: props.period.id,
                 openNewPeriod: true,
                 clientId: props.period.client.id,
                 periodStart: newPeriodStart.toString(),
                 periodEnd: newPeriodEnd.toString(),
               });
-              setNewPeriodDialogOpen(false);
             }}
           >
             Close and Open New
