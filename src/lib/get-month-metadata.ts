@@ -5,7 +5,7 @@ import { cache } from "react";
 import { slotsToDineros, sumDineros } from "~/monetary/math";
 import type { CurrencyCode } from "~/monetary/math";
 import { createConverter } from "~/monetary/rsc";
-import type { Timeslot } from "~/trpc/datalayer";
+import type { Timeslot } from "~/trpc/router";
 
 export const getMonthMetadata = cache(
   async (slots: Timeslot[], currency: CurrencyCode) => {

@@ -8,10 +8,10 @@ import * as z from "zod";
 import { db, e, plainDate } from "~/edgedb";
 import { CACHE_TAGS } from "~/lib/cache";
 import { normalizeAmount } from "~/monetary/math";
-import { protectedProcedure } from "~/trpc/init";
+import { protectedAction } from "~/trpc/init";
 import { createClientSchema, updateClientSchema } from "./_validators";
 
-export const createClient = protectedProcedure
+export const createClient = protectedAction
   .meta({ span: "createClient" })
   .input(createClientSchema)
   .mutation(async ({ ctx, input }) => {
@@ -49,7 +49,7 @@ export const createClient = protectedProcedure
     revalidateTag(CACHE_TAGS.PERIODS);
   });
 
-export const updateClient = protectedProcedure
+export const updateClient = protectedAction
   .meta({ span: "updateClient" })
   .input(updateClientSchema)
   .mutation(async ({ ctx, input }) => {
@@ -78,14 +78,14 @@ const deleteImageIfExists = async (image?: string | null) => {
   }
 };
 
-export const deleteImageFromUT = protectedProcedure
+export const deleteImageFromUT = protectedAction
   .meta({ span: "deleteImageFromUT" })
   .input(z.string().optional())
   .mutation(async ({ input }) => {
     await deleteImageIfExists(input);
   });
 
-export const deleteClient = protectedProcedure
+export const deleteClient = protectedAction
   .meta({ span: "deleteClient" })
   .input(z.object({ id: z.string() }))
   .mutation(async ({ ctx, input }) => {

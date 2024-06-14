@@ -2,10 +2,8 @@
 
 import { dinero, toDecimal } from "dinero.js";
 import { Fragment, use, useEffect, useState } from "react";
-import type { TsonSerialized } from "tupleson";
 
 import { formatOrdinal, isPast } from "~/lib/temporal";
-import { tson } from "~/lib/tson";
 import { ConverterContext } from "~/monetary/context";
 import {
   currencies,
@@ -13,7 +11,7 @@ import {
   slotsToDineros,
   sumDineros,
 } from "~/monetary/math";
-import type { Period } from "~/trpc/datalayer";
+import type { Period } from "~/trpc/router";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -34,6 +32,7 @@ import { useLocalStorage } from "~/lib/utility-hooks";
 import { closePeriodSheetOpen } from "~/lib/atoms";
 import { useAtom } from "jotai";
 import { Temporal } from "@js-temporal/polyfill";
+import { trpc } from "~/trpc/client";
 
 function PeriodCard(props: { period: Period }) {
   const { period } = props;
@@ -95,7 +94,11 @@ function PeriodCard(props: { period: Period }) {
   );
 }
 
-export function ClosePeriodConfirmationModal(props: { period: Period }) {
+export function ClosePeriodConfirmationModal(
+  props: Readonly<{
+    period: Period;
+  }>,
+) {
   const [newPeriodDialogOpen, setNewPeriodDialogOpen] = useState(false);
   const [newPeriodStart, setNewPeriodStart] = useState(
     props.period.endDate.add({ days: 1 }),
@@ -181,12 +184,10 @@ export function ClosePeriodConfirmationModal(props: { period: Period }) {
   );
 }
 
-export function ClosePeriodSheet(props: {
-  openPeriodsPromise: Promise<TsonSerialized<Period[]>>;
-}) {
-  const expiredPeriods = tson
-    .deserialize(use(props.openPeriodsPromise))
-    .filter((period) => isPast(period.endDate));
+export function ClosePeriodSheet() {
+  const [periods] = trpc.listPeriods.useSuspenseQuery({ filter: "open" });
+  const expiredPeriods = periods.filter((period) => isPast(period.endDate));
+
   const [hasDismissed, setHasDismissed] = useLocalStorage<number | null>(
     "close-period-sheet-dismissed",
     null,

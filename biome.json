@@ -30,7 +30,8 @@
         }
       },
       "suspicious": {
-        "noExplicitAny": "off"
+        "noExplicitAny": "off",
+        "noAssignInExpressions": "off"
       },
       "style": {
         "noNonNullAssertion": "off",
