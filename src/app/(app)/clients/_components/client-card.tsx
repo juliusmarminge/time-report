@@ -54,10 +54,33 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/ui/select";
-import { deleteClient, updateClient } from "../_actions";
 import { billingPeriods } from "../_validators";
+import { trpc } from "~/trpc/client";
 
-export function ClientCard(props: { client: TsonSerialized<Client> }) {
+export function ClientList() {
+  const [clients] = trpc.listClients.useSuspenseQuery();
+
+  if (clients.length === 0) {
+    return (
+      <div className="flex h-[600px] flex-col items-center justify-center gap-4 rounded-lg border border-dashed">
+        <h2 className="font-bold text-xl">{"No clients found"}</h2>
+        <p className="max-w-sm text-base text-muted-foreground">
+          {`It appears you don't have any clients registered yet. Get started by adding your first client.`}
+        </p>
+      </div>
+    );
+  }
+
+  return clients.map((client) => (
+    <ClientCard key={client.id} client={tson.serialize(client)} />
+  ));
+}
+
+export function ClientCard(
+  props: Readonly<{
+    client: TsonSerialized<Client>;
+  }>,
+) {
   const client = tson.deserialize(props.client);
 
   const defaultCharge = dinero({
@@ -171,11 +194,13 @@ export function ClientCard(props: { client: TsonSerialized<Client> }) {
   );
 }
 
-function EditingClientCard(props: {
-  client: Client;
-  setIsEditing: (value: boolean) => void;
-  defaultCharge: Dinero<number>;
-}) {
+function EditingClientCard(
+  props: Readonly<{
+    client: Client;
+    setIsEditing: (value: boolean) => void;
+    defaultCharge: Dinero<number>;
+  }>,
+) {
   const { client } = props;
 
   const form = useForm({
@@ -190,6 +215,14 @@ function EditingClientCard(props: {
       chargeRate: toDecimal(props.defaultCharge),
       currency: client.currency,
       period: client.defaultBillingPeriod,
+    },
+  });
+
+  const utils = trpc.useUtils();
+  const { mutateAsync: updateClient } = trpc.updateClient.useMutation();
+  const { mutate: deleteClient } = trpc.deleteClient.useMutation({
+    onSuccess: async () => {
+      await utils.listClients.invalidate();
     },
   });
 
@@ -208,6 +241,7 @@ function EditingClientCard(props: {
               defaultBillingPeriod: data.period,
             });
             props.setIsEditing(false);
+            await utils.listClients.invalidate();
           })}
         >
           <div className="flex items-start gap-2 p-6">
@@ -262,9 +296,7 @@ function EditingClientCard(props: {
                     <AlertDialogCancel>Cancel</AlertDialogCancel>
                     <AlertDialogAction
                       asChild
-                      onClick={async () => {
-                        await deleteClient({ id: client.id });
-                      }}
+                      onClick={() => deleteClient({ id: client.id })}
                     >
                       <Button variant="destructive">Yes, Delete</Button>
                     </AlertDialogAction>

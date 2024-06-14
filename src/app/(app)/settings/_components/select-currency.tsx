@@ -1,9 +1,9 @@
 "use client";
-import * as React from "react";
+import { useState } from "react";
 import { toast } from "sonner";
 
-import { setDefaultCurrency } from "~/app/(app)/_actions";
 import { currencies, type CurrencyCode } from "~/monetary/math";
+import { trpc } from "~/trpc/client";
 import {
   Select,
   SelectContent,
@@ -15,7 +15,10 @@ import {
 export function SelectCurrency(props: {
   currency: CurrencyCode;
 }) {
-  const [currency, setCurrency] = React.useState(props.currency);
+  const [currency, setCurrency] = useState(props.currency);
+
+  const { mutateAsync: setDefaultCurrency } =
+    trpc.setDefaultCurrency.useMutation();
 
   return (
     <Select

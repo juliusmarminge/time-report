@@ -6,19 +6,17 @@ import { Input } from "~/ui/input";
 import type { User } from "next-auth";
 import { toast } from "sonner";
 
-import { updateDisplayName } from "~/app/(app)/_actions";
+import { trpc } from "~/trpc/client";
 
 export function UpdateNameForm(props: { user: User }) {
+  const { mutate: updateDisplayName } = trpc.updateDisplayName.useMutation({
+    onSuccess: () => {
+      toast.success("Name updated");
+    },
+  });
+
   return (
-    <form
-      action={async (fd) => {
-        const name = fd.get("name");
-        if (typeof name === "string") {
-          await updateDisplayName(name);
-          toast.success("Name updated");
-        }
-      }}
-    >
+    <form action={(fd) => updateDisplayName(fd.get("name") as string)}>
       <CardContent>
         <Input
           name="name"

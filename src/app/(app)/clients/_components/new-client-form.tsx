@@ -30,8 +30,8 @@ import {
   SelectValue,
 } from "~/ui/select";
 import { useUploadThing } from "~/uploadthing/client";
-import { createClient, deleteImageFromUT } from "../_actions";
 import { billingPeriods, createClientSchema } from "../_validators";
+import { trpc } from "~/trpc/client";
 
 export function NewClientForm(props: { afterSubmit?: () => void }) {
   const form = useForm({
@@ -94,11 +94,15 @@ export function NewClientForm(props: { afterSubmit?: () => void }) {
     };
   }, [onDrop]);
 
+  const utils = trpc.useUtils();
+  const { mutate: deleteImageFromUT } = trpc.deleteImageFromUT.useMutation();
+  const { mutateAsync: createClient } = trpc.addClient.useMutation();
+
   async function handleImageDelete(e: React.MouseEvent<HTMLButtonElement>) {
     e.stopPropagation();
     setImageDataUrl(null);
     form.setValue("image", undefined);
-    await deleteImageFromUT(form.getValues("image"));
+    deleteImageFromUT(form.getValues("image"));
   }
 
   return (
@@ -106,8 +110,8 @@ export function NewClientForm(props: { afterSubmit?: () => void }) {
       <form
         className="flex flex-col gap-4"
         onSubmit={form.handleSubmit(async (data) => {
-          // await createClient(data);
           await createClient(data);
+          await utils.listClients.invalidate();
           form.reset();
           props.afterSubmit?.();
         })}

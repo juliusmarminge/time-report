@@ -41,9 +41,10 @@ import {
   SelectValue,
 } from "~/ui/select";
 import { Textarea } from "~/ui/textarea";
-import { reportTime } from "../_actions";
 import { reportTimeSchema } from "../_validators";
 import { reportTimeSheetOpen } from "~/lib/atoms";
+import { trpc } from "~/trpc/client";
+import { useRouter } from "next/navigation";
 
 export function ReportTimeForm(
   props: Readonly<{
@@ -62,6 +63,10 @@ export function ReportTimeForm(
     },
   });
 
+  const router = useRouter();
+  const utils = trpc.useUtils();
+  const { mutateAsync: reportTime } = trpc.reportTime.useMutation();
+
   return (
     <Form {...form}>
       <form
@@ -70,9 +75,11 @@ export function ReportTimeForm(
             ...values,
             date: Temporal.PlainDate.from(values.date as string).toString(),
           });
+          await utils.invalidate();
 
           form.reset();
           props.afterSubmit?.();
+          router.refresh();
         })}
         className="flex flex-col gap-4"
       >

@@ -2,7 +2,7 @@
 
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
-import * as React from "react";
+import { useState } from "react";
 import { toMonthParam } from "~/lib/temporal";
 
 import { Button } from "~/ui/button";
@@ -10,7 +10,7 @@ import { Input } from "~/ui/input";
 import { LoadingDots } from "~/ui/loading-dots";
 
 export function EmailSignIn() {
-  const [isLoading, setIsLoading] = React.useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const router = useRouter();
 

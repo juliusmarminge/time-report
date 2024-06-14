@@ -1,6 +1,5 @@
 "use client";
 
-import * as React from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "~/ui/button";
 import {
@@ -21,21 +20,28 @@ import { toast } from "sonner";
 import { generateMimeTypes } from "uploadthing/client";
 import type { ExpandedRouteConfig } from "uploadthing/types";
 
-import { updateUserImage } from "~/app/(app)/_actions";
+import { trpc } from "~/trpc/client";
 import { XMarkIcon } from "@heroicons/react/16/solid";
 import { PhotoIcon } from "@heroicons/react/24/outline";
+import { useEffect, useRef, useState } from "react";
 
 type FileWithPreview = File & { preview: string };
 
 export function UpdateProfilePictureCard(props: { user: User }) {
-  const inputRef = React.useRef<HTMLInputElement>(null);
-  const [file, setFile] = React.useState<FileWithPreview | null>(null);
-  const [crop, setCrop] = React.useState<Point>({ x: 0, y: 0 });
-  const [zoom, setZoom] = React.useState(1);
-  const [croppedArea, setCroppedArea] = React.useState<Area | null>(null);
-  const [newImageLoading, setNewImageLoading] = React.useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [file, setFile] = useState<FileWithPreview | null>(null);
+  const [crop, setCrop] = useState<Point>({ x: 0, y: 0 });
+  const [zoom, setZoom] = useState(1);
+  const [croppedArea, setCroppedArea] = useState<Area | null>(null);
+  const [newImageLoading, setNewImageLoading] = useState(false);
 
   const router = useRouter();
+  const { mutateAsync: updateUserImage } = trpc.updateUserImage.useMutation({
+    onError: () => {
+      toast.error("Failed to update profile picture");
+    },
+  });
+
   const { isUploading, startUpload, routeConfig } = useUploadThing(
     "profilePicture",
     {
@@ -62,8 +68,8 @@ export function UpdateProfilePictureCard(props: { user: User }) {
   );
   const imageProperties = expandImageProperties(routeConfig);
 
-  const [output, setOutput] = React.useState<FileWithPreview | null>(null);
-  React.useEffect(() => {
+  const [output, setOutput] = useState<FileWithPreview | null>(null);
+  useEffect(() => {
     if (file && croppedArea) {
       void cropAndScaleImage(file, croppedArea, imageProperties).then(
         (image) => {
