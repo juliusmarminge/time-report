@@ -47,10 +47,10 @@ importers:
         specifier: ^3.0.0
         version: 3.0.1(@types/react@18.3.3)(react@19.0.0-rc-f994737d14-20240522)
       '@next/bundle-analyzer':
-        specifier: 15.0.0-rc.0
+        specifier: ^15.0.0-rc.0
         version: 15.0.0-rc.0
       '@next/mdx':
-        specifier: 15.0.0-rc.0
+        specifier: ^15.0.0-rc.0
         version: 15.0.0-rc.0(@mdx-js/loader@3.0.1(webpack@5.91.0))(@mdx-js/react@3.0.1(@types/react@18.3.3)(react@19.0.0-rc-f994737d14-20240522))
       '@opentelemetry/api':
         specifier: ^1.8.0
@@ -137,19 +137,19 @@ importers:
         specifier: ^2.8.1
         version: 2.8.1(@types/react@18.3.3)(react@19.0.0-rc-f994737d14-20240522)
       next:
-        specifier: 15.0.0-rc.0
+        specifier: ^15.0.0-rc.0
         version: 15.0.0-rc.0(@opentelemetry/api@1.8.0)(babel-plugin-react-compiler@0.0.0-experimental-592953e-20240517)(react-dom@19.0.0-rc-f994737d14-20240522(react@19.0.0-rc-f994737d14-20240522))(react@19.0.0-rc-f994737d14-20240522)
       next-auth:
         specifier: ^5.0.0-beta.18
         version: 5.0.0-beta.18(@simplewebauthn/browser@9.0.1)(@simplewebauthn/server@9.0.3)(next@15.0.0-rc.0(@opentelemetry/api@1.8.0)(babel-plugin-react-compiler@0.0.0-experimental-592953e-20240517)(react-dom@19.0.0-rc-f994737d14-20240522(react@19.0.0-rc-f994737d14-20240522))(react@19.0.0-rc-f994737d14-20240522))(react@19.0.0-rc-f994737d14-20240522)
       react:
-        specifier: 19.0.0-rc-f994737d14-20240522
+        specifier: ^19.0.0-rc-f994737d14-20240522
         version: 19.0.0-rc-f994737d14-20240522
       react-day-picker:
         specifier: ^8.10.0
         version: 8.10.1(date-fns@3.6.0)(react@19.0.0-rc-f994737d14-20240522)
       react-dom:
-        specifier: 19.0.0-rc-f994737d14-20240522
+        specifier: ^19.0.0-rc-f994737d14-20240522
         version: 19.0.0-rc-f994737d14-20240522(react@19.0.0-rc-f994737d14-20240522)
       react-easy-crop:
         specifier: ^5.0.7
