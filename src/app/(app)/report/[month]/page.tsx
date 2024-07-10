@@ -8,15 +8,19 @@ import { getMonthMetadata } from "~/lib/get-month-metadata";
 import { isSameMonth, parseMonthParam } from "~/lib/temporal";
 import { tson } from "~/lib/tson";
 import { formatDiff, formatMoney } from "~/monetary/math";
-import type { Timeslot } from "~/trpc/datalayer";
-import * as trpc from "~/trpc/datalayer";
+import type { Timeslot } from "~/trpc/router";
 import { TrendBadge } from "~/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "~/ui/card";
 import { Tooltip } from "~/ui/tooltip";
 import { CalendarAndSidePanel } from "./_components/calendar";
 import { ComparisonChart } from "./_components/comparison-chart";
+import { trpc } from "~/trpc/server";
 
-export default async function IndexPage(props: { params: { month: string } }) {
+export default async function IndexPage(
+  props: Readonly<{
+    params: { month: string };
+  }>,
+) {
   const user = await currentUser();
   if (!user) redirect("/login");
 
@@ -40,7 +44,7 @@ export default async function IndexPage(props: { params: { month: string } }) {
   // });
   // Start fetching clients and periods now but don't await it.
   // We await it within a Suspense boundary below.
-  const clientsPromise = trpc.getClients();
+  const clientsPromise = trpc.listClients();
 
   // const clients = await withUnstableCache({
   //   fn: trpc.getClients,

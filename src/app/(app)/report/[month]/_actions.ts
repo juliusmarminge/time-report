@@ -6,14 +6,10 @@ import * as z from "zod";
 import { db, e } from "~/edgedb";
 import { CACHE_TAGS } from "~/lib/cache";
 import { normalizeAmount } from "~/monetary/math";
-import { protectedProcedure } from "~/trpc/init";
-import {
-  closePeriodSchema,
-  reportTimeSchema,
-  updateSchema,
-} from "./_validators";
+import { protectedAction } from "~/trpc/init";
+import { reportTimeSchema, updateSchema } from "./_validators";
 
-export const reportTime = protectedProcedure
+export const reportTime = protectedAction
   .meta({ span: "reportTime" })
   .input(reportTimeSchema)
   .mutation(async ({ ctx, input }) => {
@@ -70,7 +66,7 @@ export const reportTime = protectedProcedure
     revalidateTag(CACHE_TAGS.CLIENTS);
   });
 
-export const deleteTimeslot = protectedProcedure
+export const deleteTimeslot = protectedAction
   .meta({ span: "deleteTimeslot" })
   .input(z.string())
   .mutation(async ({ ctx, input }) => {
@@ -84,7 +80,7 @@ export const deleteTimeslot = protectedProcedure
     revalidateTag(CACHE_TAGS.CLIENTS);
   });
 
-export const updateTimeslot = protectedProcedure
+export const updateTimeslot = protectedAction
   .meta({ span: "updateTimeslot" })
   .input(updateSchema)
   .mutation(async ({ ctx, input }) => {

@@ -8,7 +8,7 @@ import { useState } from "react";
 import * as z from "zod";
 
 import { currencies, formatMoney } from "~/monetary/math";
-import type { Timeslot } from "~/trpc/datalayer";
+import type { Timeslot } from "~/trpc/router";
 import {
   AlertDialog,
   AlertDialogAction,

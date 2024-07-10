@@ -1,7 +1,7 @@
 "use client";
 
-import { useActionState, useEffect, useId } from "react";
-
+import { useEffect, useId } from "react";
+import { useFormState } from "react-dom";
 import { toast } from "sonner";
 import { Button } from "~/ui/button";
 import { LoadingDots } from "~/ui/loading-dots";
@@ -9,7 +9,7 @@ import { joinWaitlist } from "../_action";
 
 export function Waitlist() {
   const id = useId();
-  const [state, dispatch, pending] = useActionState(joinWaitlist, null);
+  const [state, dispatch, pending] = useFormState(joinWaitlist, null);
 
   useEffect(() => {
     if (!state) return;

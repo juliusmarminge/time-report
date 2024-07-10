@@ -40,10 +40,10 @@ export default withBundleAnalyzer(
   withMdx({
     eslint: { ignoreDuringBuilds: true },
     pageExtensions: ["ts", "tsx", "mdx"],
-    serverExternalPackages: ["@trpc/server"],
+    // serverExternalPackages: ["@trpc/server"],
     experimental: {
-      reactCompiler: true,
-      ppr: true,
+      // reactCompiler: true,
+      // ppr: true,
       instrumentationHook: true,
     },
     logging: {

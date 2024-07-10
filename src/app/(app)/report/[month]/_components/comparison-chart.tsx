@@ -16,7 +16,7 @@ import { isFuture } from "~/lib/temporal";
 import { tson } from "~/lib/tson";
 import { ConverterContext } from "~/monetary/context";
 import { slotsToDineros, sumDineros, toNumber } from "~/monetary/math";
-import type { Timeslot } from "~/trpc/datalayer";
+import type { Timeslot } from "~/trpc/router";
 
 const getTicks = (
   today: Temporal.PlainDate,

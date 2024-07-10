@@ -7,6 +7,14 @@ const ensureDateIsString = z.union([
   z.string(),
 ]);
 
+const formDataFalse = z
+  .literal(false)
+  .or(z.enum(["false"]).transform(() => false as const));
+
+const formDataTrue = z
+  .literal(true)
+  .or(z.enum(["true"]).transform(() => true as const));
+
 export const reportTimeSchema = z.object({
   clientId: z.string(),
   date: ensureDateIsString,
@@ -26,11 +34,11 @@ export const updateSchema = z.object({
 export const closePeriodSchema = z.union([
   z.object({
     id: z.string(),
-    openNewPeriod: z.literal(false),
+    openNewPeriod: formDataFalse,
   }),
   z.object({
     id: z.string(),
-    openNewPeriod: z.literal(true),
+    openNewPeriod: formDataTrue,
     clientId: z.string(),
     periodStart: ensureDateIsString,
     periodEnd: ensureDateIsString,

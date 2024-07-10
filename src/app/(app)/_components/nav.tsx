@@ -45,23 +45,24 @@ import { usePathname } from "next/navigation";
 import { isPast, toMonthParam } from "~/lib/temporal";
 import { LogoIcon } from "~/ui/icons";
 import { UserCircleIcon } from "@heroicons/react/20/solid";
-import type { Period } from "~/trpc/datalayer";
-import type { TsonSerialized } from "tupleson";
-import { tson } from "~/lib/tson";
 import { Temporal } from "@js-temporal/polyfill";
 import { Badge } from "~/ui/badge";
 import { closePeriodSheetOpen } from "~/lib/atoms";
 import { useSetAtom } from "jotai";
 import { cn } from "~/lib/cn";
+import { trpc } from "~/trpc/client";
+import type { RouterInputs } from "~/trpc/router";
 
-function MobileSidebar({
-  open,
-  close,
-  children,
-}: React.PropsWithChildren<{ open: boolean; close: () => void }>) {
+function MobileSidebar(
+  props: Readonly<{
+    open: boolean;
+    close: () => void;
+    children: React.ReactNode;
+  }>,
+) {
   return (
-    <Headless.Transition show={open}>
-      <Headless.Dialog onClose={close} className="lg:hidden">
+    <Headless.Transition show={props.open}>
+      <Headless.Dialog onClose={props.close} className="lg:hidden">
         <Headless.TransitionChild
           enter="ease-out duration-300"
           enterFrom="opacity-0"
@@ -90,7 +91,7 @@ function MobileSidebar({
                   <XMarkIcon />
                 </Headless.CloseButton>
               </div>
-              {children}
+              {props.children}
             </div>
           </Headless.DialogPanel>
         </Headless.TransitionChild>
@@ -99,9 +100,11 @@ function MobileSidebar({
   );
 }
 
-function UserButton(props: {
-  userPromise: Promise<Session["user"]>;
-}) {
+function UserButton(
+  props: Readonly<{
+    userPromise: Promise<Session["user"]>;
+  }>,
+) {
   const user = React.use(props.userPromise);
 
   return (
@@ -147,8 +150,6 @@ function UserButton(props: {
 export function MySidebar(
   props: Readonly<{
     userPromise: Promise<Session["user"]>;
-    openPeriodsPromise: Promise<TsonSerialized<Period[]>>;
-    recentPeriodsPromise: Promise<TsonSerialized<Period[]>>;
   }>,
 ) {
   const pn = usePathname();
@@ -173,7 +174,7 @@ export function MySidebar(
             <InboxIcon />
             <SidebarLabel>Inbox</SidebarLabel>
             <React.Suspense fallback={null}>
-              <InboxCount openPeriodsPromise={props.openPeriodsPromise} />
+              <InboxCount />
             </React.Suspense>
           </SidebarItem>
         </SidebarSection>
@@ -201,7 +202,7 @@ export function MySidebar(
               </SidebarItem>
             }
           >
-            <PeriodItems periodsPromise={props.openPeriodsPromise} />
+            <PeriodItems filter="open" />
           </React.Suspense>
         </SidebarSection>
         <SidebarSection>
@@ -213,7 +214,7 @@ export function MySidebar(
               </SidebarItem>
             }
           >
-            <PeriodItems periodsPromise={props.recentPeriodsPromise} />
+            <PeriodItems filter="recently-closed" />
           </React.Suspense>
         </SidebarSection>
         <SidebarSpacer />
@@ -227,11 +228,10 @@ export function MySidebar(
 
 function InboxCount(
   props: Readonly<{
-    openPeriodsPromise: Promise<TsonSerialized<Period[]>>;
     className?: string;
   }>,
 ) {
-  const periods = tson.deserialize(React.use(props.openPeriodsPromise));
+  const [periods] = trpc.listPeriods.useSuspenseQuery({ filter: "open" });
   const expired = periods.filter((p) => isPast(p.endDate)).length;
 
   if (expired === 0) return null;
@@ -246,10 +246,12 @@ function InboxCount(
   );
 }
 
-function PeriodItems(props: {
-  periodsPromise: Promise<TsonSerialized<Period[]>>;
-}) {
-  const periods = tson.deserialize(React.use(props.periodsPromise));
+function PeriodItems(
+  props: Readonly<{
+    filter: RouterInputs["listPeriods"]["filter"];
+  }>,
+) {
+  const [periods] = trpc.listPeriods.useSuspenseQuery({ filter: props.filter });
   const pn = usePathname();
 
   return periods
@@ -275,10 +277,11 @@ function PeriodItems(props: {
     ));
 }
 
-export function MyNavbar(props: {
-  userPromise: Promise<Session["user"]>;
-  openPeriodsPromise: Promise<TsonSerialized<Period[]>>;
-}) {
+export function MyNavbar(
+  props: Readonly<{
+    userPromise: Promise<Session["user"]>;
+  }>,
+) {
   const setClosePeriodSheetOpen = useSetAtom(closePeriodSheetOpen);
   return (
     <Navbar>
@@ -294,10 +297,7 @@ export function MyNavbar(props: {
         >
           <InboxIcon />
           <React.Suspense fallback={null}>
-            <InboxCount
-              openPeriodsPromise={props.openPeriodsPromise}
-              className="absolute top-0 right-0"
-            />
+            <InboxCount className="absolute top-0 right-0" />
           </React.Suspense>
         </NavbarItem>
       </NavbarSection>
@@ -306,21 +306,17 @@ export function MyNavbar(props: {
   );
 }
 
-export const MobileControlledNavigation = (props: {
-  userPromise: Promise<Session["user"]>;
-  openPeriodsPromise: Promise<TsonSerialized<Period[]>>;
-  recentPeriodsPromise: Promise<TsonSerialized<Period[]>>;
-}) => {
+export const MobileControlledNavigation = (
+  props: Readonly<{
+    userPromise: Promise<Session["user"]>;
+  }>,
+) => {
   const [showSidebar, setShowSidebar] = React.useState(false);
 
   return (
     <>
       <MobileSidebar open={showSidebar} close={() => setShowSidebar(false)}>
-        <MySidebar
-          userPromise={props.userPromise}
-          openPeriodsPromise={props.openPeriodsPromise}
-          recentPeriodsPromise={props.recentPeriodsPromise}
-        />
+        <MySidebar userPromise={props.userPromise} />
       </MobileSidebar>
 
       <header className="flex items-center px-4 lg:hidden">
@@ -333,10 +329,7 @@ export const MobileControlledNavigation = (props: {
           </NavbarItem>
         </div>
         <div className="min-w-0 flex-1">
-          <MyNavbar
-            userPromise={props.userPromise}
-            openPeriodsPromise={props.openPeriodsPromise}
-          />
+          <MyNavbar userPromise={props.userPromise} />
         </div>
       </header>
     </>
