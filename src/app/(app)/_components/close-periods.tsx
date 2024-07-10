@@ -1,7 +1,7 @@
 "use client";
 
 import { dinero, toDecimal } from "dinero.js";
-import { Fragment, use, useEffect, useState } from "react";
+import { Fragment, use, useActionState, useEffect, useState } from "react";
 
 import { formatOrdinal, isPast } from "~/lib/temporal";
 import { ConverterContext } from "~/monetary/context";
@@ -115,6 +115,14 @@ export function ClosePeriodConfirmationModal(
   const { Root, Trigger, Content, Header, Title, Description, Body } =
     useResponsiveSheet();
 
+  const utils = trpc.useUtils();
+  const [_, dispatch] = useActionState(async (_: null, fd: FormData) => {
+    await closePeriod(fd as any);
+    await utils.listPeriods.invalidate();
+    setNewPeriodDialogOpen(false);
+    return null;
+  }, null);
+
   return (
     <Root open={newPeriodDialogOpen} onOpenChange={setNewPeriodDialogOpen}>
       <Trigger asChild>
@@ -150,34 +158,33 @@ export function ClosePeriodConfirmationModal(
           </div>
         </Body>
         <div className="mt-8 flex flex-col-reverse items-center justify-end gap-3 *:w-full sm:*:w-auto sm:flex-row">
-          <Button
-            className="flex-1"
-            variant="secondary"
-            onClick={async () => {
-              await closePeriod({
-                id: props.period.id,
-                openNewPeriod: false,
-              });
-              setNewPeriodDialogOpen(false);
-            }}
-          >
-            Close Period
-          </Button>
-          <Button
-            className="flex-1"
-            onClick={async () => {
-              await closePeriod({
-                id: props.period.id,
-                openNewPeriod: true,
-                clientId: props.period.client.id,
-                periodStart: newPeriodStart.toString(),
-                periodEnd: newPeriodEnd.toString(),
-              });
-              setNewPeriodDialogOpen(false);
-            }}
-          >
-            Close and Open New
-          </Button>
+          <form action={dispatch}>
+            <input type="hidden" name="id" value={props.period.id} />
+            <input type="hidden" name="openNewPeriod" value="false" />
+            <Button className="flex-1" variant="secondary">
+              Close Period
+            </Button>
+          </form>
+          <form action={dispatch}>
+            <input type="hidden" name="id" value={props.period.id} />
+            <input
+              type="hidden"
+              name="clientId"
+              value={props.period.client.id}
+            />
+            <input type="hidden" name="openNewPeriod" value="true" />
+            <input
+              type="hidden"
+              name="periodStart"
+              value={newPeriodStart.toString()}
+            />
+            <input
+              type="hidden"
+              name="periodEnd"
+              value={newPeriodEnd.toString()}
+            />
+            <Button className="flex-1">Close and Open New</Button>
+          </form>
         </div>
       </Content>
     </Root>

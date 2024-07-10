@@ -33,3 +33,37 @@ export const useLocalStorage = <T,>(key: string, initialValue: T) => {
 
   return [value, setValue] as const;
 };
+
+interface UseActionOptions<I, O> {
+  initialValue?: O;
+  permalink?: string;
+  onError?: (error: unknown) => void | Promise<void>;
+  onSuccess?: (result: O, variables: I) => void | Promise<void>;
+}
+
+export const useAction = <I, O>(
+  action: (input: I) => Promise<O>,
+  opts?: UseActionOptions<I, O>,
+) => {
+  const [state, dispatchAction, isPending] = React.useActionState(
+    // @ts-expect-error - whatever
+    async (state: O, input: I) => {
+      let result: O = state;
+      try {
+        result = await action(input);
+        await opts?.onSuccess?.(result, input);
+      } catch (error) {
+        await opts?.onError?.(error);
+      }
+      return result;
+    },
+    opts?.initialValue ?? null,
+    opts?.permalink,
+  );
+
+  return {
+    state,
+    dispatch: dispatchAction,
+    isPending,
+  };
+};
