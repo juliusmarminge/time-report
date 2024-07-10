@@ -139,6 +139,7 @@ export const getRecentlyClosedPeriods = cache(
             ),
           ),
           limit: 5,
+          order_by: { expression: period.endDate, direction: e.DESC },
         }))
         .run(db);
 
