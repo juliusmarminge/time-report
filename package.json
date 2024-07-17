@@ -42,7 +42,7 @@
     "@trpc/client": "^11.0.0-rc.383",
     "@trpc/react-query": "^11.0.0-rc.383",
     "@trpc/server": "^11.0.0-rc.383",
-    "@uploadthing/react": "^6.6.0",
+    "@uploadthing/react": "6.7.3-canary.25f13e7",
     "babel-plugin-react-compiler": "0.0.0-experimental-592953e-20240517",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
@@ -67,7 +67,7 @@
     "tailwind-merge": "^2.2.0",
     "tailwindcss-animate": "^1.0.7",
     "tupleson": "^0.23.1",
-    "uploadthing": "^6.12.0",
+    "uploadthing": "6.13.3-canary.25f13e7",
     "vaul": "^0.9.1",
     "zod": "^3.23.8"
   },

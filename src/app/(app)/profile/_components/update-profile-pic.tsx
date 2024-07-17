@@ -39,7 +39,6 @@ export function UpdateProfilePictureCard(props: { user: User }) {
   const { isUploading, startUpload, routeConfig } = useUploadThing(
     "profilePicture",
     {
-      skipPolling: true,
       onClientUploadComplete: async ([uploadedFile]) => {
         if (file) URL.revokeObjectURL(file.preview);
         setFile(null);

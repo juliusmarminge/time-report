@@ -1,7 +1,7 @@
 "use client";
 
 import { XMarkIcon, PlusIcon } from "@heroicons/react/16/solid";
-import { useDropzone } from "@uploadthing/react/hooks";
+import { useDropzone } from "@uploadthing/react";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 
@@ -44,10 +44,10 @@ export function NewClientForm(props: { afterSubmit?: () => void }) {
   });
 
   const { startUpload, isUploading } = useUploadThing("clientImage", {
-    skipPolling: true,
-    onClientUploadComplete: (file) => {
-      if (!file) return;
-      form.setValue("image", file[0].url);
+    onClientUploadComplete: (files) => {
+      if (!files.length) return;
+      console.log("Uploaded files", files);
+      form.setValue("image", files[0].url);
     },
     onUploadError: (err) => {
       console.error(err);
