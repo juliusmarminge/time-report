@@ -104,8 +104,8 @@ importers:
         specifier: ^11.0.0-rc.383
         version: 11.0.0-rc.383
       '@uploadthing/react':
-        specifier: 6.7.3-canary.3cca9d2
-        version: 6.7.3-canary.3cca9d2(next@15.0.0-rc.0(@opentelemetry/api@1.8.0)(babel-plugin-react-compiler@0.0.0-experimental-592953e-20240517)(react-dom@19.0.0-rc-f994737d14-20240522(react@19.0.0-rc-f994737d14-20240522))(react@19.0.0-rc-f994737d14-20240522))(react@19.0.0-rc-f994737d14-20240522)(uploadthing@6.13.3-canary.3cca9d2(next@15.0.0-rc.0(@opentelemetry/api@1.8.0)(babel-plugin-react-compiler@0.0.0-experimental-592953e-20240517)(react-dom@19.0.0-rc-f994737d14-20240522(react@19.0.0-rc-f994737d14-20240522))(react@19.0.0-rc-f994737d14-20240522))(tailwindcss@3.4.7))
+        specifier: 6.7.3-canary.479e769
+        version: 6.7.3-canary.479e769(next@15.0.0-rc.0(@opentelemetry/api@1.8.0)(babel-plugin-react-compiler@0.0.0-experimental-592953e-20240517)(react-dom@19.0.0-rc-f994737d14-20240522(react@19.0.0-rc-f994737d14-20240522))(react@19.0.0-rc-f994737d14-20240522))(react@19.0.0-rc-f994737d14-20240522)(uploadthing@6.13.3-canary.479e769(next@15.0.0-rc.0(@opentelemetry/api@1.8.0)(babel-plugin-react-compiler@0.0.0-experimental-592953e-20240517)(react-dom@19.0.0-rc-f994737d14-20240522(react@19.0.0-rc-f994737d14-20240522))(react@19.0.0-rc-f994737d14-20240522))(tailwindcss@3.4.7))
       babel-plugin-react-compiler:
         specifier: 0.0.0-experimental-592953e-20240517
         version: 0.0.0-experimental-592953e-20240517
@@ -179,8 +179,8 @@ importers:
         specifier: ^0.23.1
         version: 0.23.1
       uploadthing:
-        specifier: 6.13.3-canary.3cca9d2
-        version: 6.13.3-canary.3cca9d2(next@15.0.0-rc.0(@opentelemetry/api@1.8.0)(babel-plugin-react-compiler@0.0.0-experimental-592953e-20240517)(react-dom@19.0.0-rc-f994737d14-20240522(react@19.0.0-rc-f994737d14-20240522))(react@19.0.0-rc-f994737d14-20240522))(tailwindcss@3.4.7)
+        specifier: 6.13.3-canary.479e769
+        version: 6.13.3-canary.479e769(next@15.0.0-rc.0(@opentelemetry/api@1.8.0)(babel-plugin-react-compiler@0.0.0-experimental-592953e-20240517)(react-dom@19.0.0-rc-f994737d14-20240522(react@19.0.0-rc-f994737d14-20240522))(react@19.0.0-rc-f994737d14-20240522))(tailwindcss@3.4.7)
       vaul:
         specifier: ^0.9.1
         version: 0.9.1(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@19.0.0-rc-f994737d14-20240522(react@19.0.0-rc-f994737d14-20240522))(react@19.0.0-rc-f994737d14-20240522)
@@ -1605,8 +1605,8 @@ packages:
   '@ungap/structured-clone@1.2.0':
     resolution: {integrity: sha512-zuVdFrMJiuCDQUMCzQaD6KL28MjnqqN8XnAqiEq9PNm/hCPTSGfrXCOfwj1ow4LFb/tNymJPwsNbVePc1xFqrQ==}
 
-  '@uploadthing/dropzone@0.4.2-canary.3cca9d2':
-    resolution: {integrity: sha512-I5OvhDQBUt+x12/TdrG3kwPGmZ9j7TfCv5NVIEYqa4j9LoDq3teV8GDY9znzaol4jSECSZk3fy4wyiBz68JlSA==}
+  '@uploadthing/dropzone@0.4.2-canary.479e769':
+    resolution: {integrity: sha512-nWZTmb6t57KjJQceZMjI890X2fmUdda4oJeUUQo1MvEhLXgrJbapNDOkHkXaSnTOowwq1xm4bSZ3MjVteEwxJQ==}
     peerDependencies:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0
       solid-js: ^1.7.11
@@ -1622,21 +1622,21 @@ packages:
       vue:
         optional: true
 
-  '@uploadthing/mime-types@0.2.11-canary.3cca9d2':
-    resolution: {integrity: sha512-WbfXLFX+7xTfK25cIl5NCCctwsz+fwu8+QSy9hfcbDUgVF3BPvrrQC6NAjT7gaaim7ZJpqQJgc0vDz9BTOPwKA==}
+  '@uploadthing/mime-types@0.2.11-canary.479e769':
+    resolution: {integrity: sha512-vdyvQGbFcJGo24Qy0+R7iSk16m1zrRu5G6fV5aumu8U4QUS79tlPo3c/FSL/kV8EHF4vWpmuoovavQxTcz/8+w==}
 
-  '@uploadthing/react@6.7.3-canary.3cca9d2':
-    resolution: {integrity: sha512-zJOS/Ov0oONYIVV9qvjTNXCuFL+77IlbPp8+uEbuQ/JYfDNV79TgmCTqTEkTg/ikrO54XM5Gon2DdrFcdpWZ4g==}
+  '@uploadthing/react@6.7.3-canary.479e769':
+    resolution: {integrity: sha512-ziDO1JFWp9dygvOKFTSJgc4YUZl9CcOGUGTmn7CeasQFcYG0kTL3qVgAFcjY1Kn23HBJiE30nz6ZkHeWamxlRg==}
     peerDependencies:
       next: '*'
       react: ^17.0.2 || ^18.0.0
-      uploadthing: 6.13.3-canary.3cca9d2
+      uploadthing: 6.13.3-canary.479e769
     peerDependenciesMeta:
       next:
         optional: true
 
-  '@uploadthing/shared@6.7.9-canary.3cca9d2':
-    resolution: {integrity: sha512-fOmoS4xr7htayUgowZjTV9uutB38aDGVJKvtUpgt6PBuZSaQHhj6J7CVsAdF8cJOcfyoly7CSaUlAYsoz/AzTg==}
+  '@uploadthing/shared@6.7.9-canary.479e769':
+    resolution: {integrity: sha512-QXdOP1fXam+3MgH2Do4W/uh9yI5usXE7kvOLAwiYuuXeoMoIk7Ny5uSJxMgjewxefclyZfbht3rqxqOZcny5sQ==}
 
   '@webassemblyjs/ast@1.12.1':
     resolution: {integrity: sha512-EKfMUOPRRUTy5UII4qJDGPpqfwjOmZ5jeGFwid9mnoqIFK+e0vqoi1qH56JpmZSzEL53jKnNzScdmftJyG5xWg==}
@@ -3204,8 +3204,8 @@ packages:
     peerDependencies:
       browserslist: '>= 4.21.0'
 
-  uploadthing@6.13.3-canary.3cca9d2:
-    resolution: {integrity: sha512-uBls2l3cV+TqozVZcjERc+FmZjI6/7ImnCOJ5X/SAWIyidzIfe3afTdWmI45KgaflxDRmc+9b1nv478JSitqPw==}
+  uploadthing@6.13.3-canary.479e769:
+    resolution: {integrity: sha512-//g0zE9xZsg71bW+hrOWTcJgdA+MPhSuSJ16cluNLBy2cfZQRBY2r7Am2ft2qcg2l9bo5Fx9DZhGf+E2T15SPw==}
     engines: {node: '>=18.13.0'}
     peerDependencies:
       express: '*'
@@ -4766,20 +4766,20 @@ snapshots:
 
   '@ungap/structured-clone@1.2.0': {}
 
-  '@uploadthing/dropzone@0.4.2-canary.3cca9d2(react@19.0.0-rc-f994737d14-20240522)':
+  '@uploadthing/dropzone@0.4.2-canary.479e769(react@19.0.0-rc-f994737d14-20240522)':
     dependencies:
       file-selector: 0.6.0
     optionalDependencies:
       react: 19.0.0-rc-f994737d14-20240522
 
-  '@uploadthing/mime-types@0.2.11-canary.3cca9d2': {}
+  '@uploadthing/mime-types@0.2.11-canary.479e769': {}
 
-  '@uploadthing/react@6.7.3-canary.3cca9d2(next@15.0.0-rc.0(@opentelemetry/api@1.8.0)(babel-plugin-react-compiler@0.0.0-experimental-592953e-20240517)(react-dom@19.0.0-rc-f994737d14-20240522(react@19.0.0-rc-f994737d14-20240522))(react@19.0.0-rc-f994737d14-20240522))(react@19.0.0-rc-f994737d14-20240522)(uploadthing@6.13.3-canary.3cca9d2(next@15.0.0-rc.0(@opentelemetry/api@1.8.0)(babel-plugin-react-compiler@0.0.0-experimental-592953e-20240517)(react-dom@19.0.0-rc-f994737d14-20240522(react@19.0.0-rc-f994737d14-20240522))(react@19.0.0-rc-f994737d14-20240522))(tailwindcss@3.4.7))':
+  '@uploadthing/react@6.7.3-canary.479e769(next@15.0.0-rc.0(@opentelemetry/api@1.8.0)(babel-plugin-react-compiler@0.0.0-experimental-592953e-20240517)(react-dom@19.0.0-rc-f994737d14-20240522(react@19.0.0-rc-f994737d14-20240522))(react@19.0.0-rc-f994737d14-20240522))(react@19.0.0-rc-f994737d14-20240522)(uploadthing@6.13.3-canary.479e769(next@15.0.0-rc.0(@opentelemetry/api@1.8.0)(babel-plugin-react-compiler@0.0.0-experimental-592953e-20240517)(react-dom@19.0.0-rc-f994737d14-20240522(react@19.0.0-rc-f994737d14-20240522))(react@19.0.0-rc-f994737d14-20240522))(tailwindcss@3.4.7))':
     dependencies:
-      '@uploadthing/dropzone': 0.4.2-canary.3cca9d2(react@19.0.0-rc-f994737d14-20240522)
-      '@uploadthing/shared': 6.7.9-canary.3cca9d2
+      '@uploadthing/dropzone': 0.4.2-canary.479e769(react@19.0.0-rc-f994737d14-20240522)
+      '@uploadthing/shared': 6.7.9-canary.479e769
       react: 19.0.0-rc-f994737d14-20240522
-      uploadthing: 6.13.3-canary.3cca9d2(next@15.0.0-rc.0(@opentelemetry/api@1.8.0)(babel-plugin-react-compiler@0.0.0-experimental-592953e-20240517)(react-dom@19.0.0-rc-f994737d14-20240522(react@19.0.0-rc-f994737d14-20240522))(react@19.0.0-rc-f994737d14-20240522))(tailwindcss@3.4.7)
+      uploadthing: 6.13.3-canary.479e769(next@15.0.0-rc.0(@opentelemetry/api@1.8.0)(babel-plugin-react-compiler@0.0.0-experimental-592953e-20240517)(react-dom@19.0.0-rc-f994737d14-20240522(react@19.0.0-rc-f994737d14-20240522))(react@19.0.0-rc-f994737d14-20240522))(tailwindcss@3.4.7)
     optionalDependencies:
       next: 15.0.0-rc.0(@opentelemetry/api@1.8.0)(babel-plugin-react-compiler@0.0.0-experimental-592953e-20240517)(react-dom@19.0.0-rc-f994737d14-20240522(react@19.0.0-rc-f994737d14-20240522))(react@19.0.0-rc-f994737d14-20240522)
     transitivePeerDependencies:
@@ -4787,9 +4787,9 @@ snapshots:
       - svelte
       - vue
 
-  '@uploadthing/shared@6.7.9-canary.3cca9d2':
+  '@uploadthing/shared@6.7.9-canary.479e769':
     dependencies:
-      '@uploadthing/mime-types': 0.2.11-canary.3cca9d2
+      '@uploadthing/mime-types': 0.2.11-canary.479e769
       effect: 3.6.0
 
   '@webassemblyjs/ast@1.12.1':
@@ -6538,12 +6538,12 @@ snapshots:
       escalade: 3.1.2
       picocolors: 1.0.1
 
-  uploadthing@6.13.3-canary.3cca9d2(next@15.0.0-rc.0(@opentelemetry/api@1.8.0)(babel-plugin-react-compiler@0.0.0-experimental-592953e-20240517)(react-dom@19.0.0-rc-f994737d14-20240522(react@19.0.0-rc-f994737d14-20240522))(react@19.0.0-rc-f994737d14-20240522))(tailwindcss@3.4.7):
+  uploadthing@6.13.3-canary.479e769(next@15.0.0-rc.0(@opentelemetry/api@1.8.0)(babel-plugin-react-compiler@0.0.0-experimental-592953e-20240517)(react-dom@19.0.0-rc-f994737d14-20240522(react@19.0.0-rc-f994737d14-20240522))(react@19.0.0-rc-f994737d14-20240522))(tailwindcss@3.4.7):
     dependencies:
       '@effect/platform': 0.61.2(@effect/schema@0.70.1(effect@3.6.0))(effect@3.6.0)
       '@effect/schema': 0.70.1(effect@3.6.0)
-      '@uploadthing/mime-types': 0.2.11-canary.3cca9d2
-      '@uploadthing/shared': 6.7.9-canary.3cca9d2
+      '@uploadthing/mime-types': 0.2.11-canary.479e769
+      '@uploadthing/shared': 6.7.9-canary.479e769
       effect: 3.6.0
       effect-log: 0.31.7(effect@3.6.0)
     optionalDependencies:
